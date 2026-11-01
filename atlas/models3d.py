@@ -15,8 +15,8 @@ import math
 # Stable layer order: input structures at the bottom, outputs on top.
 CATEGORY_LAYERS = {
     "cell-type": 0, "molecule": 1, "protein": 2, "component": 3,
-    "anatomical-structure": 4, "process": 5, "function": 6,
-    "pathway": 7, "other": 8,
+    "anatomical-structure": 4, "person": 4, "place": 4,
+    "process": 5, "function": 6, "pathway": 7, "other": 8,
 }
 
 ISO_ANGLE = math.radians(30)

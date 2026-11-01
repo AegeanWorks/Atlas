@@ -44,6 +44,30 @@ def test_polish_summary_roundtrip():
         {"overview": "o", "entities": ["e"], "pathways": []}) == "Polished prose."
 
 
+def test_summary_arrow_format_and_hub_cap():
+    from atlas import summaries as sm
+    ents = [{"id": f"e{i}", "name": f"N{i}", "category": "other",
+             "description": "", "bbox": None, "source_evidence": "",
+             "confidence": 1.0, "uncertainty": "", "mask_ref": "",
+             "model_inferred": False} for i in range(8)]
+    rels = [{"source_id": "e0", "target_id": f"e{i}", "rel_type": "activates",
+             "explanation": "", "supporting_evidence": "", "confidence": 1.0,
+             "provenance": "source", "model_inferred": False} for i in range(1, 8)]
+    brief = sm.extractive_summary({"figure_id": "h", "entities": ents, "relationships": rels})
+    hub = next(b for b in brief["entities"] if b.startswith("N0 "))
+    assert "—activates→" in hub and "+2 more relations" in hub
+    assert "receives receives-input-from" not in " ".join(brief["entities"])
+
+
+def test_podcast_trims_big_models_with_note():
+    from atlas import materials as mat
+    ents = [{"id": f"e{i}", "name": f"N{i}", "category": "other",
+             "bbox": None, "confidence": 1.0} for i in range(40)]
+    script = mat.podcast_script({"figure_id": "big", "entities": ents, "relationships": []})
+    assert len(script["segments"]) <= 24 + 3
+    assert "top of 40" in script["segments"][0]["text"]
+
+
 def test_selftest_passes_offline(tmp_path):
     from atlas.selftest import run
     report = run(str(tmp_path / "selftest-data"))

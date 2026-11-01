@@ -13,7 +13,8 @@ SCHEMA_VERSION = "atlas.visual-knowledge/v1"
 
 ENTITY_CATEGORIES = {
     "anatomical-structure", "molecule", "protein", "cell-type",
-    "component", "process", "function", "pathway", "other",
+    "component", "process", "function", "pathway",
+    "person", "place", "other",
 }
 
 RELATIONSHIP_TYPES = {

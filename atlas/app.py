@@ -95,7 +95,6 @@ def _merge_frame_analyses(analyses: list, document_ref: str, figure_id: str):
         for e in analysis.entities:
             d = e.to_dict()
             d["id"] = prefix + d["id"]
-            d["bbox"] = None
             entities.append(VisualEntity(**_entity_kwargs(d)))
         for r in analysis.relationships:
             d = r.to_dict()
@@ -173,11 +172,22 @@ def auto_create_model(store: AtlasStore, config: AtlasConfig, source: str,
                              "narration carries the lesson, stills carry little). "
                              "Supply a VTT/SRT transcript or PNG stills instead.")
         provider = muse_provider or MuseProvider(config, use_wonder=use_wonder)
-        per_frame = [provider.analyze_figure(
-            frame, (note + f" [video frame {i + 1}/{len(frames)}]") if note else
-            f"Video frame {i + 1} of {len(frames)} from {os.path.basename(bundle['path'])}.",
-            document_ref=doc["document_ref"], figure_id=f"frame-{i}")
-            for i, frame in enumerate(frames)]
+        per_frame = []
+        for i, frame in enumerate(frames):
+            frame_note = ((note + " ") if note else "") + \
+                f"[Video frame {i + 1} of {len(frames)} from {os.path.basename(bundle['path'])}.]"
+            first = provider.analyze_figure(
+                frame, frame_note, document_ref=doc["document_ref"], figure_id=f"frame-{i}")
+            located = sum(1 for e in first.entities if e.bbox)
+            if located == 0 and getattr(provider, "_live_transport", False):
+                # One retry demanding grounding: stills carry boxes, so a
+                # fully boxless frame pass is usually under-asking, not absence.
+                retry = provider.analyze_figure(
+                    frame, frame_note + " Return a normalized 0-1000 box for every visible entity.",
+                    document_ref=doc["document_ref"], figure_id=f"frame-{i}")
+                if any(e.bbox for e in retry.entities):
+                    first = retry
+            per_frame.append(first)
         fid = figure_id or ("model-" + doc["sha256"][:8])
         merged = _merge_frame_analyses(per_frame, doc["document_ref"], fid)
         data = merged.to_dict()

@@ -141,15 +141,28 @@ def tour_3d(analysis: dict) -> dict:
     return {"figure_id": analysis.get("figure_id", ""), "stops": stops}
 
 
-def podcast_script(analysis: dict) -> dict:
-    """Two-host conversational walkthrough, TTS-ready segments + duration."""
+def podcast_script(analysis: dict, max_segments: int = 24) -> dict:
+    """Two-host conversational walkthrough, TTS-ready segments + duration.
+
+    Big models are trimmed to the highest-degree entities so the episode stays
+    inside the 30-minute study window; the script says how many were covered.
+    """
     names = _names(analysis)
-    entities = list(analysis.get("entities", []))
+    degree: dict[str, int] = {}
+    for r in analysis.get("relationships", []):
+        degree[r["source_id"]] = degree.get(r["source_id"], 0) + 1
+        degree[r["target_id"]] = degree.get(r["target_id"], 0) + 1
+    entities = sorted(list(analysis.get("entities", [])),
+                      key=lambda e: (-degree.get(e["id"], 0), e.get("name", "")))
+    trimmed = max(0, len(entities) - max_segments)
+    entities = entities[:max_segments]
     segments = [{
         "speaker": "HOST", "cue": "cold open",
-        "text": (f"Welcome to Atlas TAC. Today: {len(entities)} structures, "
-                 f"{len(analysis.get('relationships', []))} connections, one figure. "
-                 "Let's walk it together."),
+        "text": (f"Welcome to Atlas TAC. Start with {len(entities)} key structures"
+                 + (f" (top of {len(analysis.get('entities', []))} in the model)"
+                    if trimmed else "")
+                 + f", {len(analysis.get('relationships', []))} connections, one figure. "
+                   "Let's walk it together."),
     }]
     for e in entities:
         outs = [r for r in analysis.get("relationships", []) if r["source_id"] == e["id"]]

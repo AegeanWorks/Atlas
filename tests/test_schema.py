@@ -37,6 +37,15 @@ def test_analysis_rejects_dangling_relationship():
                                                      "rel_type": "activates", "confidence": 1.0}]})
 
 
+def test_person_place_categories_accepted():
+    from atlas.schema import coerce_muse_payload
+    a = coerce_muse_payload(
+        {"entities": [{"id": "p", "name": "Arkad", "category": "person", "confidence": 0.9},
+                      {"id": "l", "name": "Babylon", "category": "place", "confidence": 0.9}],
+         "relationships": []})
+    assert {e.category for e in a.entities} == {"person", "place"}
+
+
 def test_coerce_muse_payload():
     payload = {"entities": [
         {"id": "striatum", "name": "Striatum", "category": "anatomical-structure",

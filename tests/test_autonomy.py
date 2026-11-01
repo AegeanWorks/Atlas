@@ -196,6 +196,56 @@ def test_video_without_boxes_warns_text_only(tmp_path, monkeypatch):
     assert result["located_entities"] == 0
 
 
+class _RetryMuse:
+    """Boxless first pass, grounded retry — like a hesitant live model."""
+    _live_transport = True
+    calls = 0
+
+    def analyze_figure(self, image_path, note="", **k):
+        from atlas.schema import VisualAnalysis, VisualEntity, BoundingBox
+        type(self).calls += 1
+        if "normalized 0-1000 box" in note:
+            return VisualAnalysis(document_ref=k.get("document_ref", ""),
+                                  figure_id=k.get("figure_id", "f"),
+                                  entities=[VisualEntity(
+                                      id="e", name="Cell", category="cell-type",
+                                      bbox=BoundingBox(0.1, 0.1, 0.5, 0.5))],
+                                  relationships=[])
+        return VisualAnalysis(document_ref=k.get("document_ref", ""),
+                              figure_id=k.get("figure_id", "f"),
+                              entities=[VisualEntity(id="e", name="Cell",
+                                                     category="cell-type")],
+                              relationships=[])
+
+
+def test_video_retries_for_grounding(tmp_path, monkeypatch):
+    import atlas.ingestion as ing
+    import atlas.sources as src
+    from atlas.app import auto_create_model
+    from atlas.config import AtlasConfig
+    from atlas.store import AtlasStore
+    from PIL import Image, ImageDraw
+    import random
+
+    monkeypatch.setattr(src, "video_frames", lambda *a, **k: [str(tmp_path / "f.png")])
+    img = Image.new("RGB", (320, 240), (10, 20, 30))
+    rnd, draw = random.Random(4), ImageDraw.Draw(img)
+    for _ in range(600):
+        draw.point((rnd.randrange(320), rnd.randrange(240)),
+                   fill=(rnd.randrange(256), rnd.randrange(256), rnd.randrange(256)))
+    img.save(tmp_path / "f.png")
+    (tmp_path / "v.mp4").write_bytes(b"fake")
+    monkeypatch.setattr(ing, "import_document",
+                        lambda p, d, page=0: {"document_ref": p, "sha256": "ab" * 32,
+                                             "original_name": "v.mp4"})
+    fake = _RetryMuse()
+    result = auto_create_model(AtlasStore(str(tmp_path / "d")),
+                               AtlasConfig(api_key="", data_dir=str(tmp_path / "d")),
+                               str(tmp_path / "v.mp4"), muse_provider=fake)
+    assert result["located_entities"] == 1 and not result["warning"]
+    assert fake.calls == 2
+
+
 def test_upload_rejects_empty_and_missing_file(tmp_path):
     server, thread = _serve(tmp_path / "data")
     port = server.server_address[1]

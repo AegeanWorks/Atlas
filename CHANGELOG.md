@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.16.0 — Editor's pass on real output (2026-11-01)
+
+- Summaries use arrow-form relations with hub caps (no more doubled verbs or
+  17-link bullets); person/place join the entity categories; podcast scripts
+  trim to top-degree entities so episodes stay in the study window.
+- Video frames retry once with an explicit grounding demand; merged models
+  keep real boxes instead of nulling them.
+
 ## 0.15.0 — Whole books become models (2026-11-01)
 
 - Chunked long-text analysis: books split at paragraph boundaries, every

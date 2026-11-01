@@ -63,8 +63,10 @@ def extractive_summary(analysis: dict) -> dict:
     for e in entities:
         outs = [r for r in relationships if r["source_id"] == e["id"]]
         ins = [r for r in relationships if r["target_id"] == e["id"]]
-        links = ([f"receives {r['rel_type']} from {names.get(r['source_id'], '?')}" for r in ins]
-                 + [f"{r['rel_type']} {names.get(r['target_id'], '?')}" for r in outs])
+        links = ([f"{names.get(r['source_id'], '?')} —{r['rel_type']}→ {e.get('name', e['id'])}" for r in ins]
+                 + [f"{e.get('name', e['id'])} —{r['rel_type']}→ {names.get(r['target_id'], '?')}" for r in outs])
+        if len(links) > 5:
+            links = links[:5] + [f"+{len(links) - 5} more relations"]
         line = f"{e.get('name', e['id'])} [{e.get('category', 'other')}]"
         if e.get("description"):
             line += f" — {e['description']}"

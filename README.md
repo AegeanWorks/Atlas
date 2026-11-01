@@ -1,4 +1,4 @@
-# Atlas 0.15.0
+# Atlas 0.16.0
 
 [![AIKit Integrated](https://img.shields.io/badge/AIKit-integrated-6f42c1)](https://github.com/AegeanWorks/AIKit)
 
