@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.20.0 — Plain-English polished summaries (2026-11-01)
+
+- Live-reading the first polished summary caught machine tokens
+  ("receives-input-from") leaking into student prose; the polish prompt now
+  carries a relation-to-English glossary and bans hyphenated tokens.
+  Verified live: zero leaked tokens, all facts kept.
+
 ## 0.19.0 — Live video grounds entities (2026-11-01)
 
 - The grounding retry verified live: first pass boxless, explicit retry grounds

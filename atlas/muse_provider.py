@@ -146,10 +146,19 @@ class MuseProvider:
             p, document_ref=document_ref) for p in parts]
         return merge_analyses(analyses, document_ref=document_ref, figure_id=figure_id)
 
+    # Machine relation names → plain English for student-facing prose.
+    RELATION_VERBS = {
+        "activates": "activates", "inhibits": "inhibits",
+        "projects-to": "sends output to", "receives-input-from": "takes in",
+        "produces": "produces", "regulates": "regulates",
+        "contains": "contains", "participates-in": "takes part in",
+    }
+
     def polish_summary(self, brief: dict) -> str:
-        """Rewrite an extractive study brief as flowing prose (needs key)."""
+        """Rewrite an extractive brief as flowing prose (needs key)."""
         if not self.config.has_api_key and self._live_transport:
             raise RuntimeError("MODEL_API_KEY/META_API_KEY is not set; refusing live call")
+        glossary = "; ".join(f"{k} means '{v}'" for k, v in self.RELATION_VERBS.items())
         lines = [brief.get("overview", ""), *brief.get("entities", []),
                  *[f"Pathway: {p}" for p in brief.get("pathways", [])]]
         payload = {
@@ -157,7 +166,10 @@ class MuseProvider:
             "messages": [
                 {"role": "system", "content":
                  "Rewrite the study brief below as a clear flowing summary for a student. "
-                 "Keep every named structure and relationship; invent nothing."},
+                 "Keep every named structure and relationship; invent nothing. "
+                 "Translate machine relation names to plain English "
+                 f"({glossary}); never emit hyphenated tokens like "
+                 "'receives-input-from' or 'participates-in'."},
                 {"role": "user", "content": "\n".join(lines)},
             ],
             "temperature": 0.3,

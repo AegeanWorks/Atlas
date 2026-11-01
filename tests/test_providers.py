@@ -50,6 +50,23 @@ def test_sam_scans_raw_before_fallback(tmp_path):
     assert "no localizable output" in seg.raw_note
 
 
+def test_polish_summary_bans_machine_tokens(tmp_path):
+    from atlas.muse_provider import MuseProvider
+    from atlas.config import AtlasConfig
+
+    seen = {}
+
+    def fake_transport(payload):
+        seen["system"] = payload["messages"][0]["content"]
+        return {"choices": [{"message": {"content": "Polished."}}]}
+
+    cfg = AtlasConfig(api_key="k", data_dir=str(tmp_path))
+    assert MuseProvider(cfg, transport=fake_transport).polish_summary(
+        {"overview": "o", "entities": [], "pathways": []}) == "Polished."
+    assert "plain English" in seen["system"]
+    assert "receives-input-from" in seen["system"]  # glossary translates it away
+
+
 def test_sam_bbox_fallback(tmp_path):
     img = tmp_path / "f.png"
     img.write_bytes(b"fakepng")
