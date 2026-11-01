@@ -240,6 +240,24 @@ def merge_analyses(analyses: list, document_ref: str = "",
                 confidence=r.confidence, provenance=r.provenance,
                 model_inferred=r.model_inferred))
     entities = [by_name[k] for k in order]
+    # Chunks often reuse synthetic ids ("e1", "e2", ...): disambiguate so the
+    # merged model never violates the unique-id invariant. Relationships built
+    # above already point at merged entities; remap them to the final ids.
+    final_id: dict[str, str] = {}
+    used: set[str] = set()
+    for e in entities:
+        candidate, n = e.id, 2
+        while candidate in used:
+            candidate = f"{e.id}-c{n}"
+            n += 1
+        used.add(candidate)
+        # First wins: relationships built above reference surviving ids, and
+        # the original per-chunk reference is ambiguous by construction.
+        final_id.setdefault(e.id, candidate)
+        object.__setattr__(e, "id", candidate)
+    for r in rels:
+        object.__setattr__(r, "source_id", final_id.get(r.source_id, r.source_id))
+        object.__setattr__(r, "target_id", final_id.get(r.target_id, r.target_id))
     return VisualAnalysis(document_ref=document_ref or (analyses[0].document_ref if analyses else ""),
                           figure_id=figure_id, entities=entities, relationships=rels)
 

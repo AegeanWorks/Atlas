@@ -1,6 +1,6 @@
 # Atlas audio walkthrough: richest-babylon-book
 
-*~8.0 min spoken · generated from the validated model*
+*~8.1 min spoken · generated from the validated model*
 
 ## HOST — cold open
 
@@ -8,11 +8,11 @@ Welcome to Atlas TAC. Start with 24 key structures (top of 245 in the model), 22
 
 ## GUIDE — segment: Arkad
 
-Arkad. Babylonian scribe who learns and teaches wealth rules; narrator of the passage. It receives-input-from Sürekli Gelir; activates Nomasir; receives-input-from Algamish; produces Zayıf Cüzdana Karşı Yedi Çare; projects-to Öğrenme Tapınağı'ndaki Yüz Kişilik Sınıf; projects-to Gelirin Yüzde Onunu Biriktirme; projects-to Gelirin Yüzde Yetmişiyle Yaşama; projects-to Öğrenciler; regulates Ödünç para isteyen genç adam; produces Altının Beş Kuralı; regulates Nomasir; produces Bilgelik. On the figure: Arkad isimli çok zengin bir adam | Arkad bu laflara şiddetle karşı çıktı | Arkad hikâyesini anlatmıştı. | Babil’deki en zengin adam Arkad | Arkad üçüncü güne başlarken | Arkad dersinin yedinci gününde, sınıfa şu şekilde hitap etti | bilge Arkad'dı. Arkad'ın Babil'deki en zengin adam olduğu | sordu Arkad. | zengin ve bilge bir adam olan Arkad | On yıl sonra Arkad'ın oğlu gibi zengin ve saygın olacaklar.
+Arkad. Babylonian scribe who learns and teaches wealth rules; narrator of the passage. It receives-input-from Sürekli Gelir; activates Nomasir; receives-input-from Algamish; produces Zayıf Cüzdana Karşı Yedi Çare; projects-to Öğrenme Tapınağı'ndaki Yüz Kişilik Sınıf; projects-to Aggar; projects-to Azmur; projects-to Öğrenciler; regulates Ödünç para isteyen genç adam; produces Altının Beş Kuralı; regulates Nomasir; produces Bilgelik. On the figure: Arkad isimli çok zengin bir adam | Arkad bu laflara şiddetle karşı çıktı | Arkad hikâyesini anlatmıştı. | Babil’deki en zengin adam Arkad | Arkad üçüncü güne başlarken | Arkad dersinin yedinci gününde, sınıfa şu şekilde hitap etti | bilge Arkad'dı. Arkad'ın Babil'deki en zengin adam olduğu | sordu Arkad. | zengin ve bilge bir adam olan Arkad | On yıl sonra Arkad'ın oğlu gibi zengin ve saygın olacaklar.
 
 ## GUIDE — segment: Dabasir
 
-Dabasir. Uzun boylu kemikli deve tüccarı, Tarkad'a alacaklı ve hikaye anlatıcısı It receives-input-from Alfred H. Shrewsbury; participates-in Yatırım Yöntemi; receives-input-from Sira; inhibits Kötü Şans Bahanesi; activates Alfred H. Shrewsbury; participates-in Dabasir'in Borçtan Kurtulma Planı; produces Babil'in Kil Tabletleri; projects-to Alacaklılar; produces Kil Tabletler. On the figure: Dabasir, uzun boylu, kemikli bir adam olan deve tüccarı. | eski Babil’in deve tüccarı Dabasir’in hikâyesi | ben, Suriye’de kölelikten dönmüş olan ... Dabasir | Dabasir adlı eski bir deve tüccarının.
+Dabasir. Uzun boylu kemikli deve tüccarı, Tarkad'a alacaklı ve hikaye anlatıcısı It receives-input-from Alfred H. Shrewsbury; participates-in Nippur ortaklığı; receives-input-from Sira; inhibits Kötü Şans Bahanesi; activates Alfred H. Shrewsbury; participates-in Dabasir'in Borçtan Kurtulma Planı; produces Babil'in Kil Tabletleri; projects-to Alacaklılar; produces Kazandığından azıyla yaşama. On the figure: Dabasir, uzun boylu, kemikli bir adam olan deve tüccarı. | eski Babil’in deve tüccarı Dabasir’in hikâyesi | ben, Suriye’de kölelikten dönmüş olan ... Dabasir | Dabasir adlı eski bir deve tüccarının.
 
 ## GUIDE — segment: Altın
 
@@ -20,19 +20,7 @@ Altın. Kurallara uyanlara gelen ve uymayanlardan kaçan servet On the figure: g
 
 ## GUIDE — segment: Aggar
 
-Aggar. Shield-maker who receives savings for bronze and pays interest every four months. It activates Borçlar; activates Dabasir; produces Kâr; projects-to Manav; produces Yatırım Yöntemi. On the figure: birikimlerimi kalkan yapan usta Aggar’a bronz alması için teslim ettim | Aggar adlı bir kalkan ustasına verdiğim krediydi.
-
-## GUIDE — segment: Borçlarla yüzleşip ödeme pratiği
-
-Borçlarla yüzleşip ödeme pratiği. Alacaklıları tek tek ziyaret edip af dileyip borçları kuruşu kuruşuna ödeme uygulaması It activates Borçlar; activates Dabasir; produces Kâr; projects-to Manav; produces Yatırım Yöntemi. On the figure: borç para aldığım herkesle tek tek yüzleşmeliydim..
-
-## GUIDE — segment: Gelirin Yüzde Onunu Biriktirme
-
-Gelirin Yüzde Onunu Biriktirme. Practice of keeping 10% of income as savings in wallet It activates Borçlar; activates Dabasir; produces Kâr; projects-to Manav; produces Yatırım Yöntemi. On the figure: gelirimizin yüzde onunu tutmaya kararlıyız.
-
-## GUIDE — segment: Toprağı işleme ve dürüst ticaret
-
-Toprağı işleme ve dürüst ticaret. Emek ve ticarete dayalı kazanç imkânı yaratan dürüst çalışma pratiği. It activates Borçlar; activates Dabasir; produces Kâr; projects-to Manav; produces Yatırım Yöntemi. On the figure: Toprağı işleyen, dürüst ticaret yapanlarda arıyorum onu..
+Aggar. Shield-maker who receives savings for bronze and pays interest every four months. It activates Altının senin için çalışması; activates Dabasir; produces Kâr; projects-to Zenginlik ağacı; produces Nippur ortaklığı. On the figure: birikimlerimi kalkan yapan usta Aggar’a bronz alması için teslim ettim | Aggar adlı bir kalkan ustasına verdiğim krediydi.
 
 ## GUIDE — segment: Sharru Nada
 
@@ -46,53 +34,21 @@ Altının Beş Kuralı. Arkad'ın kil tablete kazıdığı beş kalıcı para ku
 
 Altının senin için çalışması. Saved gold earning further earnings; interest and its children working. It produces Profesör Franklin Caldwell; inhibits Kâr; inhibits Dabasir. On the figure: Biriktirdiğin her altın para, senin için çalışan bir köle demek.
 
-## GUIDE — segment: At yarışları ve gri atlara bahis
-
-At yarışları ve gri atlara bahis. Altın at arabalı yarışlar ve Nineveh'ten gelen gri atlara bahis. It regulates Manav; inhibits Kâr; activates Gelirin Yüzde Onunu Biriktirme; inhibits Borçlar. On the figure: tanrıça size Nineveh'ten gelen gri atlar üzerine bahis yapmanız gerektiğini fısıldadı mı?.
-
 ## GUIDE — segment: Babil
 
 Babil. Ancient city built in a dry valley by the Euphrates, central subject of the historical account. It contains Babil duvarları; produces para, senet ve yazılı tapular. On the figure: en zengin şehir olma namına sahip olan Babil’in | Antik Babil'deki insanlar da işte tam da bunu bilmek istiyorlardı. | Babil’de yaşayan en zengin adamdı | İlk önce Babil’e geri dönüp | uzaklarda Babil'in duvarlarını hayal meyal görebilirsin | Tarihin sayfalarında Babil’den daha görkemli bir şehir bulmak mümkün değil..
 
-## GUIDE — segment: Borçlar
-
-Borçlar. Accumulated debts owed to landlord and tradesmen It produces Profesör Franklin Caldwell; inhibits Kâr; inhibits Dabasir. On the figure: Tüm borçlarımızın bir listesini yaptık.
-
-## GUIDE — segment: Borçlar (düşmanlar)
-
-Borçlar (düşmanlar). İnsanı kovalayan düşman olarak görülen borçlar kavramı It produces Profesör Franklin Caldwell; inhibits Kâr; inhibits Dabasir. On the figure: Borçların senin düşmanların ve seni Babil’den kovaladılar..
-
-## GUIDE — segment: Gelirin Yüzde Yirmisiyle Borç Ödeme Planı
-
-Gelirin Yüzde Yirmisiyle Borç Ödeme Planı. Practice of dividing 20% of income to pay debts in full within two years It regulates Manav; inhibits Kâr; activates Gelirin Yüzde Onunu Biriktirme; inhibits Borçlar. On the figure: her ay gelirimin yüzde yirmi kadarını iki yıl içinde.
-
-## GUIDE — segment: Manav
-
-Manav. Wise old grocer creditor who persuaded other creditors It produces Borçlar; activates Gelirin Yüzde Yirmisiyle Borç Ödeme Planı. On the figure: Bilge ve yaşlı bir adam olan manavımız.
-
-## GUIDE — segment: Oyun masaları ve zar oyunu
-
-Oyun masaları ve zar oyunu. Zar atılan kumar pratiği, kırmızı taraf bahsi örneğiyle anlatılır. It produces Profesör Franklin Caldwell; inhibits Kâr; inhibits Dabasir. On the figure: düşüncelerin oyun masalarına gitmesi normal değil mi?.
-
 ## GUIDE — segment: Uzman tavsiyesi alma ilkesi
 
-Uzman tavsiyesi alma ilkesi. Principle of seeking advice only from those experienced in that subject. It regulates Manav; inhibits Kâr; activates Gelirin Yüzde Onunu Biriktirme; inhibits Borçlar. On the figure: eğer kuyumlarla ilgili bir fikre ihtiyacın varsa kuyumcuya git.
+Uzman tavsiyesi alma ilkesi. Principle of seeking advice only from those experienced in that subject. It regulates Zenginlik ağacı; inhibits Kâr; activates Aggar; inhibits Altının senin için çalışması. On the figure: eğer kuyumlarla ilgili bir fikre ihtiyacın varsa kuyumcuya git.
 
 ## GUIDE — segment: Zenginlik ağacı
 
-Zenginlik ağacı. Metaphor of wealth growing from a small seed through regular saving. It produces Borçlar; activates Gelirin Yüzde Yirmisiyle Borç Ödeme Planı. On the figure: Zenginlik de bir ağaç gibi küçük bir tohumdan büyüyor.
-
-## GUIDE — segment: Özgür bir adamın ruhu
-
-Özgür bir adamın ruhu. Sorunları çözülebilir gören, düşmanını yenip dostunu ödüllendirmek isteyen zihniyet It regulates Manav; inhibits Kâr; activates Gelirin Yüzde Onunu Biriktirme; inhibits Borçlar. On the figure: Ruhu özgür olan bir adam bütün sorunlara çözülebilecek şeyler olarak bakar..
-
-## GUIDE — segment: İçinde üç altın para olan cüzdan
-
-İçinde üç altın para olan cüzdan. Dokumacının şans eseri bulduğu değerli buluntu. It produces Borçlar; activates Gelirin Yüzde Yirmisiyle Borç Ödeme Planı. On the figure: İçinde üç altın para olan bir cüzdan buldum..
+Zenginlik ağacı. Metaphor of wealth growing from a small seed through regular saving. It produces Altının senin için çalışması; activates Uzman tavsiyesi alma ilkesi. On the figure: Zenginlik de bir ağaç gibi küçük bir tohumdan büyüyor.
 
 ## GUIDE — segment: Alfred H. Shrewsbury
 
-Alfred H. Shrewsbury. Letter writer from Archaeology Department reporting debt recovery It participates-in Bayan Shrewsbury; receives-input-from Babil'in Kil Tabletleri; participates-in Gelirin Yüzde Yirmisiyle Borç Ödeme Planı; projects-to Profesör Franklin Caldwell. On the figure: Alfred H. Shrewsbury, Arkeoloji Departmanı.
+Alfred H. Shrewsbury. Letter writer from Archaeology Department reporting debt recovery It participates-in Kazancın onda birini kendine ayırma; receives-input-from Babil'in Kil Tabletleri; participates-in Uzman tavsiyesi alma ilkesi; projects-to Profesör Franklin Caldwell. On the figure: Alfred H. Shrewsbury, Arkeoloji Departmanı.
 
 ## GUIDE — segment: Dabasir'in Borçtan Kurtulma Planı
 
@@ -101,6 +57,50 @@ Dabasir'in Borçtan Kurtulma Planı. Uc amacli borctan cikis yontemi: biriktir, 
 ## GUIDE — segment: Nomasir
 
 Nomasir. Arkad'ın oğlu, on yıllık sınavdan geçen mirasçı adayı It receives-input-from Arkad; participates-in Bronz Kapı Metali Girişimi; participates-in Altının Beş Kuralı; receives-input-from Tecrübeli Bilge Yatırım Grubu. On the figure: bildiklerini oğlu Nomasir’e aktarmış | onu oğlu Nomasir Nineveh’te | Babası oğlu Nomasir'in omzuna eline koydu.
+
+## GUIDE — segment: Babil'in Duvarları
+
+Babil'in Duvarları. Antik Babil'i dusmanlara karsi koruyan yuksek ve guclu savunma yapisi. It regulates Babil Vatandaşları; inhibits Asurlu Saldırganlar. On the figure: Babil’in duvarları güçlüdür..
+
+## GUIDE — segment: Kazancın onda birini kendine ayırma
+
+Kazancın onda birini kendine ayırma. Practice of keeping at least one-tenth of earnings for oneself before expenses. It produces Zenginlik ağacı; activates Dabasir; participates-in Uzman tavsiyesi alma ilkesi. On the figure: Kazancımın bir kısmının bana kalmasına karar verdiğimde zenginliğin yolunu buldum.
+
+## GUIDE — segment: Kefalet sandığı
+
+Kefalet sandığı. Borçlara karşılık alınan kefaletlerin tutulduğu kırmızı deri sandık It contains Kırmızı kumaşa sarılı kolye; contains Öküz kemiğine işlenmiş yüzük; contains Taşlarla kaplı altın bilezik; contains Düğümlenmiş ip kefaleti; contains Turkuaz böcek kefaleti. On the figure: kefalet olarak para geri verilene kadar bu sandığın içine koyuyorum | Kefaletleri sandığıma hızlıca girip çıkıyor..
+
+## GUIDE — segment: Profesör Franklin Caldwell
+
+Profesör Franklin Caldwell. Recipient of the letter on English Science Expedition It receives-input-from Zenginlik ağacı; activates Aggar. On the figure: Profesör Franklin Caldwell, İngiliz Bilim Gezisi.
+
+## GUIDE — segment: Zayıf Cüzdan
+
+Zayıf Cüzdan. Boş ve birikimsiz cüzdan durumu; tedavi edilmesi gereken hal. On the figure: zayıf bir cüzdanla ilgili çareler araştırdım | Zayıf cüzdanınız şişmanlıyor | zayıf bir cüzdana karşı en hayati çözümlerden birini.
+
+## GUIDE — segment: Arad Gula
+
+Arad Gula. Carpet merchant, grandfather of Hadan Gula, secretly a slave who later gains freedom It participates-in Kârlı İşbirliği; activates Sharru Nada; inhibits kil tablet (tapu / kölelik belgesi). On the figure: senelerdir ortağı olan Arad Gula'nın torunuydu | Bunlardan biri de büyükbaban Arad Gula’ydı. | evin avlusunda Arad Gula’nın beni beklediğini.
+
+## GUIDE — segment: Azmur
+
+Azmur. Tyre'ye kuyum almaya giden tugla ustasi, ilk yatirimin kaybina neden oluyor It inhibits Zenginlik ağacı; receives-input-from Fenikeliler; inhibits Aggar. On the figure: Parayı tuğla ustası Azmur’a verdim | tuğla ustası Azmur’a teslim ettim.
+
+## GUIDE — segment: Babil duvarları
+
+Babil duvarları. Massive fortification walls surrounding the city, counted among wonders. On the figure: şehri çevreleyen görkemli duvarlar..
+
+## GUIDE — segment: Birinci Çare – Onda Birini Biriktirme
+
+Birinci Çare – Onda Birini Biriktirme. Cüzdana giren her on paranın sadece dokuzunu harcayıp birini tutma uygulaması. It produces Altın ve Servet; regulates Zayıf Cüzdan. On the figure: Cüzdanınıza koyduğunuz her on paranın sadece dokuzunu harcayın.
+
+## GUIDE — segment: Güvenceli ve akılcı ödünç verme
+
+Güvenceli ve akılcı ödünç verme. Akılcı amaç ve güvence olmadan riske atmama ilkesi. It regulates Elli altın para; inhibits Kız kardeşin kocası. On the figure: Bilge biri paranın geri dönüşünün garantisi olmadan parasını riske atmak istemez..
+
+## GUIDE — segment: Kazancın onda birini biriktirme
+
+Kazancın onda birini biriktirme. Gelecekteki iyilik icin kazancin %10'unu ayirma uygulamasi It produces Hazine (birikim); produces Borçlardan Kurtulma ve Cüzdanda Altın Biriktirme. On the figure: kazancımın onda birini biriktirerek | kazandığımın onda biri kendim için ayrılacak.
 
 ## HOST — pathway walk
 

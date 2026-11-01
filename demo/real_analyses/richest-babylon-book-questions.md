@@ -270,15 +270,15 @@
 267. [relationship-recall] How are Kobbi and Arkad connected?
 268. [relationship-recall] How are Arkad and Nomasir connected?
 269. [relationship-recall] How are Dabasir and Alfred H. Shrewsbury connected?
-270. [relationship-recall] How are Kil Tabletler and Bayan Shrewsbury connected?
-271. [relationship-recall] How are Bayan Shrewsbury and Manav connected?
-272. [relationship-recall] How are Manav and Borçlar connected?
-273. [relationship-recall] How are Borçlar and Profesör Franklin Caldwell connected?
-274. [relationship-recall] How are Gelirin Yüzde Yirmisiyle Borç Ödeme Planı and Manav connected?
-275. [relationship-recall] How are Gelirin Yüzde Yetmişiyle Yaşama and Manav connected?
-276. [relationship-recall] How are Gelirin Yüzde Onunu Biriktirme and Borçlar connected?
-277. [relationship-recall] How are Nakit Alım Uygulaması and Profesör Franklin Caldwell connected?
-278. [relationship-recall] How are Dabasir and Yatırım Yöntemi connected?
+270. [relationship-recall] How are Kazandığından azıyla yaşama and Kazancın onda birini kendine ayırma connected?
+271. [relationship-recall] How are Kazancın onda birini kendine ayırma and Zenginlik ağacı connected?
+272. [relationship-recall] How are Zenginlik ağacı and Altının senin için çalışması connected?
+273. [relationship-recall] How are Altının senin için çalışması and Profesör Franklin Caldwell connected?
+274. [relationship-recall] How are Uzman tavsiyesi alma ilkesi and Zenginlik ağacı connected?
+275. [relationship-recall] How are Azmur and Zenginlik ağacı connected?
+276. [relationship-recall] How are Aggar and Altının senin için çalışması connected?
+277. [relationship-recall] How are Vefasız kader and Profesör Franklin Caldwell connected?
+278. [relationship-recall] How are Dabasir and Nippur ortaklığı connected?
 279. [relationship-recall] How are Arkad and Algamish connected?
 280. [relationship-recall] How are Azim / hedefe bağlı kalma and Kazancın onda birini biriktirme connected?
 281. [relationship-recall] How are Kazancın onda birini biriktirme and Hazine (birikim) connected?
@@ -300,9 +300,9 @@
 297. [relationship-recall] How are Bütçe Yapma - İkinci Çare and Zayıf Cüzdan connected?
 298. [relationship-recall] How are Altınınızı Katlayın - Üçüncü Çare and Düzenli Altın Akışı connected?
 299. [relationship-recall] How are Bileşik Faiz and Düzenli Altın Akışı connected?
-300. [relationship-recall] How are Arkad and Gelirin Yüzde Onunu Biriktirme connected?
-301. [relationship-recall] How are Arkad and Gelirin Yüzde Yetmişiyle Yaşama connected?
-302. [relationship-recall] How are Gelirin Yüzde Yetmişiyle Yaşama and Fenikeliler connected?
+300. [relationship-recall] How are Arkad and Aggar connected?
+301. [relationship-recall] How are Arkad and Azmur connected?
+302. [relationship-recall] How are Azmur and Fenikeliler connected?
 303. [relationship-recall] How are Çiftçi and Tefeci connected?
 304. [relationship-recall] How are Tefeci and Bileşik Faiz connected?
 305. [relationship-recall] How are Ansan and Tefeci connected?
@@ -319,14 +319,14 @@
 316. [relationship-recall] How are Bilgi, beceri ve gelişim ile verimli çalışma and Yedinci Çare: Kazanma kapasitesini artırma connected?
 317. [relationship-recall] How are Yedinci Çare: Kazanma kapasitesini artırma and Özgüven connected?
 318. [relationship-recall] How are Borç ödeme, vasiyet ve aile sorumluluğu ilkeleri and Zenginlik / altın birikimi connected?
-319. [relationship-recall] How are Gelirin Yüzde Onunu Biriktirme and Dabasir connected?
-320. [relationship-recall] How are Gelirin Yüzde Onunu Biriktirme and Kâr connected?
+319. [relationship-recall] How are Aggar and Dabasir connected?
+320. [relationship-recall] How are Aggar and Kâr connected?
 321. [relationship-recall] How are Oyunu kuran kişi and Kâr connected?
-322. [relationship-recall] How are Borçlar and Kâr connected?
-323. [relationship-recall] How are Alfred H. Shrewsbury and Bayan Shrewsbury connected?
-324. [relationship-recall] How are Yatırım Yöntemi and Kil Tabletler connected?
-325. [relationship-recall] How are Profesör Franklin Caldwell and Manav connected?
-326. [relationship-recall] How are Gelirin Yüzde Yirmisiyle Borç Ödeme Planı and Kâr connected?
+322. [relationship-recall] How are Altının senin için çalışması and Kâr connected?
+323. [relationship-recall] How are Alfred H. Shrewsbury and Kazancın onda birini kendine ayırma connected?
+324. [relationship-recall] How are Nippur ortaklığı and Kazandığından azıyla yaşama connected?
+325. [relationship-recall] How are Profesör Franklin Caldwell and Zenginlik ağacı connected?
+326. [relationship-recall] How are Uzman tavsiyesi alma ilkesi and Kâr connected?
 327. [relationship-recall] How are Fırsat (İmkân) and İyi Şans Tanrıçası connected?
 328. [relationship-recall] How are Erteleme (Erteleyici Ruh) and İyi Şans Tanrıçası connected?
 329. [relationship-recall] How are Erteleme (Erteleyici Ruh) and Harekete Geçme connected?
@@ -392,14 +392,14 @@
 389. [relationship-recall] How are Sira and Dabasir connected?
 390. [relationship-recall] How are Borç and Tarkad connected?
 391. [relationship-recall] How are Dabasir and Kötü Şans Bahanesi connected?
-392. [relationship-recall] How are Borçlar and Dabasir connected?
-393. [relationship-recall] How are Gelirin Yüzde Yirmisiyle Borç Ödeme Planı and Gelirin Yüzde Onunu Biriktirme connected?
-394. [relationship-recall] How are Gelirin Yüzde Yetmişiyle Yaşama and Gelirin Yüzde Onunu Biriktirme connected?
-395. [relationship-recall] How are Nakit Alım Uygulaması and Gelirin Yüzde Onunu Biriktirme connected?
-396. [relationship-recall] How are Bayan Shrewsbury and Dabasir connected?
-397. [relationship-recall] How are Profesör Franklin Caldwell and Gelirin Yüzde Onunu Biriktirme connected?
+392. [relationship-recall] How are Altının senin için çalışması and Dabasir connected?
+393. [relationship-recall] How are Uzman tavsiyesi alma ilkesi and Aggar connected?
+394. [relationship-recall] How are Azmur and Aggar connected?
+395. [relationship-recall] How are Vefasız kader and Aggar connected?
+396. [relationship-recall] How are Kazancın onda birini kendine ayırma and Dabasir connected?
+397. [relationship-recall] How are Profesör Franklin Caldwell and Aggar connected?
 398. [relationship-recall] How are Dabasir and Alfred H. Shrewsbury connected?
-399. [relationship-recall] How are Gelirin Yüzde Onunu Biriktirme and Manav connected?
+399. [relationship-recall] How are Aggar and Zenginlik ağacı connected?
 400. [relationship-recall] How are Mathon and Dabasir'in Borçtan Kurtulma Planı connected?
 401. [relationship-recall] How are Dabasir'in Borçtan Kurtulma Planı and Kazancın onda birini biriktirme connected?
 402. [relationship-recall] How are Dabasir'in Borçtan Kurtulma Planı and Kazancın Onda Yedisiyle Yaşama connected?
@@ -412,16 +412,16 @@
 409. [relationship-recall] How are Dabasir'in Borçtan Kurtulma Planı and Borçlardan Kurtulma ve Cüzdanda Altın Biriktirme connected?
 410. [relationship-recall] How are Kazancın onda birini biriktirme and Borçlardan Kurtulma ve Cüzdanda Altın Biriktirme connected?
 411. [relationship-recall] How are Kazancın Onda Yedisiyle Yaşama and Dabasir'in Karısı connected?
-412. [relationship-recall] How are Dabasir and Kil Tabletler connected?
-413. [relationship-recall] How are Gelirin Yüzde Yirmisiyle Borç Ödeme Planı and Borçlar connected?
-414. [relationship-recall] How are Nakit Alım Uygulaması and Borçlar connected?
-415. [relationship-recall] How are Gelirin Yüzde Onunu Biriktirme and Yatırım Yöntemi connected?
-416. [relationship-recall] How are Alfred H. Shrewsbury and Gelirin Yüzde Yirmisiyle Borç Ödeme Planı connected?
-417. [relationship-recall] How are Bayan Shrewsbury and Gelirin Yüzde Yirmisiyle Borç Ödeme Planı connected?
-418. [relationship-recall] How are Manav and Gelirin Yüzde Yirmisiyle Borç Ödeme Planı connected?
+412. [relationship-recall] How are Dabasir and Kazandığından azıyla yaşama connected?
+413. [relationship-recall] How are Uzman tavsiyesi alma ilkesi and Altının senin için çalışması connected?
+414. [relationship-recall] How are Vefasız kader and Altının senin için çalışması connected?
+415. [relationship-recall] How are Aggar and Nippur ortaklığı connected?
+416. [relationship-recall] How are Alfred H. Shrewsbury and Uzman tavsiyesi alma ilkesi connected?
+417. [relationship-recall] How are Kazancın onda birini kendine ayırma and Uzman tavsiyesi alma ilkesi connected?
+418. [relationship-recall] How are Zenginlik ağacı and Uzman tavsiyesi alma ilkesi connected?
 419. [relationship-recall] How are Alfred H. Shrewsbury and Profesör Franklin Caldwell connected?
 420. [relationship-recall] How are Megiddo and Çalışkanlık - İyi İş connected?
-421. [relationship-recall] How are Zabado (kaçış planı) and Kaytarma - Tembellik connected?
+421. [relationship-recall] How are Zabado and Kaytarma - Tembellik connected?
 422. [relationship-recall] How are Çalışkanlık - İyi İş and Altın Şekel Serveti connected?
 423. [relationship-recall] How are Kaytarma - Tembellik and Altın Şekel Serveti connected?
 424. [relationship-recall] How are Sharru Nada and Megiddo connected?
@@ -450,7 +450,7 @@
 447. [relationship-recall] How are Arad Gula and kil tablet (tapu / kölelik belgesi) connected?
 448. [relationship-recall] How are Megiddo and iş / çalışmak connected?
 449. [relationship-recall] How are iş / çalışmak and Şam ortaklığı connected?
-450. [relationship-recall] How are Zabado (kaçış planı) and mutluluk ve başarı connected?
+450. [relationship-recall] How are Zabado and mutluluk ve başarı connected?
 451. [relationship-recall] How are Korsan (kavga edip öldürme planı) and mutluluk ve başarı connected?
 452. [relationship-recall] How are Sharru Nada and Şam ortaklığı connected?
 453. [relationship-recall] How are Babilli mühendisler and sulama kanalları connected?
@@ -464,7 +464,7 @@
 461. [relationship-recall] How are Kraliçe Semiramis and Babil duvarları connected?
 462. [relationship-recall] How are Kral Nabopolassar and Babil duvarları connected?
 463. [relationship-recall] How are Nebukadnezar and Babil duvarları connected?
-464. [relationship-recall] How are Kil Tabletler and Babil’in bilge fikirleri connected?
+464. [relationship-recall] How are Kazandığından azıyla yaşama and Babil’in bilge fikirleri connected?
 465. [relationship-recall] How are Babil and para, senet ve yazılı tapular connected?
 466. [relationship-recall] How are Herodot and Babil connected?
 467. [relationship-recall] How are Sümerliler and Babil connected?
@@ -504,16 +504,16 @@
 28. Harcama _(evidence: ne kadar çok harcarsa harcasın)_
 29. Arkad'ın Finansal Bilgeliği _(evidence: Arkad’ın bilgeliğinden hep birlikte yararlanabiliriz)_
 30. Algamish _(evidence: tefeci Algamish şehir yönetimine gelerek | Algamish’in bilgeliğini örnek alın)_
-31. Bayan Shrewsbury _(evidence: Kazancımın bir kısmının bana kalmasına karar verdiğimde zenginliğin yolunu buldum)_
-32. Dokumacı _(evidence: Zenginlik güçtür)_
-33. Manav _(evidence: Zenginlik de bir ağaç gibi küçük bir tohumdan büyüyor)_
-34. Borçlar _(evidence: Biriktirdiğin her altın para, senin için çalışan bir köle demek)_
-35. Gelirin Yüzde Yirmisiyle Borç Ödeme Planı _(evidence: eğer kuyumlarla ilgili bir fikre ihtiyacın varsa kuyumcuya git)_
-36. Gelirin Yüzde Yetmişiyle Yaşama _(evidence: Parayı tuğla ustası Azmur’a verdim | tuğla ustası Azmur’a teslim ettim)_
-37. Gelirin Yüzde Onunu Biriktirme _(evidence: birikimlerimi kalkan yapan usta Aggar’a bronz alması için teslim ettim | Aggar adlı bir kalkan ustasına verdiğim krediydi)_
-38. Nakit Alım Uygulaması _(evidence: Vefasız kader, kimseye kalıcı bir şey getirmeyen, hırçın bir tanrıçadır)_
-39. Yatırım Yöntemi _(evidence: Benim için Nippur’a gidip oradaki topraklarımla ilgilenirsen seni ortağım yaparım)_
-40. Kil Tabletler _(evidence: Önce kazandığından daha azıyla yaşamayı öğrendin)_
+31. Kazancın onda birini kendine ayırma _(evidence: Kazancımın bir kısmının bana kalmasına karar verdiğimde zenginliğin yolunu buldum)_
+32. Zenginlik _(evidence: Zenginlik güçtür)_
+33. Zenginlik ağacı _(evidence: Zenginlik de bir ağaç gibi küçük bir tohumdan büyüyor)_
+34. Altının senin için çalışması _(evidence: Biriktirdiğin her altın para, senin için çalışan bir köle demek)_
+35. Uzman tavsiyesi alma ilkesi _(evidence: eğer kuyumlarla ilgili bir fikre ihtiyacın varsa kuyumcuya git)_
+36. Azmur _(evidence: Parayı tuğla ustası Azmur’a verdim | tuğla ustası Azmur’a teslim ettim)_
+37. Aggar _(evidence: birikimlerimi kalkan yapan usta Aggar’a bronz alması için teslim ettim | Aggar adlı bir kalkan ustasına verdiğim krediydi)_
+38. Vefasız kader _(evidence: Vefasız kader, kimseye kalıcı bir şey getirmeyen, hırçın bir tanrıçadır)_
+39. Nippur ortaklığı _(evidence: Benim için Nippur’a gidip oradaki topraklarımla ilgilenirsen seni ortağım yaparım)_
+40. Kazandığından azıyla yaşama _(evidence: Önce kazandığından daha azıyla yaşamayı öğrendin)_
 41. Azmur (tuğla ustası) _(evidence: tuğla ustası Azmur’a para verme gibi hataları)_
 42. Arkad'ın arkadaşları _(evidence: Arkadaşları ona teşekkür edip yanından ayrıldılar.)_
 43. Kazancın onda birini biriktirme _(evidence: kazancımın onda birini biriktirerek | kazandığımın onda biri kendim için ayrılacak)_
@@ -555,16 +555,16 @@
 79. Borç ödeme, vasiyet ve aile sorumluluğu ilkeleri _(evidence: Bütün borçlarını elinden geldiğince hızlı bir şekilde ödemelidir.)_
 80. Özgüven _(evidence: gereken özgüveni sağlayabilirsiniz.)_
 81. İyi Şans Tanrıçası _(evidence: Hepimiz bu kaprisli İyi Şans Tanrıçası’nın iyi tarafında olmak istiyoruz. | Harekete Geçen İnsanlar İyi Şans Tanrıçası Tarafından Tercih Edilir)_
-82. Bayan Shrewsbury _(evidence: Öğrenme Tapınağı denen merkez, geçmişin bilgeliğini gönüllü öğretmenler aracılığıyla aktarmayı amaçlıyordu)_
+82. Öğrenme Tapınağı _(evidence: Öğrenme Tapınağı denen merkez, geçmişin bilgeliğini gönüllü öğretmenler aracılığıyla aktarmayı amaçlıyordu)_
 83. Dokumacı _(evidence: uzun boylu bir dokumacı ayağa kalkarak konuştu | Eğer dokumacı arkadaşımızın iyi şansı)_
-84. Manav _(evidence: İçinde üç altın para olan bir cüzdan buldum.)_
-85. Borçlar _(evidence: düşüncelerin oyun masalarına gitmesi normal değil mi?)_
-86. Gelirin Yüzde Yirmisiyle Borç Ödeme Planı _(evidence: tanrıça size Nineveh'ten gelen gri atlar üzerine bahis yapmanız gerektiğini fısıldadı mı?)_
-87. Gelirin Yüzde Yetmişiyle Yaşama _(evidence: cömert tanrıçamız Ashtar'ın bütün iyi olayları başlatan olduğuna)_
-88. Gelirin Yüzde Onunu Biriktirme _(evidence: Toprağı işleyen, dürüst ticaret yapanlarda arıyorum onu.)_
-89. Nakit Alım Uygulaması _(evidence: yaşlı bir tüccar ayağa kalktı)_
-90. Yatırım Yöntemi _(evidence: öküzler tarafından çekilecek üç tane büyük su tekerleği yaptırarak bu verimli toprağa hayat verecek)_
-91. Kil Tabletler _(evidence: Kazancının onda birini kârlı olacak yatırımlara ayır.)_
+84. İçinde üç altın para olan cüzdan _(evidence: İçinde üç altın para olan bir cüzdan buldum.)_
+85. Oyun masaları ve zar oyunu _(evidence: düşüncelerin oyun masalarına gitmesi normal değil mi?)_
+86. At yarışları ve gri atlara bahis _(evidence: tanrıça size Nineveh'ten gelen gri atlar üzerine bahis yapmanız gerektiğini fısıldadı mı?)_
+87. Ashtar _(evidence: cömert tanrıçamız Ashtar'ın bütün iyi olayları başlatan olduğuna)_
+88. Toprağı işleme ve dürüst ticaret _(evidence: Toprağı işleyen, dürüst ticaret yapanlarda arıyorum onu.)_
+89. Yaşlı tüccar _(evidence: yaşlı bir tüccar ayağa kalktı)_
+90. Üç su tekerleği sulama yatırım projesi _(evidence: öküzler tarafından çekilecek üç tane büyük su tekerleği yaptırarak bu verimli toprağa hayat verecek)_
+91. Kazancın onda birini ayırma kuralı _(evidence: Kazancının onda birini kârlı olacak yatırımlara ayır.)_
 92. Oyunu kuran kişi _(evidence: Oyunu kuran bunu iş olarak yaptığından kendisi için her zaman cömert bir kâr getirecek)_
 93. Kâr _(evidence: Çünkü kâr etmek, zamanla onların lehine olacaktır.)_
 94. Erteleyen Tüccar _(evidence: Bu benim hikâyem. İyi şansın kaçmasına işte böyle izin verdim.)_
@@ -638,11 +638,11 @@
 162. Eyer Yapımı _(evidence: babamın zanaatı olan eyer yapmayı öğrendim.)_
 163. Kendine Saygı ve Onur _(evidence: Borçlarını ödememiş bir adam kendine saygı duyamaz.)_
 164. Kötü Şans Bahanesi _(evidence: Şansım yaver gitmediği için ödemeyi yapamam.)_
-165. Borçlar _(evidence: Borçların senin düşmanların ve seni Babil’den kovaladılar.)_
-166. Gelirin Yüzde Yirmisiyle Borç Ödeme Planı _(evidence: Ruhu özgür olan bir adam bütün sorunlara çözülebilecek şeyler olarak bakar.)_
-167. Gelirin Yüzde Yetmişiyle Yaşama _(evidence: eğer bir kölenin ruhuna sahip olsaydım çölde yatıp ölmeyi beklerdim.)_
-168. Gelirin Yüzde Onunu Biriktirme _(evidence: borç para aldığım herkesle tek tek yüzleşmeliydim.)_
-169. Nakit Alım Uygulaması _(evidence: Niyet olduğunda yol bulunur,)_
+165. Borçlar (düşmanlar) _(evidence: Borçların senin düşmanların ve seni Babil’den kovaladılar.)_
+166. Özgür bir adamın ruhu _(evidence: Ruhu özgür olan bir adam bütün sorunlara çözülebilecek şeyler olarak bakar.)_
+167. Köle ruhu _(evidence: eğer bir kölenin ruhuna sahip olsaydım çölde yatıp ölmeyi beklerdim.)_
+168. Borçlarla yüzleşip ödeme pratiği _(evidence: borç para aldığım herkesle tek tek yüzleşmeliydim.)_
+169. Niyet / Kararlılık _(evidence: Niyet olduğunda yol bulunur,)_
 170. Alfred H. Shrewsbury _(evidence: Alfred H. Shrewsbury, Arkeoloji Departmanı)_
 171. Profesör Franklin Caldwell _(evidence: Profesör Franklin Caldwell, İngiliz Bilim Gezisi)_
 172. Dabasir'in Karısı _(evidence: babasının evinden sadakatle bana geri dönmüş olan güzel karıma)_
@@ -669,7 +669,7 @@
 193. Hadan Gula _(evidence: Hadan Gula, senelerdir ortağı olan Arad Gula'nın torunuydu | Hadan Gula sözünü kesti | Hadan Gula sordu)_
 194. Arad Gula _(evidence: senelerdir ortağı olan Arad Gula'nın torunuydu | Bunlardan biri de büyükbaban Arad Gula’ydı. | evin avlusunda Arad Gula’nın beni beklediğini)_
 195. Megiddo _(evidence: iyi kalpli yaşlı çiftçi Megiddo, onların yarım yamalak yaptıkları çapa işiyle alay etti | Megiddo yeni patronunu takip ederek gözden uzaklaştı. | Sonra en son Megiddo’yu gördüğüm an)_
-196. Zabado (kaçış planı) _(evidence: Zabado koyun hırsızıydı | sırada tuğlaları sırtına yüklemek için bekleyen Zabado’yu gördüğümde)_
+196. Zabado _(evidence: Zabado koyun hırsızıydı | sırada tuğlaları sırtına yüklemek için bekleyen Zabado’yu gördüğümde)_
 197. Korsan _(evidence: Sıranın sonundaysa Korsan denilen bir adam vardı | Öldürülmüş olan köle, Korsan’ın ta kendisiydi.)_
 198. Godoso _(evidence: o sırada nöbette olan Godoso'nun dikkatini çektim)_
 199. Bel Tapınağı _(evidence: Kule, Bel Tapınağı'na ait)_

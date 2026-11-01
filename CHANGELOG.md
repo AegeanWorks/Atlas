@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.18.0 — Chunk-id collisions fixed (2026-11-01)
+
+- Long-document merge disambiguates reused synthetic ids (first-wins remap),
+  so merged books always validate; the committed 245-entity book model is
+  repaired without touching any names, evidence, or relations.
+- A demo-integrity test now pins every committed analysis and artifact
+  (schema, Anki shape, SVG parse, OBJ cuboid math, REPORT coverage) —
+  it caught this bug before release.
+
 ## 0.17.0 — Big-model honesty (2026-11-01)
 
 - Pathway lists cap at 12 with totals (a 245-entity book yields 562 routes;

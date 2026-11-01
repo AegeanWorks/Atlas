@@ -333,6 +333,20 @@ def test_analyze_long_text_chunks_and_merges():
     assert big.entities[0].name == "Thing"
 
 
+def test_merge_disambiguates_reused_chunk_ids():
+    from atlas.schema import VisualAnalysis, VisualEntity, VisualRelationship, merge_analyses
+    mk = lambda i, n: VisualEntity(id=i, name=n, category="component")
+    a = VisualAnalysis(entities=[mk("e1", "Alpha")], relationships=[])
+    b = VisualAnalysis(entities=[mk("e1", "Beta"), mk("e9", "Other")],
+                       relationships=[VisualRelationship(source_id="e1", target_id="e9",
+                                                         rel_type="activates")])
+    merged = merge_analyses([a, b], document_ref="d", figure_id="m")
+    ids = sorted(e.id for e in merged.entities)
+    assert ids == ["e1", "e1-c2", "e9"]
+    assert merged.validate() == []
+    assert all({r.source_id, r.target_id} <= set(ids) for r in merged.relationships)
+
+
 def test_merge_frames_namespaces_ids():
     from atlas.app import _merge_frame_analyses
     from atlas.schema import VisualAnalysis, VisualEntity, VisualRelationship
