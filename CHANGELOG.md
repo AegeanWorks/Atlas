@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.21.0 — The contract can't rot (2026-11-01)
+
+- A contract-coverage test hits every GET endpoint the machine contract
+  promises, so docs and implementation can't silently diverge for AI clients.
+
 ## 0.20.0 — Plain-English polished summaries (2026-11-01)
 
 - Live-reading the first polished summary caught machine tokens
