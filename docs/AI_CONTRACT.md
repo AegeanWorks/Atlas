@@ -1,5 +1,15 @@
 # AI contract — driving Atlas autonomously (atlas.api/v1)
 
+## 5-line quickstart (no key, no browser)
+
+```
+python -m atlas.selftest            # 1. prove the app works (JSON report, exit 0/1)
+python -m atlas.cli agent           # 2. watch an AI drive it end to end, offline
+python -m atlas.cli models          # 3. see every model
+curl /api/state?figure_id=<id>      # 4. one glance: digest, iso, deck, stats, URLs
+curl "/api/models?format=text"      # 5. read all models as plain text
+```
+
 This document and `GET /api/contract` describe everything an AI agent needs to
 create, read, and teach from visual models with no browser and no human.
 

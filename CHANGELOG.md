@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.0 — AI-testable, AI-seeable, AI-usable (2026-11-01)
+
+- `python -m atlas.selftest`: one offline command proves every layer works and
+  prints a JSON report (exit 0/1) — for AI agents and CI.
+- `GET /api/state`: one call sees a whole model (digest, iso, deck size,
+  stats, artifact URLs); `GET /api/models?format=text` reads all models as
+  plain text.
+- `python -m atlas.cli agent`: watches an AI drive the full loop offline.
+
 ## 0.8.0 — One-click everything (2026-11-01)
 
 - Double-click launchers (`start.bat`/`install.bat` join the ps1/sh scripts).

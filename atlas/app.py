@@ -209,6 +209,27 @@ def list_models(store: AtlasStore) -> list[dict]:
     return out
 
 
+def describe_model(data: dict) -> str:
+    """One model as plain text an AI (or person) can read in a glance."""
+    from . import models3d as m3d
+    from . import summaries as sm
+    brief = sm.extractive_summary(data)
+    view = m3d.iso_view(data)
+    lines = [f"MODEL {data.get('figure_id', '?')}: {brief['overview']}",
+             f"Source: {data.get('document_ref', '?')} (page {data.get('source_page', 0)})",
+             "ENTITIES:"]
+    for i, (e, b) in enumerate(zip(data.get("entities", []), brief["entities"])):
+        box = e.get("bbox")
+        loc = (f"at {box['x_min'] * 100:.0f},{box['y_min'] * 100:.0f}-"
+               f"{box['x_max'] * 100:.0f},{box['y_max'] * 100:.0f}%" if box else "text-only")
+        lines.append(f"  {i + 1}. {b} [{loc}]")
+    lines.append("PATHWAYS:")
+    lines.extend(f"  {i + 1}. {p}" for i, p in enumerate(brief["pathways"]))
+    lines.append(f"3D layers present: {sorted({p['layer'] for p in view['polygons']}) or 'none'}; "
+                 f"skipped (text-only): {', '.join(view['skipped']) or 'none'}")
+    return "\n".join(lines)
+
+
 def api_contract() -> dict:
     """Versioned machine contract so AI agents can drive Atlas autonomously."""
     return {
@@ -219,7 +240,8 @@ def api_contract() -> dict:
         "endpoints": {
             "GET /api/health": "version, config (redacted), backend info",
             "GET /api/contract": "this contract",
-            "GET /api/models": "list of created models",
+            "GET /api/models": "list of created models (?format=text for a readable digest)",
+            "GET /api/state?figure_id=": "one glance: digest, iso, deck size, stats, artifact URLs",
             "POST /api/upload (multipart file=)": "browser/AI file drop import",
             "POST /api/auto-create {path|document_ref, note?, figure_id?, crop?}":
                 "one drop -> one model: image/PDF/EPUB/TXT/video/URL/YouTube",
@@ -286,7 +308,43 @@ class Handler(BaseHTTPRequestHandler):
         if parsed.path == "/api/corrections":
             return _json(self, {"corrections": self.get_store().load_corrections()})
         if parsed.path == "/api/models":
+            q = urllib.parse.parse_qs(parsed.query)
+            if (q.get("format") or ["json"])[0] == "text":
+                parts = []
+                for m in list_models(self.get_store()):
+                    saved = self.get_store().load_analysis(m["figure_id"])
+                    if saved is not None:
+                        parts.append(describe_model(saved))
+                body = "\n\n---\n\n".join(parts).encode() or b"(no models yet)"
+                self.send_response(200)
+                self.send_header("Content-Type", "text/plain")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
             return _json(self, {"models": list_models(self.get_store())})
+        if parsed.path == "/api/state":
+            q = urllib.parse.parse_qs(parsed.query)
+            fid = (q.get("figure_id") or [""])[0]
+            saved = self.get_store().load_analysis(fid)
+            if saved is None:
+                return _json(self, {"error": f"unknown figure_id {fid!r}"}, 404)
+            from . import flashcards as fc
+            from . import models3d as m3d
+            from . import summaries as sm
+            brief = sm.extractive_summary(saved)
+            return _json(self, {
+                "figure_id": fid,
+                "text_digest": describe_model(saved),
+                "iso": m3d.iso_view(saved),
+                "deck_size": len(fc.build_deck(saved)["cards"]),
+                "stats": brief["stats"],
+                "urls": {
+                    "obj": f"/api/model3d?figure_id={urllib.parse.quote(fid)}&format=obj",
+                    "tsv": f"/api/flashcards/export?figure_id={urllib.parse.quote(fid)}",
+                    "analysis": f"/api/analysis?figure_id={urllib.parse.quote(fid)}",
+                },
+            })
         if parsed.path == "/api/model3d":
             from . import models3d as m3d
             q = urllib.parse.parse_qs(parsed.query)

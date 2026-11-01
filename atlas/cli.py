@@ -123,6 +123,17 @@ def cmd_summary(args) -> int:
     return 0
 
 
+def cmd_agent(args) -> int:
+    """One command proving an AI can drive Atlas: fixture model, summary,
+    deck, learn round, OBJ — all offline, all printed as JSON."""
+    import tempfile
+    from .selftest import run
+    data_dir = args.data if args.data != "data" else tempfile.mkdtemp(prefix="atlas-agent-")
+    report = run(data_dir)
+    print(json.dumps(report, indent=2))
+    return 0 if report["failed"] == 0 else 1
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Atlas headless CLI for AI agents")
     ap.add_argument("--data", default="data")
@@ -158,6 +169,9 @@ def main(argv=None) -> int:
     smry = sub.add_parser("summary", help="print the auto study brief")
     smry.add_argument("figure_id")
     smry.set_defaults(func=cmd_summary)
+    ag = sub.add_parser("agent", help="prove AI autonomy: fixture model end to end")
+    ag.add_argument("--figure-id", default="agent-demo")
+    ag.set_defaults(func=cmd_agent)
     args = ap.parse_args(argv)
     return args.func(args)
 

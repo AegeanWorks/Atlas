@@ -44,6 +44,43 @@ def test_polish_summary_roundtrip():
         {"overview": "o", "entities": ["e"], "pathways": []}) == "Polished prose."
 
 
+def test_selftest_passes_offline(tmp_path):
+    from atlas.selftest import run
+    report = run(str(tmp_path / "selftest-data"))
+    assert report["failed"] == 0, report
+    assert report["passed"] >= 9
+
+
+def test_state_and_text_digest(tmp_path):
+    import urllib.request
+    from http.server import HTTPServer
+    from atlas import app as atlas_app
+    from atlas.config import AtlasConfig
+    from atlas.store import AtlasStore
+
+    AtlasStore(str(tmp_path)).save_analysis("st", {**_analysis(), "figure_id": "st"})
+    atlas_app.Handler.store = None
+    atlas_app.Handler.config = AtlasConfig.from_env(data_dir=str(tmp_path))
+    server = HTTPServer(("127.0.0.1", 0), atlas_app.Handler)
+    port = server.server_address[1]
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        with urllib.request.urlopen(  # noqa: S310
+                f"http://127.0.0.1:{port}/api/state?figure_id=st", timeout=10) as r:
+            state = json.load(r)
+        assert state["deck_size"] > 7 and state["stats"]["entities"] == 7
+        assert "Striatum" in state["text_digest"] and state["urls"]["obj"].endswith("format=obj")
+        with urllib.request.urlopen(  # noqa: S310
+                f"http://127.0.0.1:{port}/api/models?format=text", timeout=10) as r:
+            digest = r.read().decode()
+        assert "MODEL st" in digest and "PATHWAYS" in digest
+    finally:
+        server.shutdown()
+        thread.join(timeout=5)
+        atlas_app.Handler.store = None
+
+
 def test_summary_endpoint_offline_and_keyless(tmp_path):
     from atlas import app as atlas_app
     from atlas.config import AtlasConfig
