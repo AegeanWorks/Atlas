@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.0 — One-click everything (2026-11-01)
+
+- Double-click launchers (`start.bat`/`install.bat` join the ps1/sh scripts).
+- On-figure quizzes: a structure highlights on the canvas, labels hide so names
+  can't leak, answers grade inline with a running score.
+- Auto study pack: offline extractive brief (overview, evidence bullets,
+  pathway chains, stats) with Muse-polished prose when a key is set; CLI
+  `summary` for agents.
+- Iso layer slider peels the 3D stack category by category.
+
 ## 0.7.0 — 3D models + flashcards (2026-11-01)
 
 - 3D from any 2D model: offline isometric stacked canvas view (3D toggle) and

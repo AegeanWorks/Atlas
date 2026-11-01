@@ -124,6 +124,25 @@ class MuseProvider:
             raise ValueError(f"Muse returned non-JSON content: {exc}") from exc
         return coerce_muse_payload(data, document_ref=document_ref, figure_id=figure_id)
 
+    def polish_summary(self, brief: dict) -> str:
+        """Rewrite an extractive study brief as flowing prose (needs key)."""
+        if not self.config.has_api_key and self._live_transport:
+            raise RuntimeError("MODEL_API_KEY/META_API_KEY is not set; refusing live call")
+        lines = [brief.get("overview", ""), *brief.get("entities", []),
+                 *[f"Pathway: {p}" for p in brief.get("pathways", [])]]
+        payload = {
+            "model": self.model,
+            "messages": [
+                {"role": "system", "content":
+                 "Rewrite the study brief below as a clear flowing summary for a student. "
+                 "Keep every named structure and relationship; invent nothing."},
+                {"role": "user", "content": "\n".join(lines)},
+            ],
+            "temperature": 0.3,
+        }
+        response = self.transport(payload)
+        return self._extract_content(response)
+
     @staticmethod
     def _extract_content(response: dict) -> str:
         try:

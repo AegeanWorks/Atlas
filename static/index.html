@@ -32,7 +32,7 @@
     <label>Context note (accompanying text, optional)
       <textarea id="note" rows="2" placeholder="Paste the figure caption or paragraph here"></textarea>
     </label>
-    <div id="provenance" class="mono"></div>
+    <div id="provenance" class="mono">Drop a file above, paste a link, or press “Load basal-ganglia demo” — no setup needed.</div>
     <div id="dropzone" class="drop">Drop anything here — PDF, video, image, book (EPUB), text — and a model is created</div>
     <div class="row">
       <input id="link-input" placeholder="…or paste an article / YouTube link">
@@ -48,7 +48,9 @@
           <button id="zoom-out">−</button>
           <button id="reset-view">Reset</button>
           <button id="toggle-3d">3D</button>
+          <label id="layer-wrap" style="display:none">Layer <input id="layer" type="range" min="0" max="8" value="8"></label>
           <a id="download-obj" href="#">OBJ ↓</a>
+          <button id="btn-quiz">Quiz on figure</button>
           <label><input type="checkbox" id="toggle-labels" checked> Labels</label>
           <label><input type="checkbox" id="toggle-masks" checked> Masks/boxes</label>
         </div>
@@ -75,10 +77,19 @@
         <div id="detail" class="mono">Select a structure on the canvas or in the graph.</div>
       </div>
     </div>
+    <div id="quiz-box" class="mono"></div>
   </section>
 
   <section class="panel">
-    <h2>3 · Learn — flashcards</h2>
+    <h2>3 · Study pack — auto summary</h2>
+    <div class="row">
+      <button id="btn-summary">Generate study pack</button>
+    </div>
+    <div id="summary" class="mono"></div>
+  </section>
+
+  <section class="panel">
+    <h2>4 · Learn — flashcards</h2>
     <div class="row">
       <button id="btn-deck">Build deck</button>
       <a id="anki-link" href="#">Anki TSV ↓</a>
@@ -96,7 +107,7 @@
   </section>
 
   <section class="panel">
-    <h2>4 · Learn — spatial recall</h2>
+    <h2>5 · Learn — spatial recall</h2>
     <div class="row">
       <select id="learn-mode">
         <option value="spatial-recall">Spatial recall</option>

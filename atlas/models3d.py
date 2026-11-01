@@ -51,6 +51,7 @@ def iso_view(analysis: dict, depth: float = 0.12) -> dict:
         top = [iso_project(x, y, z + depth) for x, y in corners]
         polygons.append({"id": e["id"], "name": e.get("name", e["id"]),
                          "category": e.get("category", "other"),
+                         "layer": layer_of(e.get("category", "other")),
                          "top": [[round(px, 4), round(py, 4)] for px, py in top],
                          "base": [[round(px, 4), round(py, 4)] for px, py in base]})
     polygons.sort(key=lambda p: layer_of(p["category"]))

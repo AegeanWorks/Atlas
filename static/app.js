@@ -41,6 +41,9 @@ function renderAll() {
 function resetModelView() {
   state.iso = false; state.isoData = null;
   $("toggle-3d").textContent = "3D";
+  $("layer-wrap").style.display = "none";
+  quiz = null; $("quiz-box").innerHTML = "";
+  $("toggle-labels").checked = true;
   deck = { cards: [], i: 0, know: 0, seen: 0 };
   showCard();
 }
@@ -50,6 +53,16 @@ function toPct(b) { return { x: b.x_min * 100, y: b.y_min * 100, w: (b.x_max - b
 function renderOverlay() {
   const svg = $("overlay"); svg.innerHTML = "";
   if (state.iso && state.isoData) return renderIso(svg);
+  if (quiz && quiz.challenge && quiz.challenge.highlight_bbox) {
+    // Quiz mode: exactly one highlighted region, no labels, no other boxes.
+    svg.setAttribute("viewBox", "0 0 100 100");
+    const img = $("figure");
+    svg.style.width = img.clientWidth + "px"; svg.style.height = img.clientHeight + "px";
+    const p = toPct(quiz.challenge.highlight_bbox);
+    svg.appendChild(svgEl("rect", { x: p.x, y: p.y, width: p.w, height: p.h,
+      fill: "rgba(34,211,238,.28)", stroke: "#22d3ee", "stroke-width": .8 }));
+    return;
+  }
   const img = $("figure");
   if (!state.analysis || !img.naturalWidth) return;
   const showLabels = $("toggle-labels").checked, showBoxes = $("toggle-masks").checked;
@@ -88,8 +101,11 @@ function renderIso(svg) {
   svg.setAttribute("viewBox", "-1 -1.1 2 2.3");
   svg.style.width = $("figure").clientWidth + "px";
   svg.style.height = $("figure").clientHeight + "px";
+  $("layer-wrap").style.display = "inline";
+  const maxLayer = Number($("layer").value);
   for (const p of state.isoData.polygons) {
     if (state.category && p.category !== state.category) continue;
+    if (p.layer > maxLayer) continue;
     const base = svgEl("polygon", { points: p.base.map((q) => q.join(",")).join(" "),
       fill: "rgba(139,92,246,.12)", stroke: "#3b548c", "stroke-width": .01 });
     const top = svgEl("polygon", { points: p.top.map((q) => q.join(",")).join(" "),
@@ -108,6 +124,7 @@ function renderIso(svg) {
 $("toggle-3d").onclick = async () => {
   state.iso = !state.iso;
   $("toggle-3d").textContent = state.iso ? "2D" : "3D";
+  $("layer-wrap").style.display = state.iso ? "inline" : "none";
   if (state.iso && state.analysis && !state.isoData) {
     const fid = state.figureId || "workspace-figure";
     try { state.isoData = await api(`/api/model3d?figure_id=${encodeURIComponent(fid)}`); }
@@ -334,6 +351,71 @@ $("btn-link").onclick = async () => {
     showModel(auto, "");
     dz.textContent = `Model created from link: ${auto.analysis.entities.length} entities, ${auto.analysis.relationships.length} relationships (graph + learning ready).`;
   } catch (err) { dz.textContent = `Link failed: ${err.message}`; }
+};
+
+let quiz = null; // active on-figure quiz {challenge, score:[got,total]}
+$("btn-quiz").onclick = async () => {
+  if (!state.analysis) return alert("Analyze or load a model first.");
+  if (!state.analysis.entities.some((e) => e.bbox)) {
+    $("quiz-box").textContent = "Quiz needs visually located entities — analyze a figure first.";
+    return;
+  }
+  await nextQuiz();
+};
+async function nextQuiz() {
+  const c = await api("/api/learn", { analysis: state.analysis,
+    mode: "spatial-recall", seed: Date.now() % 100000 }).catch((e) => alert(e.message));
+  if (!c) return;
+  quiz = { challenge: c, score: quiz ? quiz.score : [0, 0] };
+  state._labels = $("toggle-labels").checked;
+  $("toggle-labels").checked = false; // names must not leak the answer
+  renderQuiz(); renderOverlay();
+}
+function renderQuiz() {
+  const box = $("quiz-box"); box.innerHTML = "";
+  if (!quiz || !quiz.challenge) return;
+  const c = quiz.challenge;
+  const p = document.createElement("div");
+  p.textContent = `On-figure quiz — ${c.prompt} (score ${quiz.score[0]}/${quiz.score[1]})`;
+  box.appendChild(p);
+  for (const o of c.options) {
+    const b = document.createElement("button"); b.className = "opt"; b.textContent = o.name;
+    b.onclick = async () => {
+      const g = await api("/api/learn/grade", { challenge: c, answer: o.id });
+      quiz.score[1]++; if (g.correct) quiz.score[0]++;
+      const d = document.createElement("div"); d.className = "mono";
+      const right = c.options.find((x) => x.id === c.answer_id);
+      d.textContent = g.correct ? "correct ✓" : `not quite — answer: ${right ? right.name : c.answer_id}`;
+      box.appendChild(d);
+      if (g.correct) setTimeout(nextQuiz, 700);
+      else renderQuiz();
+    };
+    box.appendChild(b);
+  }
+  const stop = document.createElement("button"); stop.textContent = "End quiz";
+  stop.onclick = () => {
+    quiz = null;
+    $("toggle-labels").checked = state._labels !== false;
+    box.innerHTML = ""; renderOverlay();
+  };
+  box.appendChild(stop);
+}
+
+$("layer").onchange = renderOverlay;
+
+$("btn-summary").onclick = async () => {
+  if (!state.analysis) return alert("Analyze or load a model first.");
+  const box = $("summary"); box.textContent = "Generating study pack…";
+  try {
+    const s = await api("/api/summary", { analysis: state.analysis });
+    const ex = s.extractive;
+    box.textContent =
+      ex.title + "\n" + ex.overview + "\n\n" +
+      ex.entities.map((e) => "· " + e).join("\n") + "\n\n" +
+      (ex.pathways.length ? "Pathways:\n" + ex.pathways.map((p) => "→ " + p).join("\n") + "\n\n" : "") +
+      (s.polished ? "POLISHED SUMMARY:\n" + s.polished
+                  : "(offline extractive brief — add MODEL_API_KEY for a polished summary)");
+  } catch (err) { box.textContent = `Summary failed: ${err.message}`; }
 };
 
 $("btn-learn").onclick = async () => {

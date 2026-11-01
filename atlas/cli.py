@@ -113,6 +113,16 @@ def cmd_obj(args) -> int:
     return 0
 
 
+def cmd_summary(args) -> int:
+    from . import summaries as sm
+    data = AtlasStore(args.data).load_analysis(args.figure_id)
+    if data is None:
+        print(json.dumps({"ok": False, "error": f"unknown figure_id {args.figure_id!r}"}))
+        return 1
+    print(json.dumps(sm.extractive_summary(data), indent=2))
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Atlas headless CLI for AI agents")
     ap.add_argument("--data", default="data")
@@ -145,6 +155,9 @@ def main(argv=None) -> int:
     ob.add_argument("figure_id")
     ob.add_argument("--out", default="")
     ob.set_defaults(func=cmd_obj)
+    smry = sub.add_parser("summary", help="print the auto study brief")
+    smry.add_argument("figure_id")
+    smry.set_defaults(func=cmd_summary)
     args = ap.parse_args(argv)
     return args.func(args)
 

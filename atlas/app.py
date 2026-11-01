@@ -453,6 +453,22 @@ class Handler(BaseHTTPRequestHandler):
             if route == "/api/flashcards":
                 from . import flashcards as fc
                 return _json(self, fc.build_deck(body["analysis"]))
+            if route == "/api/summary":
+                from . import summaries as sm
+                saved = store.load_analysis(body.get("figure_id", ""))
+                if saved is None and not body.get("analysis"):
+                    raise ValueError("summary needs figure_id or inline analysis")
+                data = body.get("analysis") or saved
+                brief = sm.extractive_summary(data)
+                polished = None
+                if self.config.has_api_key:
+                    try:
+                        polished = MuseProvider(self.config).polish_summary(brief)
+                    except Exception as exc:
+                        polished = f"[polish unavailable: {type(exc).__name__}: {exc}]"
+                return _json(self, {"extractive": brief, "polished": polished,
+                                    "polished_model": self.config.muse_model
+                                    if polished and not polished.startswith("[") else ""})
             if route == "/api/upload":
                 ctype = self.headers.get("Content-Type", "")
                 if not raw or len(raw) > MAX_UPLOAD_BYTES:

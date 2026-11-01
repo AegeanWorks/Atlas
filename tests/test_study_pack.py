@@ -1,0 +1,81 @@
+"""Auto summaries + study pack (0.8.0 slice)."""
+import json
+import threading
+import urllib.request
+from http.server import HTTPServer
+
+from atlas import summaries as sm
+from atlas.schema import VisualAnalysis
+from demo.basal_ganglia_fixture import FIXTURE_ANALYSIS
+
+
+def _analysis():
+    return VisualAnalysis.from_dict(FIXTURE_ANALYSIS).to_dict()
+
+
+def test_extractive_summary_covers_model():
+    brief = sm.extractive_summary(_analysis())
+    assert brief["stats"]["entities"] == 7
+    assert brief["stats"]["located"] == 7
+    assert any("striatum" in b.lower() for b in brief["entities"])
+    assert any("evidence" in b.lower() or "fixture" in b.lower() for b in brief["entities"])
+    # direct + indirect pathways surface as chains
+    joined = " | ".join(brief["pathways"])
+    assert "Striatum" in joined and "GPe" in joined
+
+
+def test_pathway_chains_terminate_on_cycles():
+    chains = sm.pathway_chains(_analysis())
+    assert chains
+    for chain in chains:
+        assert len(chain) == len(set(chain))  # no revisits despite cortex cycle
+
+
+def test_polish_summary_roundtrip():
+    from atlas.config import AtlasConfig
+    from atlas.muse_provider import MuseProvider
+
+    def fake_transport(payload):
+        assert "Rewrite the study brief" in payload["messages"][0]["content"]
+        return {"choices": [{"message": {"content": "Polished prose."}}]}
+
+    cfg = AtlasConfig(api_key="k", data_dir=".")
+    assert MuseProvider(cfg, transport=fake_transport).polish_summary(
+        {"overview": "o", "entities": ["e"], "pathways": []}) == "Polished prose."
+
+
+def test_summary_endpoint_offline_and_keyless(tmp_path):
+    from atlas import app as atlas_app
+    from atlas.config import AtlasConfig
+    from atlas.store import AtlasStore
+
+    AtlasStore(str(tmp_path)).save_analysis("s1", _analysis())
+    atlas_app.Handler.store = None
+    atlas_app.Handler.config = AtlasConfig.from_env(data_dir=str(tmp_path))
+    server = HTTPServer(("127.0.0.1", 0), atlas_app.Handler)
+    port = server.server_address[1]
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        req = urllib.request.Request(
+            f"http://127.0.0.1:{port}/api/summary",
+            data=json.dumps({"figure_id": "s1"}).encode(),
+            headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=10) as r:  # noqa: S310
+            body = json.load(r)
+        assert body["extractive"]["stats"]["entities"] == 7
+        # no key in this environment: honest extractive-only flag
+        assert body["polished"] is None or body["polished"].startswith("[polish unavailable")
+        bad = urllib.request.Request(
+            f"http://127.0.0.1:{port}/api/summary",
+            data=json.dumps({"figure_id": "missing"}).encode(),
+            headers={"Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(bad, timeout=10):  # noqa: S310
+                raise AssertionError("expected 400")
+        except urllib.error.HTTPError as e:
+            assert e.code == 400
+    finally:
+        server.shutdown()
+        thread.join(timeout=5)
+        atlas_app.Handler.store = None
