@@ -33,12 +33,23 @@ function svgEl(tag, attrs) {
 
 function renderAll() {
   renderFilter(); renderOverlay(); renderList(); renderGraph();
+  const fid = state.figureId || "workspace-figure";
+  $("download-obj").href = `/api/model3d?figure_id=${encodeURIComponent(fid)}&format=obj`;
+  $("anki-link").href = `/api/flashcards/export?figure_id=${encodeURIComponent(fid)}`;
+}
+
+function resetModelView() {
+  state.iso = false; state.isoData = null;
+  $("toggle-3d").textContent = "3D";
+  deck = { cards: [], i: 0, know: 0, seen: 0 };
+  showCard();
 }
 
 function toPct(b) { return { x: b.x_min * 100, y: b.y_min * 100, w: (b.x_max - b.x_min) * 100, h: (b.y_max - b.y_min) * 100 }; }
 
 function renderOverlay() {
   const svg = $("overlay"); svg.innerHTML = "";
+  if (state.iso && state.isoData) return renderIso(svg);
   const img = $("figure");
   if (!state.analysis || !img.naturalWidth) return;
   const showLabels = $("toggle-labels").checked, showBoxes = $("toggle-masks").checked;
@@ -71,6 +82,61 @@ function renderOverlay() {
     svg.appendChild(g);
   }
 }
+
+function renderIso(svg) {
+  // 2.5D stacked view: layer order = category depth, top faces face the reader.
+  svg.setAttribute("viewBox", "-1 -1.1 2 2.3");
+  svg.style.width = $("figure").clientWidth + "px";
+  svg.style.height = $("figure").clientHeight + "px";
+  for (const p of state.isoData.polygons) {
+    if (state.category && p.category !== state.category) continue;
+    const base = svgEl("polygon", { points: p.base.map((q) => q.join(",")).join(" "),
+      fill: "rgba(139,92,246,.12)", stroke: "#3b548c", "stroke-width": .01 });
+    const top = svgEl("polygon", { points: p.top.map((q) => q.join(",")).join(" "),
+      fill: p.id === state.selected ? "rgba(34,211,238,.45)" : "rgba(34,211,238,.20)",
+      stroke: p.id === state.selected ? "#22d3ee" : "#8b5cf6", "stroke-width": .015,
+      class: "hit" });
+    top.addEventListener("click", () => select(p.id));
+    const c = p.top.reduce((a, q) => [a[0] + q[0] / 4, a[1] + q[1] / 4], [0, 0]);
+    const t = svgEl("text", { x: c[0], y: c[1], "font-size": .07, fill: "#dbe7ff", "text-anchor": "middle" });
+    t.textContent = p.name;
+    t.addEventListener("click", () => select(p.id));
+    svg.appendChild(base); svg.appendChild(top); svg.appendChild(t);
+  }
+}
+
+$("toggle-3d").onclick = async () => {
+  state.iso = !state.iso;
+  $("toggle-3d").textContent = state.iso ? "2D" : "3D";
+  if (state.iso && state.analysis && !state.isoData) {
+    const fid = state.figureId || "workspace-figure";
+    try { state.isoData = await api(`/api/model3d?figure_id=${encodeURIComponent(fid)}`); }
+    catch (e) { state.isoData = null; state.iso = false; $("toggle-3d").textContent = "3D"; }
+  }
+  renderAll();
+};
+
+let deck = { cards: [], i: 0, know: 0, seen: 0 };
+function showCard() {
+  const f = $("card-front"), b = $("card-back");
+  if (!deck.cards.length) { f.textContent = "Build a deck first."; b.classList.add("hidden"); return; }
+  const c = deck.cards[deck.i % deck.cards.length];
+  f.textContent = `[${c.kind}] ${c.front.text}`;
+  b.innerHTML = "";
+  b.textContent = c.back.text + (c.back.detail ? ` — ${c.back.detail}` : "");
+  b.classList.add("hidden");
+  $("deck-score").textContent = `card ${deck.i % deck.cards.length + 1}/${deck.cards.length} · known ${deck.know}/${deck.seen}`;
+}
+$("btn-deck").onclick = async () => {
+  if (!state.analysis) return alert("Analyze or load a model first.");
+  const d = await api("/api/flashcards", { analysis: state.analysis }).catch((e) => alert(e.message));
+  if (!d) return;
+  deck = { cards: d.cards, i: 0, know: 0, seen: 0 };
+  showCard();
+};
+$("btn-flip").onclick = () => $("card-back").classList.toggle("hidden");
+$("btn-know").onclick = () => { if (!deck.cards.length) return; deck.know++; deck.seen++; deck.i++; showCard(); };
+$("btn-dunno").onclick = () => { if (!deck.cards.length) return; deck.seen++; deck.i++; showCard(); };
 
 function renderFilter() {
   const sel = $("category-filter");
@@ -197,7 +263,7 @@ $("btn-analyze").onclick = async () => {
   const src = state.figureFile || $("doc-path").value.trim();
   const r = await api("/api/analyze", { image_path: src, note: $("note").value,
     figure_id: "workspace-figure" }).catch((e) => alert(e.message));
-  if (r) { state.analysis = r.analysis; state.selected = null; state.figureId = "workspace-figure"; renderAll(); }
+  if (r) { state.analysis = r.analysis; state.selected = null; state.figureId = "workspace-figure"; resetModelView(); renderAll(); }
 };
 $("btn-demo").onclick = async () => {
   const r = await fetch("/static/basal_ganglia_sample.json").then((x) => x.json()).catch(() => null);
@@ -207,6 +273,7 @@ $("btn-demo").onclick = async () => {
   state.figureFile = "";
   state.figureId = "demo";
   setFigure("", r._demo_image || "/static/basal_ganglia_demo.svg");
+  resetModelView();
   renderAll();
 };
 function setFigure(filePath, displayUrl) {
@@ -229,6 +296,7 @@ function showModel(auto, stagedPath) {
     const img = $("figure"); img.removeAttribute("src"); img.style.width = "100%";
     $("overlay").innerHTML = "";
   }
+  resetModelView();
   renderAll();
 }
 

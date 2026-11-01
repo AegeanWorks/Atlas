@@ -1,4 +1,4 @@
-# Atlas 0.6.1
+# Atlas 0.7.0
 
 [![AIKit Integrated](https://img.shields.io/badge/AIKit-integrated-6f42c1)](https://github.com/AegeanWorks/AIKit)
 
@@ -49,7 +49,8 @@ python demo/basal_ganglia_demo.py --fixture-only
 4. **Segment** with SAM 3.1 (`sam-3.1`): short noun phrase + original crop → mask, else honest `bbox-fallback` overlay.
 5. **Explore**: canvas and knowledge graph render the SAME analysis object; selecting either side highlights the other. Filter by entity category; drag-to-pan; zoom.
 6. **Segment**: select a structure → "Segment selected (SAM)" cuts a mask with SAM 3.1 and attaches it to the entity (honest `bbox-fallback` when no mask decodes).
-7. **Learn**: spatial recall, pathway tracing, visual identification, relationship recall.
+7. **Learn**: spatial recall, pathway tracing, visual identification, relationship recall — plus flashcard review (flip + score) and Anki TSV export.
+8. **3D**: toggle the isometric stacked view; download the model as OBJ for 3D tools and printing.
 
 ## Independence
 

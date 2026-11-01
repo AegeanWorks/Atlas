@@ -43,13 +43,15 @@
   <section class="panel wide">
     <h2>2 · Explore — canvas &amp; knowledge graph share one model</h2>
     <div class="canvas-wrap">
-      <div class="canvas-toolbar">
-        <button id="zoom-in">+</button>
-        <button id="zoom-out">−</button>
-        <button id="reset-view">Reset</button>
-        <label><input type="checkbox" id="toggle-labels" checked> Labels</label>
-        <label><input type="checkbox" id="toggle-masks" checked> Masks/boxes</label>
-      </div>
+        <div class="canvas-toolbar">
+          <button id="zoom-in">+</button>
+          <button id="zoom-out">−</button>
+          <button id="reset-view">Reset</button>
+          <button id="toggle-3d">3D</button>
+          <a id="download-obj" href="#">OBJ ↓</a>
+          <label><input type="checkbox" id="toggle-labels" checked> Labels</label>
+          <label><input type="checkbox" id="toggle-masks" checked> Masks/boxes</label>
+        </div>
       <div id="viewport">
         <img id="figure" alt="Selected figure appears here">
         <svg id="overlay"></svg>
@@ -76,7 +78,25 @@
   </section>
 
   <section class="panel">
-    <h2>3 · Learn — spatial recall</h2>
+    <h2>3 · Learn — flashcards</h2>
+    <div class="row">
+      <button id="btn-deck">Build deck</button>
+      <a id="anki-link" href="#">Anki TSV ↓</a>
+    </div>
+    <div id="card">
+      <div id="card-front" class="card-face"></div>
+      <div id="card-back" class="card-face hidden"></div>
+    </div>
+    <div class="row">
+      <button id="btn-flip">Flip</button>
+      <button id="btn-know">Know ✓</button>
+      <button id="btn-dunno">Still learning</button>
+    </div>
+    <div id="deck-score" class="mono"></div>
+  </section>
+
+  <section class="panel">
+    <h2>4 · Learn — spatial recall</h2>
     <div class="row">
       <select id="learn-mode">
         <option value="spatial-recall">Spatial recall</option>

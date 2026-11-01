@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.0 — 3D models + flashcards (2026-11-01)
+
+- 3D from any 2D model: offline isometric stacked canvas view (3D toggle) and
+  Wavefront OBJ export (one named cuboid per located entity, text-only entities
+  listed, never faked into geometry) — printable tactile study models.
+- Flashcards from the same model: highlight/description/relation cards, in-app
+  review with flip + self-graded score, Anki TSV export, CLI `deck`/`obj`.
+
 ## 0.6.1 — Text-model honesty pass (2026-11-01)
 
 - Text models clear the figure canvas instead of showing a broken image or a

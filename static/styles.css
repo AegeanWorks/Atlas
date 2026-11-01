@@ -34,6 +34,10 @@ button:hover { filter:brightness(1.15); }
 #graph circle.active { fill:var(--accent); }
 #graph line { stroke:#3b548c; }
 #challenge button.opt { display:block; width:100%; margin:4px 0; background:#1b2b52; }
+.canvas-toolbar a, .panel a { color:var(--accent); font-size:13px; }
+#card { border:1px solid var(--line); border-radius:8px; min-height:96px; padding:10px; margin:8px 0; background:#0b1530; }
+.card-face.hidden { display:none; }
+#card-back { color:var(--accent); margin-top:6px; border-top:1px dashed var(--line); padding-top:6px; }
 .drop { margin-top:8px; border:2px dashed var(--line); border-radius:8px; padding:18px; text-align:center; opacity:.85; }
 .drop.over { border-color:var(--accent); opacity:1; background:#0b1530; }
 footer { padding:10px 20px; opacity:.7; font-size:12px; }

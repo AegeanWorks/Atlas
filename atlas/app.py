@@ -228,6 +228,9 @@ def api_contract() -> dict:
             "POST /api/segment {image_path, prompt, entity_id, bbox?}": "SAM 3.1 mask",
             "POST /api/analysis/attach-mask": "attach a mask to an entity",
             "GET /api/analysis?figure_id=": "read one model",
+            "GET /api/model3d?figure_id=&format=json|obj": "isometric view or OBJ 3D export",
+            "POST /api/flashcards {analysis}": "flashcard deck",
+            "GET /api/flashcards/export?figure_id=": "Anki TSV download",
             "POST /api/learn {analysis, mode, seed}": "challenge",
             "POST /api/learn/grade {challenge, answer}": "grade",
         },
@@ -284,6 +287,45 @@ class Handler(BaseHTTPRequestHandler):
             return _json(self, {"corrections": self.get_store().load_corrections()})
         if parsed.path == "/api/models":
             return _json(self, {"models": list_models(self.get_store())})
+        if parsed.path == "/api/model3d":
+            from . import models3d as m3d
+            q = urllib.parse.parse_qs(parsed.query)
+            fid = (q.get("figure_id") or [""])[0]
+            saved = self.get_store().load_analysis(fid)
+            if saved is None:
+                return _json(self, {"error": f"unknown figure_id {fid!r}"}, 404)
+            if (q.get("format") or ["json"])[0] == "obj":
+                try:
+                    body = m3d.export_obj(saved).encode()
+                except ValueError as exc:
+                    return _json(self, {"error": str(exc)}, 400)
+                self.send_response(200)
+                self.send_header("Content-Type", "text/plain")
+                self.send_header("Content-Disposition",
+                                 f'attachment; filename="{fid}.obj"')
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
+            return _json(self, m3d.iso_view(saved))
+        if parsed.path == "/api/flashcards/export":
+            from . import flashcards as fc
+            q = urllib.parse.parse_qs(parsed.query)
+            fid = (q.get("figure_id") or [""])[0]
+            saved = self.get_store().load_analysis(fid)
+            if saved is None:
+                return _json(self, {"error": f"unknown figure_id {fid!r}"}, 404)
+            try:
+                body = fc.to_anki_tsv(fc.build_deck(saved)).encode("utf-8")
+            except ValueError as exc:
+                return _json(self, {"error": str(exc)}, 400)
+            self.send_response(200)
+            self.send_header("Content-Type", "text/tab-separated-values")
+            self.send_header("Content-Disposition", f'attachment; filename="{fid}.tsv"')
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
         if parsed.path == "/api/contract":
             return _json(self, api_contract())
         return _json(self, {"error": "not found"}, 404)
@@ -408,6 +450,9 @@ class Handler(BaseHTTPRequestHandler):
                 return _json(self, fn(analysis, seed))
             if route == "/api/learn/grade":
                 return _json(self, learn.grade(body["challenge"], body["answer"]))
+            if route == "/api/flashcards":
+                from . import flashcards as fc
+                return _json(self, fc.build_deck(body["analysis"]))
             if route == "/api/upload":
                 ctype = self.headers.get("Content-Type", "")
                 if not raw or len(raw) > MAX_UPLOAD_BYTES:

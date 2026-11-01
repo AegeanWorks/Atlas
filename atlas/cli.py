@@ -79,6 +79,40 @@ def cmd_learn(args) -> int:
     return 0
 
 
+def cmd_deck(args) -> int:
+    from atlas import flashcards as fc
+    data = AtlasStore(args.data).load_analysis(args.figure_id)
+    if data is None:
+        print(json.dumps({"ok": False, "error": f"unknown figure_id {args.figure_id!r}"}))
+        return 1
+    deck = fc.build_deck(data)
+    if args.anki:
+        with open(args.anki, "w", encoding="utf-8") as fh:
+            fh.write(fc.to_anki_tsv(deck))
+        print(json.dumps({"ok": True, "cards": len(deck["cards"]), "anki": args.anki}))
+    else:
+        print(json.dumps(deck, indent=2))
+    return 0
+
+
+def cmd_obj(args) -> int:
+    from atlas import models3d as m3d
+    data = AtlasStore(args.data).load_analysis(args.figure_id)
+    if data is None:
+        print(json.dumps({"ok": False, "error": f"unknown figure_id {args.figure_id!r}"}))
+        return 1
+    try:
+        text = m3d.export_obj(data)
+    except ValueError as exc:
+        print(json.dumps({"ok": False, "error": str(exc)}))
+        return 1
+    out = args.out or f"{args.figure_id}.obj"
+    with open(out, "w", encoding="utf-8") as fh:
+        fh.write(text)
+    print(json.dumps({"ok": True, "obj": out}))
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Atlas headless CLI for AI agents")
     ap.add_argument("--data", default="data")
@@ -103,6 +137,14 @@ def main(argv=None) -> int:
     lrn.set_defaults(func=cmd_learn)
     ct = sub.add_parser("contract", help="print the machine contract")
     ct.set_defaults(func=lambda a: (print(json.dumps(api_contract(), indent=2)), 0)[1])
+    dk = sub.add_parser("deck", help="build flashcards (optionally export Anki TSV)")
+    dk.add_argument("figure_id")
+    dk.add_argument("--anki", default="")
+    dk.set_defaults(func=cmd_deck)
+    ob = sub.add_parser("obj", help="export the model as Wavefront OBJ 3D")
+    ob.add_argument("figure_id")
+    ob.add_argument("--out", default="")
+    ob.set_defaults(func=cmd_obj)
     args = ap.parse_args(argv)
     return args.func(args)
 

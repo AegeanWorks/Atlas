@@ -28,6 +28,9 @@ Reading models never needs a key. Creating/segmenting does.
 7. `POST /api/learn {"analysis", "mode", "seed"}` + `/api/learn/grade` →
    spatial-recall, pathway-tracing, visual-identification, relationship-recall.
    CLI: `python -m atlas.cli learn <id> spatial-recall --answer <id>`.
+8. 3D + flashcards: `GET /api/model3d?figure_id=<id>&format=obj` (printable OBJ),
+   `POST /api/flashcards` (deck), `GET /api/flashcards/export?figure_id=<id>`
+   (Anki TSV). CLI: `deck <id> [--anki out.tsv]`, `obj <id> [--out out.obj]`.
 
 ## Rules agents must obey
 
