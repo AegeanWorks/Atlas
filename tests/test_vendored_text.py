@@ -52,7 +52,7 @@ def test_pdf_empty_raises_honestly(tmp_path):
     with open(p, "wb") as fh:
         w.write(fh)
     assert doc_text.pdf_page_count(p) == 1
-    with pytest.raises(Exception, match="No text could be extracted"):
+    with pytest.raises(Exception, match="No text on any of 1 page"):
         doc_text.extract_text_from_pdf(p)
 
 

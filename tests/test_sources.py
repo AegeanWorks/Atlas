@@ -159,6 +159,107 @@ def test_auto_create_from_text_and_image(tmp_path):
     assert {r["figure_id"], r2["figure_id"]} <= ids
 
 
+def test_scanned_pdf_error_names_pages(tmp_path):
+    pytest.importorskip("pypdf")
+    from pypdf import PdfWriter
+    p = str(tmp_path / "scan.pdf")
+    w = PdfWriter()
+    for _ in range(3):
+        w.add_blank_page(200, 200)
+    with open(p, "wb") as fh:
+        w.write(fh)
+    with pytest.raises(Exception, match="3 page"):
+        src.ingest_any(p)
+
+
+def test_pdf_render_needs_fitz_or_renders(tmp_path, monkeypatch):
+    import sys
+    import types
+    from PIL import Image
+    if "fitz" in sys.modules:
+        monkeypatch.delitem(sys.modules, "fitz")
+    with pytest.raises(ImportError, match="PyMuPDF"):
+        src.render_pdf_page(str(tmp_path / "x.pdf"), 1, str(tmp_path))
+
+    class FakePix:
+        def save(self, out):
+            Image.new("RGB", (60, 80), (1, 2, 3)).save(out)
+
+    class FakePage:
+        def get_pixmap(self, dpi=None):
+            return FakePix()
+
+    class FakeDoc:
+        page_count = 5
+        def __enter__(self):
+            return self
+        def __exit__(self, *a):
+            return False
+        def __getitem__(self, i):
+            assert i == 1
+            return FakePage()
+
+    stub = types.ModuleType("fitz")
+    stub.open = lambda path: FakeDoc()
+    monkeypatch.setitem(sys.modules, "fitz", stub)
+    pdf = tmp_path / "real.pdf"
+    pdf.write_bytes(b"%PDF-1.4 fake")
+    out = src.render_pdf_page(str(pdf), 2, str(tmp_path / "figs"))
+    assert out.endswith("page_002_150dpi.png")
+    assert Image.open(out).size == (60, 80)
+    with pytest.raises(ValueError, match="out of range"):
+        src.render_pdf_page(str(pdf), 9, str(tmp_path / "figs"))
+
+
+def test_cli_batch_reports_mixed_folder(tmp_path, capsys):
+    from atlas.cli import main
+    (tmp_path / "a.txt").write_text("hello world", encoding="utf-8")
+    (tmp_path / "b.xyz").write_text("junk", encoding="utf-8")
+    assert main(["--data", str(tmp_path / "data"), "batch", str(tmp_path)]) == 0
+    import json
+    report = json.loads(capsys.readouterr().out)
+    assert report["files"] >= 2 and report["imported"] >= 1
+    assert any("error" in r for r in report["rows"])
+
+
+def test_import_reports_pdf_pages(tmp_path):
+    import json
+    import threading
+    import urllib.request
+    from http.server import HTTPServer
+    from atlas import app as atlas_app
+    from atlas.config import AtlasConfig
+
+    pytest.importorskip("pypdf")
+    from pypdf import PdfWriter
+    pdf = str(tmp_path / "p.pdf")
+    w = PdfWriter()
+    w.add_blank_page(72, 72)
+    with open(pdf, "wb") as fh:
+        w.write(fh)
+    atlas_app.Handler.store = None
+    atlas_app.Handler.config = AtlasConfig.from_env(data_dir=str(tmp_path / "data"))
+    server = HTTPServer(("127.0.0.1", 0), atlas_app.Handler)
+    port = server.server_address[1]
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        req = urllib.request.Request(
+            f"http://127.0.0.1:{port}/api/import",
+            data=json.dumps({"path": pdf}).encode(),
+            headers={"Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=10) as r:  # noqa: S310
+                body = json.load(r)
+        except urllib.error.HTTPError as e:
+            body = json.load(e)
+        assert body.get("pages") == 1 or "text_backend" in body
+    finally:
+        server.shutdown()
+        thread.join(timeout=5)
+        atlas_app.Handler.store = None
+
+
 def test_merge_frames_namespaces_ids():
     from atlas.app import _merge_frame_analyses
     from atlas.schema import VisualAnalysis, VisualEntity, VisualRelationship

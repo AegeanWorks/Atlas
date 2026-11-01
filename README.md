@@ -1,4 +1,4 @@
-# Atlas 0.10.0
+# Atlas 0.11.0
 
 [![AIKit Integrated](https://img.shields.io/badge/AIKit-integrated-6f42c1)](https://github.com/AegeanWorks/AIKit)
 
@@ -23,6 +23,11 @@ powershell -ExecutionPolicy Bypass -File install.ps1
 
 Manual: `pip install -r requirements.txt`, then
 `MODEL_API_KEY=... python -m atlas.app --port 8765`.
+
+Bulk folders: `python -m atlas.cli batch <folder>` imports everything with an
+offline report (proven on 81 real medical PDFs: 78 imported, 3 scanned-image
+PDFs honestly refused with page counts). PDF pages render to figures with
+optional `pip install PyMuPDF`; import reports page counts.
 
 Drop anything on the drop zone — PDF, video, image, book (EPUB), text — or
 paste an article/YouTube link: Atlas ingests it and creates a proper learning

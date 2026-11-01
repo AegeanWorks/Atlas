@@ -176,6 +176,29 @@ def epub_text(path: str) -> dict:
 VIDEO_EXTENSIONS = {".mp4", ".webm", ".mov", ".mkv", ".avi", ".m4v"}
 
 
+def render_pdf_page(path: str, page: int, outdir: str, dpi: int = 150) -> str:
+    """PDF page → PNG still (needs optional PyMuPDF: pip install PyMuPDF).
+
+    Medical PDFs are figure-heavy; this is the bridge from a text-only PDF to
+    figure selection and visual analysis. Page numbers are 1-based for people.
+    """
+    try:
+        import fitz  # type: ignore  # optional: rasterizes without system tools
+    except ImportError as exc:
+        raise ImportError("PDF page rendering needs PyMuPDF (pip install PyMuPDF); "
+                          "the PDF text path works without it.") from exc
+    if not os.path.isfile(path):
+        raise FileNotFoundError(path)
+    os.makedirs(outdir, exist_ok=True)
+    with fitz.open(path) as doc:
+        if not 1 <= page <= doc.page_count:
+            raise ValueError(f"page {page} out of range (1..{doc.page_count})")
+        pix = doc[page - 1].get_pixmap(dpi=dpi)
+        out = os.path.join(outdir, f"page_{page:03d}_{dpi}dpi.png")
+        pix.save(out)
+    return out
+
+
 def video_frames(path: str, outdir: str, max_frames: int = 4) -> list[str]:
     """Video → up to max_frames stills via system ffmpeg (middle of the clip)."""
     ffmpeg = shutil.which("ffmpeg")
@@ -204,14 +227,18 @@ def trim_text(text: str, limit: int = MAX_TEXT_CHARS) -> str:
 
 
 def ingest_any(source: str) -> dict:
-    """Any supported source → normalized bundle for the learning pipeline."""
+    """Any supported source → normalized bundle with FULL text for the pipeline.
+
+    Nothing is trimmed here: stats and provenance stay truthful. The Muse
+    boundary (`analyze_text`) trims to its own window before transmitting.
+    """
     if is_youtube_url(source):
         got = youtube_transcript(source)
-        return {"kind": "text", "title": got["title"], "text": trim_text(got["text"]),
+        return {"kind": "text", "title": got["title"], "text": got["text"],
                 "document_ref": got["url"]}
     if source.startswith(("http://", "https://")):
         got = fetch_url_text(source)
-        return {"kind": "text", "title": got["title"], "text": trim_text(got["text"]),
+        return {"kind": "text", "title": got["title"], "text": got["text"],
                 "document_ref": got["url"]}
     if not os.path.isfile(source):
         raise FileNotFoundError(source)
@@ -220,7 +247,7 @@ def ingest_any(source: str) -> dict:
         return {"kind": "image", "path": source, "document_ref": source}
     if ext == ".epub":
         got = epub_text(source)
-        return {"kind": "text", "title": got["title"], "text": trim_text(got["text"]),
+        return {"kind": "text", "title": got["title"], "text": got["text"],
                 "document_ref": source}
     if ext in VIDEO_EXTENSIONS:
         return {"kind": "video", "path": source, "document_ref": source}
@@ -228,4 +255,4 @@ def ingest_any(source: str) -> dict:
     from . import text_backend as _tb
     got = _tb.extract_text(source)
     return {"kind": "text", "title": os.path.basename(source),
-            "text": trim_text(got.text), "document_ref": source}
+            "text": got.text, "document_ref": source}

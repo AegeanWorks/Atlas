@@ -284,6 +284,16 @@ $("btn-import").onclick = async () => {
   const r = await api("/api/import", { path }).catch((e) => alert(e.message));
   if (r) { $("provenance").textContent = JSON.stringify(r, null, 2); state.figure = r; }
 };
+$("btn-render").onclick = async () => {
+  const src = $("doc-path").value.trim();
+  if (!src) return alert("Import a PDF first, then render its page.");
+  const page = Math.max(1, parseInt($("page").value || "1", 10));
+  try {
+    const r = await api("/api/pdf/render", { path: src, page });
+    setFigure(r.image_path, r.figure_url);
+    $("provenance").textContent = `Rendered page ${r.page} → select a crop, then Analyze.`;
+  } catch (e) { alert(e.message); }
+};
 $("btn-figure").onclick = async () => {
   const src = $("doc-path").value.trim();
   const crop = $("crop").value.split(",").map(Number);

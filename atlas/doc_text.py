@@ -62,8 +62,10 @@ def _extract_text_from_pdf_reader(reader, log_callback=None) -> str:
             if log_callback:
                 log_callback(f"Warning: Page {i + 1} failed: {page_error}")
     if len(empty_pages) == total_pages:
-        raise Exception("No text could be extracted from this PDF. It appears to be "
-                        "entirely scanned images or encrypted. Use an OCR tool first.")
+        raise Exception(
+            f"No text on any of {total_pages} page(s): scanned images or encryption. "
+            "Run an OCR tool first (e.g. ocrmypdf), then retry; "
+            "figure overlays can still be made by rendering a page to PNG.")
     return "".join(text_parts)
 
 

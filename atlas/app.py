@@ -493,6 +493,9 @@ class Handler(BaseHTTPRequestHandler):
                                         "hint": "URL: call /api/auto-create directly"})
                 result = ing.import_document(body["path"], store.data_dir,
                                              int(body.get("page", 0)))
+                if result.get("mime") == "application/pdf":
+                    from . import doc_text as _dt
+                    result["pages"] = _dt.pdf_page_count(body["path"])
                 try:
                     from . import sources as _src
                     bundle = _src.ingest_any(body["path"])
@@ -510,6 +513,20 @@ class Handler(BaseHTTPRequestHandler):
                     result["figure_hint"] = ("PDF stored with text. Convert the target page to PNG/JPEG "
                                              "for figure overlays, or auto-create a text model as-is.")
                 return _json(self, result)
+            if route == "/api/pdf/render":
+                from . import sources as _src
+                doc_path = body.get("path") or body.get("document_ref", "")
+                if not doc_path:
+                    raise ValueError("pdf/render needs 'path'")
+                page = int(body.get("page", 1))
+                outdir = os.path.join(store.data_dir, "figures")
+                try:
+                    png = _src.render_pdf_page(doc_path, page, outdir)
+                except ImportError as exc:
+                    raise ValueError(str(exc)) from exc
+                return _json(self, {"image_path": png,
+                                    "figure_url": "/figures/" + os.path.basename(png),
+                                    "page": page})
             if route == "/api/figure/select":
                 crop = ing.select_figure(
                     body["image_path"], tuple(body["crop"]), store.data_dir,

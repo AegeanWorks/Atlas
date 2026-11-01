@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.11.0 — Proven on 81 real medical PDFs (2026-11-01)
+
+- Trialled against a real 81-file, 77 MB medical library: 78 import with fast
+  Turkish-safe text extraction, 3 scanned-image PDFs refused with page counts.
+- Scanned-PDF errors now name the page count and the OCR way out.
+- `atlas.cli batch <folder>`: offline import report for whole folders.
+- PDF pages render to figures (`POST /api/pdf/render`, UI button) with optional
+  PyMuPDF; honest install hint without it. `/api/import` reports page counts.
+
 ## 0.10.0 — Every format is learning material (2026-11-01)
 
 - Study diagram posters (SVG + Pillow PNG) redrawn from boxes and arrows.

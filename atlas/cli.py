@@ -159,6 +159,36 @@ def cmd_materials(args) -> int:
     return 0
 
 
+def cmd_batch(args) -> int:
+    from . import ingestion as ing
+    from . import sources as src
+    store = AtlasStore(args.data)
+    rows = []
+    try:
+        names = sorted(os.listdir(args.folder))
+    except OSError as exc:
+        print(json.dumps({"ok": False, "error": str(exc)}))
+        return 1
+    for name in names:
+        path = os.path.join(args.folder, name)
+        if not os.path.isfile(path):
+            continue
+        row = {"file": name}
+        try:
+            doc = ing.import_document(path, store.data_dir)
+            row["document_ref"] = doc["document_ref"]
+            bundle = src.ingest_any(path)
+            row["kind"] = bundle["kind"]
+            row["chars"] = len(bundle.get("text", ""))
+        except Exception as exc:
+            row["error"] = f"{type(exc).__name__}: {exc}"
+        rows.append(row)
+    ok = sum(1 for r in rows if "error" not in r)
+    print(json.dumps({"ok": True, "files": len(rows), "imported": ok, "rows": rows},
+                     indent=2))
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Atlas headless CLI for AI agents")
     ap.add_argument("--data", default="data")
@@ -203,6 +233,9 @@ def main(argv=None) -> int:
     ag = sub.add_parser("agent", help="prove AI autonomy: fixture model end to end")
     ag.add_argument("--figure-id", default="agent-demo")
     ag.set_defaults(func=cmd_agent)
+    bt = sub.add_parser("batch", help="import a folder of files, offline report")
+    bt.add_argument("folder")
+    bt.set_defaults(func=cmd_batch)
     args = ap.parse_args(argv)
     return args.func(args)
 
