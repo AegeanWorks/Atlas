@@ -22,7 +22,7 @@ import urllib.request
 import urllib.error
 
 from .config import AtlasConfig
-from .schema import VisualAnalysis, coerce_muse_payload, muse_json_schema
+from .schema import VisualAnalysis, coerce_muse_payload, merge_analyses, muse_json_schema
 
 
 SYSTEM_PROMPT = (
@@ -123,6 +123,28 @@ class MuseProvider:
         except json.JSONDecodeError as exc:
             raise ValueError(f"Muse returned non-JSON content: {exc}") from exc
         return coerce_muse_payload(data, document_ref=document_ref, figure_id=figure_id)
+
+    def analyze_long_text(self, text: str, note: str = "",
+                          document_ref: str = "", figure_id: str = "") -> VisualAnalysis:
+        """Whole books, not just the first 12k chars: chunk, analyze, merge.
+
+        Entities merge on normalized names (descriptions keep the longest,
+        evidence concatenates); relationships remap to canonical ids and
+        dedupe exactly. Chunk indices ride in the note so cross-chunk
+        references stay interpretable.
+        """
+        from .sources import chunk_text
+        chunks = chunk_text(text)
+        if len(chunks) == 1:
+            return self.analyze_text(chunks[0], note, document_ref, figure_id)
+        parts = [self.analyze_text(
+            chunk, (note + " " if note else "") +
+            f"[Part {i + 1}/{len(chunks)} of the same source; entities may repeat earlier parts.]",
+            document_ref, f"{figure_id}-p{i + 1}" if figure_id else "")
+            for i, chunk in enumerate(chunks)]
+        analyses = [p if isinstance(p, VisualAnalysis) else coerce_muse_payload(
+            p, document_ref=document_ref) for p in parts]
+        return merge_analyses(analyses, document_ref=document_ref, figure_id=figure_id)
 
     def polish_summary(self, brief: dict) -> str:
         """Rewrite an extractive study brief as flowing prose (needs key)."""

@@ -277,6 +277,62 @@ def test_import_reports_pdf_pages(tmp_path):
         atlas_app.Handler.store = None
 
 
+def test_chunk_text_respects_paragraphs():
+    from atlas.sources import chunk_text
+    paras = ["para one words " * 200, "para two words " * 200, "short three"]
+    chunks = chunk_text("\n\n".join(paras), limit=3000)
+    assert len(chunks) >= 2
+    assert all(len(c) <= 3000 for c in chunks)
+    assert chunk_text("tiny")[0] == "tiny"
+
+
+def test_merge_analyses_dedupes_and_remaps():
+    from atlas.schema import VisualAnalysis, VisualEntity, VisualRelationship, merge_analyses
+    a = VisualAnalysis(
+        entities=[VisualEntity(id="a1", name="Striatum", category="anatomical-structure"),
+                  VisualEntity(id="b1", name="GPe", category="anatomical-structure")],
+        relationships=[VisualRelationship(source_id="a1", target_id="b1",
+                                          rel_type="inhibits")])
+    b = VisualAnalysis(
+        entities=[VisualEntity(id="a2", name="striatum ", category="anatomical-structure",
+                               description="longer description here",
+                               source_evidence="q2"),
+                  VisualEntity(id="c2", name="STN", category="anatomical-structure")],
+        relationships=[VisualRelationship(source_id="a2", target_id="c2",
+                                          rel_type="inhibits")])
+    merged = merge_analyses([a, b], document_ref="d", figure_id="m")
+    names = sorted(e.name for e in merged.entities)
+    assert names == ["GPe", "STN", "Striatum"]
+    striatum = next(e for e in merged.entities if e.name == "Striatum")
+    assert striatum.description == "longer description here"
+    assert striatum.source_evidence == "q2"
+    pairs = {(r.source_id, r.target_id, r.rel_type) for r in merged.relationships}
+    assert ("a1", "b1", "inhibits") in pairs and ("a1", "c2", "inhibits") in pairs
+
+
+def test_analyze_long_text_chunks_and_merges():
+    from atlas.config import AtlasConfig
+    from atlas.muse_provider import MuseProvider
+
+    calls = []
+
+    def fake_transport(payload):
+        user = payload["messages"][1]["content"]
+        assert "SOURCE:" in user
+        calls.append(user)
+        return {"choices": [{"message": {"content":
+            '{"entities": [{"id": "e", "name": "Thing", "category": "component", '
+            '"confidence": 0.8}], "relationships": []}'}}]}
+
+    cfg = AtlasConfig(api_key="k", data_dir=".")
+    provider = MuseProvider(cfg, transport=fake_transport)
+    short = provider.analyze_long_text("small text")
+    assert len(calls) == 1 and short.entities[0].name == "Thing"
+    big = provider.analyze_long_text("para. " * 5000)
+    assert len(calls) > 2  # chunked into several Muse calls
+    assert big.entities[0].name == "Thing"
+
+
 def test_merge_frames_namespaces_ids():
     from atlas.app import _merge_frame_analyses
     from atlas.schema import VisualAnalysis, VisualEntity, VisualRelationship

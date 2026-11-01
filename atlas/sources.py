@@ -239,6 +239,25 @@ def video_frames(path: str, outdir: str, max_frames: int = 4) -> list[str]:
     return [os.path.join(outdir, f) for f in frames]
 
 
+def chunk_text(text: str, limit: int = MAX_TEXT_CHARS) -> list[str]:
+    """Split long text into ≤limit chunks at paragraph boundaries (books)."""
+    paras = [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]
+    chunks, current = [], ""
+    for para in paras:
+        if len(current) + len(para) + 2 <= limit:
+            current = (current + "\n\n" + para).strip()
+        else:
+            if current:
+                chunks.append(current)
+            while len(para) > limit:  # one giant paragraph: hard cut
+                chunks.append(para[:limit])
+                para = para[limit:]
+            current = para
+    if current:
+        chunks.append(current)
+    return chunks or [text[:limit]]
+
+
 def trim_text(text: str, limit: int = MAX_TEXT_CHARS) -> str:
     if len(text) <= limit:
         return text

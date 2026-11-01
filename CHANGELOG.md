@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.15.0 — Whole books become models (2026-11-01)
+
+- Chunked long-text analysis: books split at paragraph boundaries, every
+  chunk analyzed, entities merged by normalized name, relationships remapped
+  and deduped. Proven live on a 209k-char Turkish book in one auto-create.
+- Paragraph-aware `chunk_text` in sources; `merge_analyses` in schema with
+  longest-description-wins and evidence concatenation.
+
 ## 0.14.0 — Live-model verification (2026-11-01)
 
 - First production Muse runs on real materials: hand analyses vs live Spark

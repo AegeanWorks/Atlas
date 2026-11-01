@@ -149,8 +149,13 @@ def auto_create_model(store: AtlasStore, config: AtlasConfig, source: str,
         doc["text_chars"] = len(bundle["text"])
         fid = figure_id or ("model-" + AtlasStore.cache_key(bundle["document_ref"])[:8])
         provider = muse_provider or MuseProvider(config, use_wonder=use_wonder)
-        analysis = provider.analyze_text(bundle["text"], note,
-                                         document_ref=bundle["document_ref"], figure_id=fid)
+        analyze = getattr(provider, "analyze_long_text", None)
+        if callable(analyze):
+            analysis = analyze(bundle["text"], note,
+                               document_ref=bundle["document_ref"], figure_id=fid)
+        else:  # injected test doubles without chunking: single pass
+            analysis = provider.analyze_text(bundle["text"], note,
+                                             document_ref=bundle["document_ref"], figure_id=fid)
         data = analysis.to_dict()
         store.save_analysis(fid, data)
         return {"document": doc, "model_created": True, "figure_id": fid,

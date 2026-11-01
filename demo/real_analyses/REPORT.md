@@ -22,3 +22,9 @@ Manual = hand analysis by the AI from viewing the figures. Live = Muse Spark 1.3
 - live scores: {'flashcards': 100, 'podcast': 100, 'infographic': 75, 'model3d': 100}
 - manual issues: ['4 overlapping boxes hurt readability']
 - live issues: ['1 overlapping boxes hurt readability']
+
+## richest-babylon-book (whole-book live run, chunked)
+E=245 R=225 across ~18 chunks merged by normalized name
+quality overall=76.7 (flashcards 100, podcast 80, infographic 50: text-only, nothing to draw)
+Turkish concepts preserved (Antik Babil, Milli zenginlik, Bireysel zenginlik ...)
+timed Muse Spark key, env-only, never stored

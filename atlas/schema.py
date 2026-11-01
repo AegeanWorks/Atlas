@@ -189,6 +189,60 @@ class VisualAnalysis:
         return obj
 
 
+def _norm_name(name: str) -> str:
+    return " ".join(str(name).lower().strip().split())
+
+
+def merge_analyses(analyses: list, document_ref: str = "",
+                   figure_id: str = "") -> "VisualAnalysis":
+    """Merge chunk analyses: entities by normalized name, rels remapped + deduped."""
+    by_name: dict[str, VisualEntity] = {}
+    order: list[str] = []
+    for a in analyses:
+        for e in a.entities:
+            key = _norm_name(e.name)
+            if key in by_name:
+                old = by_name[key]
+                desc = e.description if len(e.description) > len(old.description) else old.description
+                ev = old.source_evidence
+                if e.source_evidence and e.source_evidence not in ev:
+                    ev = (ev + " | " + e.source_evidence)[:2000] if ev else e.source_evidence
+                bbox = old.bbox or e.bbox
+                by_name[key] = VisualEntity(
+                    id=old.id, name=old.name, category=old.category,
+                    description=desc, bbox=bbox, source_evidence=ev,
+                    confidence=max(old.confidence, e.confidence),
+                    uncertainty="; ".join(filter(None, [old.uncertainty,
+                                                         e.uncertainty]))[:500],
+                    mask_ref=old.mask_ref or e.mask_ref,
+                    model_inferred=old.model_inferred and e.model_inferred)
+            else:
+                by_name[key] = e
+                order.append(key)
+    id_map: dict[str, str] = {}
+    for a in analyses:
+        for e in a.entities:
+            id_map[e.id] = by_name[_norm_name(e.name)].id
+    seen, rels = set(), []
+    for a in analyses:
+        for r in a.relationships:
+            s, t = id_map.get(r.source_id, r.source_id), id_map.get(r.target_id, r.target_id)
+            if s == t:
+                continue
+            key = (s, t, r.rel_type)
+            if key in seen:
+                continue
+            seen.add(key)
+            rels.append(VisualRelationship(
+                source_id=s, target_id=t, rel_type=r.rel_type,
+                explanation=r.explanation, supporting_evidence=r.supporting_evidence,
+                confidence=r.confidence, provenance=r.provenance,
+                model_inferred=r.model_inferred))
+    entities = [by_name[k] for k in order]
+    return VisualAnalysis(document_ref=document_ref or (analyses[0].document_ref if analyses else ""),
+                          figure_id=figure_id, entities=entities, relationships=rels)
+
+
 def muse_json_schema() -> dict:
     """JSON Schema sent as response_format.json_schema so Muse output parses first try."""
     num = {"type": "number", "minimum": 0, "maximum": 1000}
