@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.13.0 — Eyes on the material (2026-11-01)
+
+- Frame quality gate: blank transition cards dropped, near-duplicates removed,
+  low-detail frames (paper texture, grain) kept but flagged — calibrated
+  against real Kurzgesagt-style footage (texture 38 vs content 580-2800).
+  Video auto-create analyzes only frames worth analyzing.
+- Real-library hardening: EPUB manifests with href-first attributes,
+  JFIF/WebP/GIF/BMP end to end, full-length ingestion text, AES PDFs via
+  `cryptography` (201/204 files import; only scanned-image PDFs refuse).
+
 ## 0.12.0 — Automatic video + quality analysis (2026-11-01)
 
 - Automatic study-video creation: Pillow storyboard (title, entity spotlights,

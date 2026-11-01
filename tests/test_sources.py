@@ -86,10 +86,27 @@ def test_epub_text_in_spine_order(tmp_path):
     assert got["text"].index("Chapter one") < got["text"].index("Chapter two")
 
 
-def test_video_without_ffmpeg_is_honest(tmp_path, monkeypatch):
+def test_video_without_any_ffmpeg_is_honest(tmp_path, monkeypatch):
+    import sys
     monkeypatch.setattr(src.shutil, "which", lambda *a, **k: None)
+    monkeypatch.setitem(sys.modules, "imageio_ffmpeg", None)
     with pytest.raises(ValueError, match="ffmpeg"):
         src.video_frames(str(tmp_path / "clip.mp4"), str(tmp_path))
+
+
+def test_video_frames_roundtrip_with_bundled_ffmpeg(tmp_path):
+    pytest.importorskip("imageio_ffmpeg")
+    import subprocess
+    from PIL import Image
+    from atlas.sources import _ffmpeg_exe
+    clip = str(tmp_path / "clip.mp4")
+    subprocess.run([_ffmpeg_exe(), "-y", "-v", "error", "-f", "lavfi",
+                    "-i", "testsrc=duration=3:size=128x96:rate=5",
+                    "-c:v", "libx264", "-pix_fmt", "yuv420p", clip],
+                   check=True, timeout=120)  # noqa: S603
+    frames = src.video_frames(clip, str(tmp_path / "frames"), max_frames=3)
+    assert len(frames) == 3  # fps=1 filter yields t=0,1,2 from a 3s clip
+    assert all(Image.open(f).size == (640, 480) for f in frames)  # normalized width
 
 
 def test_trim_text_marks_truncation():

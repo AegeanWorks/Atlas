@@ -11,6 +11,8 @@ from __future__ import annotations
 import os
 import re
 
+from PIL import Image, ImageFilter, ImageStat
+
 
 def _result(score: int, checks: list, issues: list) -> dict:
     return {"score": max(0, min(100, score)), "checks": checks, "issues": issues}
@@ -211,6 +213,94 @@ def video_quality_mp4(path: str) -> dict:
             issues.append(f"{duration:.0f}s outside the 5s-10min study window")
     score = 100 - 25 * sum(1 for c in checks if not c["ok"])
     return _result(score, checks, issues)
+
+
+def _luminance(path: str):
+    with Image.open(path) as img:
+        return img.convert("L").resize((64, 64))
+
+
+def ahash(path: str) -> int:
+    """Perceptual hash: identical/near-identical frames share a hash."""
+    raw = bytes(_luminance(path).tobytes())
+    mean = sum(raw) / max(1, len(raw))
+    bits = 0
+    for i, px in enumerate(raw):
+        if px > mean:
+            bits |= 1 << i
+    return bits
+
+
+def _hamming(a: int, b: int) -> int:
+    return bin(a ^ b).count("1")
+
+
+def frame_sharpness(path: str) -> float:
+    """Laplacian variance: motion blur and flat cards score near zero."""
+    with Image.open(path) as img:
+        gray = img.convert("L").resize((320, 320))
+        edges = gray.filter(ImageFilter.Kernel(
+            (3, 3), (-1, -1, -1, -1, 8, -1, -1, -1, -1), scale=1))
+        # Pillow answers the 1px rim from padding, not content: ignore it.
+        inner = edges.crop((1, 1, edges.width - 1, edges.height - 1))
+        return ImageStat.Stat(inner).var[0]
+
+
+def frames_quality(paths: list[str], blank_ceiling: float = 5.0,
+                   low_detail_warn: float = 100.0, dup_bits: int = 6) -> dict:
+    """Score extracted video frames; pick the ones worth analyzing.
+
+    Drops true blanks and near-duplicates. Low-detail frames (paper texture,
+    film grain, sparse marks: calibrated <100 on real footage) are KEPT but
+    flagged — they may still be title cards worth a glance, just weak analysis
+    targets. Returns per-frame verdicts + kept indices.
+    """
+    infos = []
+    for path in paths:
+        try:
+            sharp = frame_sharpness(path)
+            infos.append({"path": path, "sharpness": round(sharp, 1),
+                          "hash": ahash(path)})
+        except Exception as exc:
+            infos.append({"path": path, "sharpness": 0.0, "hash": 0,
+                          "error": f"{type(exc).__name__}"})
+    kept, seen_hashes = [], []
+    for i, info in enumerate(infos):
+        if info.get("error"):
+            info["verdict"] = "unreadable"
+        elif info["sharpness"] < blank_ceiling:
+            info["verdict"] = "blank-transition-card"
+        elif any(_hamming(info["hash"], h) <= dup_bits for h in seen_hashes):
+            info["verdict"] = "near-duplicate"
+        elif info["sharpness"] < low_detail_warn:
+            info["verdict"] = "low-detail"
+            seen_hashes.append(info["hash"])
+            kept.append(i)
+        else:
+            info["verdict"] = "keep"
+            seen_hashes.append(info["hash"])
+            kept.append(i)
+    unique_ratio = len(kept) / max(1, len(infos))
+    score = round(100 * unique_ratio)
+    issues = []
+    blanks = sum(1 for x in infos if x["verdict"] == "blank-transition-card")
+    dupes = sum(1 for x in infos if x["verdict"] == "near-duplicate")
+    thin = sum(1 for x in infos if x["verdict"] == "low-detail")
+    if blanks:
+        issues.append(f"{blanks} blank transition card(s) skipped")
+    if dupes:
+        issues.append(f"{dupes} near-duplicate frame(s) skipped")
+    if thin:
+        issues.append(f"{thin} low-detail frame(s) kept but weak analysis targets")
+    if not kept:
+        issues.append("no analyzable frames: all blank, duplicate, or unreadable")
+        score = 0
+    return {"score": score, "kept": kept, "frames": infos, "issues": issues,
+            "checks": [
+                _check("has-analyzable-frames", bool(kept), f"{len(kept)}/{len(infos)} kept"),
+                _check("frame-diversity", unique_ratio >= 0.5,
+                       f"{unique_ratio:.0%} unique"),
+            ]}
 
 
 def _mp4_duration(path: str) -> float | None:

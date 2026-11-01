@@ -169,6 +169,7 @@ def cmd_batch(args) -> int:
     except OSError as exc:
         print(json.dumps({"ok": False, "error": str(exc)}))
         return 1
+    import tempfile
     for name in names:
         path = os.path.join(args.folder, name)
         if not os.path.isfile(path):
@@ -180,6 +181,17 @@ def cmd_batch(args) -> int:
             bundle = src.ingest_any(path)
             row["kind"] = bundle["kind"]
             row["chars"] = len(bundle.get("text", ""))
+            if bundle["kind"] == "video":
+                try:
+                    from . import quality as qa
+                    frames = src.video_frames(
+                        path, tempfile.mkdtemp(prefix="atlas-batch-"), max_frames=4)
+                    fq = qa.frames_quality(frames)
+                    row["frames"] = len(frames)
+                    row["frames_kept"] = len(fq["kept"])
+                    row["frames_issues"] = fq["issues"]
+                except Exception as exc:
+                    row["frames_error"] = f"{type(exc).__name__}: {exc}"
         except Exception as exc:
             row["error"] = f"{type(exc).__name__}: {exc}"
         rows.append(row)

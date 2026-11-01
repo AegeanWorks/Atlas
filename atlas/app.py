@@ -156,9 +156,17 @@ def auto_create_model(store: AtlasStore, config: AtlasConfig, source: str,
         return {"document": doc, "model_created": True, "figure_id": fid,
                 "analysis": data, "source_kind": "text"}
     if kind == "video":
+        from . import quality as qa
         frames_dir = os.path.join(store.data_dir, "frames",
                                   AtlasStore.cache_key(bundle["path"])[:12])
-        frames = src.video_frames(bundle["path"], frames_dir)
+        raw_frames = src.video_frames(bundle["path"], frames_dir)
+        fq = qa.frames_quality(raw_frames)
+        frames = [raw_frames[i] for i in fq["kept"]]
+        if not frames:
+            raise ValueError("video frames are all blank transition cards or duplicates "
+                             "(motion-graphics/live-action need their transcript: "
+                             "narration carries the lesson, stills carry little). "
+                             "Supply a VTT/SRT transcript or PNG stills instead.")
         provider = muse_provider or MuseProvider(config, use_wonder=use_wonder)
         per_frame = [provider.analyze_figure(
             frame, (note + f" [video frame {i + 1}/{len(frames)}]") if note else

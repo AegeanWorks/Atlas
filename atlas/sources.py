@@ -185,6 +185,19 @@ def epub_text(path: str) -> dict:
 VIDEO_EXTENSIONS = {".mp4", ".webm", ".mov", ".mkv", ".avi", ".m4v"}
 
 
+def _ffmpeg_exe() -> str:
+    """System ffmpeg, else the bundled imageio-ffmpeg binary (pip installable)."""
+    found = shutil.which("ffmpeg")
+    if found:
+        return found
+    try:
+        import imageio_ffmpeg
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except (ImportError, AttributeError, OSError) as exc:
+        raise ValueError("video needs ffmpeg: install it system-wide or "
+                         "pip install imageio-ffmpeg (Atlas bundles it as a dependency).") from exc
+
+
 def render_pdf_page(path: str, page: int, outdir: str, dpi: int = 150) -> str:
     """PDF page → PNG still (needs optional PyMuPDF: pip install PyMuPDF).
 
@@ -209,11 +222,8 @@ def render_pdf_page(path: str, page: int, outdir: str, dpi: int = 150) -> str:
 
 
 def video_frames(path: str, outdir: str, max_frames: int = 4) -> list[str]:
-    """Video → up to max_frames stills via system ffmpeg (middle of the clip)."""
-    ffmpeg = shutil.which("ffmpeg")
-    if ffmpeg is None:
-        raise ValueError("video needs a system ffmpeg to extract frames and none was found "
-                         "(install ffmpeg, or supply a transcript/PNG stills instead)")
+    """Video → up to max_frames stills (system or bundled imageio-ffmpeg)."""
+    ffmpeg = _ffmpeg_exe()
     os.makedirs(outdir, exist_ok=True)
     pattern = os.path.join(outdir, "frame_%02d.png")
     cmd = [ffmpeg, "-y", "-v", "error", "-i", path, "-vf", "fps=1,scale=640:-1",
