@@ -32,3 +32,13 @@ timed Muse Spark key, env-only, never stored
 ## 0.17.0 re-score (dedup + trim-scope + capped pathways)
 book: overall 83.3 (flashcards 100, podcast 100 with trim scope, infographic 50: 245 grid boxes overlap; honest)
 video model: quality 91.7 pre-dedup; deck dedupes repeats, warning shown when zero boxes ground
+
+
+## live methionine_cycle_live: overall=93.8 {'flashcards': 100, 'podcast': 100, 'infographic': 75, 'model3d': 100}
+deck=68 questions=68
+
+## live petechial_rash_live: overall=93.8 {'flashcards': 100, 'podcast': 100, 'infographic': 75, 'model3d': 100}
+deck=41 questions=41
+
+## live video retry (grounding retry on): 32/32 entities grounded, no warning, quality 91.7
+first pass boxless as before; explicit retry grounds all 4 frames; merge preserves boxes (0.16.0 fix verified live)

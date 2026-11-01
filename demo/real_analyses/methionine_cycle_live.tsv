@@ -1,0 +1,68 @@
+Which structure is highlighted?	Methionine — Green box labeled Methionine in upper center — Green rectangular box labeled 'Methionine' in upper center
+Green box labeled Methionine in upper center	Methionine — Category: molecule — Green rectangular box labeled 'Methionine' in upper center
+Homocysteine → ? (produces)	Methionine — Arrow from Homocysteine to Methionine via MS/BHMT — Solid arrows from Homocysteine box up to Methionine box
+MS → ? (activates)	Methionine — MS label on Homocysteine to Methionine remethylation — Pink MS oval on Homocysteine-to-Methionine arrow with 5MTHF input
+BHMT → ? (activates)	Methionine — BHMT label on Homocysteine to Methionine remethylation using Betaine — Pink BHMT oval on Homocysteine-to-Methionine arrow
+Methionine cycle → ? (contains)	Methionine — Methionine cycle encompasses central Methionine-SAM-SAH-Homocysteine loop — Text 'Methionine cycle' centered inside loop of Methionine, SAM, SAH, Homocysteine
+Which structure is highlighted?	SAM — Green box labeled SAM on right mid — Green rectangular box labeled 'SAM' on right middle
+Green box labeled SAM on right mid	SAM — Category: molecule — Green rectangular box labeled 'SAM' on right middle
+Methionine → ? (produces)	SAM — Solid arrow from Methionine box to SAM box labeled MAT2A — Curved solid arrow from Methionine down to SAM
+MAT2A → ? (activates)	SAM — MAT2A enzyme label sits on Methionine to SAM conversion arrow — Pink MAT2A oval on Methionine-to-SAM arrow
+Methionine cycle → ? (contains)	SAM — Methionine cycle contains SAM as core intermediate — SAM box inside circular Methionine cycle arrows
+Which structure is highlighted?	SAH — Green box labeled SAH at bottom center — Green rectangular box labeled 'SAH' at bottom center
+Green box labeled SAH at bottom center	SAH — Category: molecule — Green rectangular box labeled 'SAH' at bottom center
+SAM → ? (produces)	SAH — Solid arrow from SAM down to SAH — Solid arrow from SAM box to SAH box
+MT → ? (regulates)	SAH — MT label on SAM to SAH methyltransfer step producing CH3 — Pink MT oval adjacent to SAM-to-SAH arrow
+Which structure is highlighted?	Homocysteine — Green box labeled Homocysteine middle left — Green rectangular box labeled 'Homocysteine' middle left
+Green box labeled Homocysteine middle left	Homocysteine — Category: molecule — Green rectangular box labeled 'Homocysteine' middle left
+SAH → ? (produces)	Homocysteine — Arrow from SAH up to Homocysteine completing cycle — Solid arrow from SAH box to Homocysteine box
+AHCY → ? (activates)	Homocysteine — AHCY label on SAH to Homocysteine/Adenosine step — Pink AHCY oval on SAH to Homocysteine path
+Which structure is highlighted?	Cysteine — Green box labeled Cysteine far left — Green box labeled 'Cysteine' on far left with arrow from Homocysteine
+Green box labeled Cysteine far left	Cysteine — Category: molecule — Green box labeled 'Cysteine' on far left with arrow from Homocysteine
+Homocysteine → ? (produces)	Cysteine — Dashed arrow from Homocysteine to Cysteine labeled Transsulfuration pathway — Dashed arrow from Homocysteine leftwards to Cysteine
+Which structure is highlighted?	Betaine — Small green box labeled Betaine — Small green box labeled 'Betaine' below Homocysteine
+Small green box labeled Betaine	Betaine — Category: molecule — Small green box labeled 'Betaine' below Homocysteine
+Which structure is highlighted?	Dimethylglycine — Green box labeled Dimethylglycine — Green box labeled 'Dimethylglycine' between Betaine and SAM
+Green box labeled Dimethylglycine	Dimethylglycine — Category: molecule — Green box labeled 'Dimethylglycine' between Betaine and SAM
+Betaine → ? (produces)	Dimethylglycine — Betaine to Dimethylglycine conversion coupled to BHMT reaction — Arrow from Betaine box to Dimethylglycine box
+Which structure is highlighted?	Adenosine — Green box labeled Adenosine bottom left — Green box labeled 'Adenosine' at bottom left below AHCY
+Green box labeled Adenosine bottom left	Adenosine — Category: molecule — Green box labeled 'Adenosine' at bottom left below AHCY
+SAH → ? (produces)	Adenosine — SAH to Adenosine branch arrow — Arrow from SAH to Adenosine green box
+Which structure is highlighted?	THF — Small label THF at top — Small text label 'THF' at top center in folate loop
+Small label THF at top	THF — Category: molecule — Small text label 'THF' at top center in folate loop
+Which structure is highlighted?	5 MTHF — Green box labeled 5 MTHF — Green box labeled '5 MTHF' left of center below Folate cycle
+Green box labeled 5 MTHF	5 MTHF — Category: molecule — Green box labeled '5 MTHF' left of center below Folate cycle
+Which structure is highlighted?	CH3 — Light purple oval labeled CH3 — Light purple oval labeled 'CH3' above Methylations box
+Light purple oval labeled CH3	CH3 — Category: molecule — Light purple oval labeled 'CH3' above Methylations box
+SAM → ? (produces)	CH3 — SAM provides methyl group CH3 leading to Methylations — Arrow from SAM via MT/CH3 to Methylations box
+Which structure is highlighted?	MAT2A — Pink oval labeled MAT2A on Methionine to SAM arrow — Pink oval label 'MAT2A' on arrow from Methionine to SAM
+Pink oval labeled MAT2A on Methionine to SAM arrow	MAT2A — Category: protein — Pink oval label 'MAT2A' on arrow from Methionine to SAM
+Which structure is highlighted?	MT — Pink oval labeled MT near SAM to SAH arrow — Pink oval label 'MT' between SAM and SAH
+Pink oval labeled MT near SAM to SAH arrow	MT — Category: protein — Pink oval label 'MT' between SAM and SAH
+Which structure is highlighted?	AHCY — Pink oval labeled AHCY on SAH to Homocysteine path — Pink oval label 'AHCY' left of center above SAH to Homocysteine arrow
+Pink oval labeled AHCY on SAH to Homocysteine path	AHCY — Category: protein — Pink oval label 'AHCY' left of center above SAH to Homocysteine arrow
+Which structure is highlighted?	MS — Pink oval labeled MS on Homocysteine to Methionine arrow — Pink oval label 'MS' on arrow from Homocysteine to Methionine
+Pink oval labeled MS on Homocysteine to Methionine arrow	MS — Category: protein — Pink oval label 'MS' on arrow from Homocysteine to Methionine
+Which structure is highlighted?	BHMT — Pink oval labeled BHMT — Pink oval label 'BHMT' below Methionine, above Betaine
+Pink oval labeled BHMT	BHMT — Category: protein — Pink oval label 'BHMT' below Methionine, above Betaine
+Which structure is highlighted?	Purine and pyrimidine synthesis — Dark blue box Purine and pyrimidine synthesis top left — Dark blue box labeled 'Purine and pyrimidine synthesis' top left
+Dark blue box Purine and pyrimidine synthesis top left	Purine and pyrimidine synthesis — Category: pathway — Dark blue box labeled 'Purine and pyrimidine synthesis' top left
+Which structure is highlighted?	Purine synthesis — Dark blue box Purine synthesis top right — Dark blue box labeled 'Purine synthesis' top right
+Dark blue box Purine synthesis top right	Purine synthesis — Category: pathway — Dark blue box labeled 'Purine synthesis' top right
+Methionine salvage cycle → ? (participates-in)	Purine synthesis — Dashed arrows from salvage cycle to Purine synthesis box — Dashed arrows leading to Purine synthesis dark blue box at top right
+Which structure is highlighted?	Polyamine synthesis — Dark blue box Polyamine synthesis right — Dark blue box labeled 'Polyamine synthesis' on right middle
+Dark blue box Polyamine synthesis right	Polyamine synthesis — Category: pathway — Dark blue box labeled 'Polyamine synthesis' on right middle
+SAM → ? (participates-in)	Polyamine synthesis — Dashed arrow toward Polyamine synthesis from SAM region — Dashed line connecting SAM area to Polyamine synthesis box
+Which structure is highlighted?	Methylations — Dark blue box Methylations bottom right — Dark blue box labeled 'Methylations' bottom right receiving CH3 arrow
+Dark blue box Methylations bottom right	Methylations — Category: process — Dark blue box labeled 'Methylations' bottom right receiving CH3 arrow
+CH3 → ? (participates-in)	Methylations — CH3 arrow points into Methylations dark blue box — Arrow from CH3 oval to Methylations box
+Which structure is highlighted?	Folate cycle — Text label Folate cycle — Text label 'Folate cycle' between THF and 5 MTHF
+Text label Folate cycle	Folate cycle — Category: pathway — Text label 'Folate cycle' between THF and 5 MTHF
+Which structure is highlighted?	Methionine cycle — Text label Methionine cycle — Text label 'Methionine cycle' in center below Betaine
+Text label Methionine cycle	Methionine cycle — Category: pathway — Text label 'Methionine cycle' in center below Betaine
+Which structure is highlighted?	Methionine salvage cycle — Text label Methionine salvage cycle — Text label 'Methionine salvage cycle' above SAM to Methionine arrow
+Text label Methionine salvage cycle	Methionine salvage cycle — Category: pathway — Text label 'Methionine salvage cycle' above SAM to Methionine arrow
+SAM → ? (participates-in)	Methionine salvage cycle — SAM feeds into Methionine salvage cycle loop — Curved arrow labeled Methionine salvage cycle originating near SAM
+Which structure is highlighted?	Transsulfuration pathway — Text label Transsulfuration pathway — Text label 'Transsulfuration pathway' above dashed arrow from Homocysteine to Cysteine
+Text label Transsulfuration pathway	Transsulfuration pathway — Category: pathway — Text label 'Transsulfuration pathway' above dashed arrow from Homocysteine to Cysteine
+Homocysteine → ? (participates-in)	Transsulfuration pathway — Homocysteine participates in Transsulfuration to Cysteine — Homocysteine box with dashed arrow labeled Transsulfuration pathway

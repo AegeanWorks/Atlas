@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.19.0 — Live video grounds entities (2026-11-01)
+
+- The grounding retry verified live: first pass boxless, explicit retry grounds
+  all 4 frames (32/32 entities, no warning). Merged video model quality 91.7.
+- Live artifact sets committed for both visual figures (TSV, questions,
+  podcast, diagram, OBJ) plus the retry video model and comparison REPORT.
+
 ## 0.18.0 — Chunk-id collisions fixed (2026-11-01)
 
 - Long-document merge disambiguates reused synthetic ids (first-wins remap),

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640" viewBox="0 0 960 640">
+<rect width="960" height="640" fill="#0b1530"/>
+<text x="480" y="36" text-anchor="middle" fill="#dbe7ff" font-size="24" font-family="sans-serif">rash-live</text>
+<defs><marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9" fill="none" stroke="#22d3ee" stroke-width="1.6"/></marker></defs>
+<line x1="474" y1="110" x2="212" y2="198" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="343" y="148" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">projects-to</text>
+<line x1="474" y1="110" x2="769" y2="197" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="622" y="147" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">projects-to</text>
+<line x1="212" y1="198" x2="146" y2="305" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="179" y="245" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">projects-to</text>
+<line x1="212" y1="198" x2="403" y2="295" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="307" y="240" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">projects-to</text>
+<line x1="769" y1="197" x2="634" y2="314" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="702" y="250" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">projects-to</text>
+<line x1="769" y1="197" x2="823" y2="316" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="796" y="251" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">projects-to</text>
+<line x1="146" y1="305" x2="180" y2="433" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="163" y="363" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">projects-to</text>
+<line x1="403" y1="295" x2="428" y2="403" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="415" y="343" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">projects-to</text>
+<line x1="634" y1="314" x2="644" y2="403" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="639" y="353" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">projects-to</text>
+<line x1="823" y1="316" x2="814" y2="438" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="818" y="371" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">projects-to</text>
+<line x1="492" y1="194" x2="474" y2="110" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="483" y="146" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">participates-in</text>
+<rect x="331" y="70" width="287" height="79" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="474" y="115" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Petechial rash</text>
+<rect x="125" y="173" width="175" height="48" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="212" y="203" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Febrile, Toxic</text>
+<rect x="660" y="174" width="220" height="46" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="769" y="202" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Afebrile, nontoxic</text>
+<rect x="70" y="283" width="153" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="146" y="310" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Palpable (febrile bra…</text>
+<rect x="330" y="271" width="145" height="48" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="403" y="300" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Non-Palpable (febrile…</text>
+<rect x="581" y="292" width="106" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="634" y="319" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Palpable (afebrile br…</text>
+<rect x="756" y="294" width="134" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="823" y="321" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Non-Palpable (afebril…</text>
+<rect x="75" y="374" width="211" height="117" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="180" y="438" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Febrile palpable diff…</text>
+<rect x="346" y="368" width="166" height="70" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="428" y="408" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Febrile non-palpable …</text>
+<rect x="561" y="352" width="166" height="102" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="644" y="408" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Afebrile palpable dif…</text>
+<rect x="740" y="367" width="148" height="142" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="814" y="443" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Afebrile non-palpable…</text>
+<rect x="423" y="157" width="139" height="73" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="492" y="199" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Skin with petechial l…</text>
+<rect x="74" y="70" width="92" height="106" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="120" y="128" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Red flags</text>
+<rect x="633" y="70" width="257" height="79" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="761" y="115" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Etiology: Abnormaliti…</text>
+<rect x="345" y="457" width="326" height="53" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="507" y="488" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Work Up investigations</text>
+</svg>

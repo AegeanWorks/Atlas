@@ -1,0 +1,854 @@
+{
+  "analysis_version": "atlas.visual-knowledge/v1",
+  "document_ref": "C:/Users/Yunus-Emre/AppData/Local/Temp/atlas_live_vid2\\documents\\55d178ed8de057e9_3 - WAY More than a Powerhouse \u2014 The Incredible Roles Mitochondria Play.mp4",
+  "source_page": 0,
+  "figure_id": "mito-video-retry",
+  "entities": [
+    {
+      "id": "f0-e_cell",
+      "name": "Cell",
+      "category": "cell-type",
+      "description": "Large blue circular cell body centered on red background",
+      "bbox": {
+        "x_min": 0.322,
+        "y_min": 0.158,
+        "x_max": 0.652,
+        "y_max": 0.847
+      },
+      "source_evidence": "Large blue circular structure centered in image under title 'fig 1: Simplified Cellular Respiration'",
+      "confidence": 0.95,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f0-e_nucleus",
+      "name": "Nucleus",
+      "category": "anatomical-structure",
+      "description": "Dark blue central circular structure",
+      "bbox": {
+        "x_min": 0.467,
+        "y_min": 0.348,
+        "x_max": 0.608,
+        "y_max": 0.618
+      },
+      "source_evidence": "Dark blue central circle within blue cell cytoplasm",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f0-e_nucleolus",
+      "name": "Nucleolus",
+      "category": "anatomical-structure",
+      "description": "Light blue small circle inside nucleus",
+      "bbox": {
+        "x_min": 0.513,
+        "y_min": 0.458,
+        "x_max": 0.557,
+        "y_max": 0.528
+      },
+      "source_evidence": "Pale blue dot inside dark blue nucleus center",
+      "confidence": 0.7,
+      "uncertainty": "model_inferred: small subnuclear dot in simplified cartoon, not labeled",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f0-e_er",
+      "name": "Endoplasmic reticulum",
+      "category": "anatomical-structure",
+      "description": "White membranous network surrounding nucleus",
+      "bbox": {
+        "x_min": 0.434,
+        "y_min": 0.214,
+        "x_max": 0.652,
+        "y_max": 0.676
+      },
+      "source_evidence": "White segmented ring-like network surrounding central dark blue nucleus",
+      "confidence": 0.75,
+      "uncertainty": "model_inferred: identity inferred from perinuclear membranous morphology, not labeled",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f0-e_mito",
+      "name": "Mitochondrion",
+      "category": "anatomical-structure",
+      "description": "Small yellow bean-shaped organelles scattered in cytoplasm, multiple copies visible",
+      "bbox": {
+        "x_min": 0.417,
+        "y_min": 0.214,
+        "x_max": 0.444,
+        "y_max": 0.275
+      },
+      "source_evidence": "Small yellow curved bean shapes scattered in blue cytoplasm, e.g., top near cell periphery, middle and bottom",
+      "confidence": 0.8,
+      "uncertainty": "model_inferred: identity inferred from typical yellow cartoon color-coding and video context about mitochondria, not labeled",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f0-e_darkbody",
+      "name": "Unidentified cytoplasmic body",
+      "category": "other",
+      "description": "Dark blue irregular cytoplasmic bodies, multiple copies",
+      "bbox": {
+        "x_min": 0.355,
+        "y_min": 0.365,
+        "x_max": 0.41,
+        "y_max": 0.445
+      },
+      "source_evidence": "Dark blue irregular shapes in blue cytoplasm, e.g., left side and bottom",
+      "confidence": 0.4,
+      "uncertainty": "model_inferred: specific organelle identity unclear in simplified cartoon, not labeled",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f0-e_resp",
+      "name": "Simplified Cellular Respiration",
+      "category": "process",
+      "description": "Text label indicating the process being illustrated",
+      "bbox": {
+        "x_min": 0.2,
+        "y_min": 0.035,
+        "x_max": 0.755,
+        "y_max": 0.105
+      },
+      "source_evidence": "Text 'fig 1: Simplified Cellular Respiration' at top of image",
+      "confidence": 0.95,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f1-e1",
+      "name": "Simplified Cellular Respiration",
+      "category": "process",
+      "description": "Title text 'Simplified Cellular Respiration' indicating the depicted biological process",
+      "bbox": {
+        "x_min": 0.195,
+        "y_min": 0.02,
+        "x_max": 0.805,
+        "y_max": 0.085
+      },
+      "source_evidence": "Top text 'fig 1: Simplified Cellular Respiration' on red background",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f1-e2",
+      "name": "Cell",
+      "category": "cell-type",
+      "description": "Large blue circular cell in center containing internal structures",
+      "bbox": {
+        "x_min": 0.322,
+        "y_min": 0.221,
+        "x_max": 0.667,
+        "y_max": 0.834
+      },
+      "source_evidence": "Central blue circular shape with internal organelle-like shapes",
+      "confidence": 0.95,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f1-e3",
+      "name": "Central dark-blue circular structure (putative nucleus)",
+      "category": "anatomical-structure",
+      "description": "Central dark-blue circular structure with lighter center, putative nucleus",
+      "bbox": {
+        "x_min": 0.43,
+        "y_min": 0.32,
+        "x_max": 0.6,
+        "y_max": 0.625
+      },
+      "source_evidence": "Dark blue circle in center of blue cell with white membrane-like rings around it",
+      "confidence": 0.6,
+      "uncertainty": "model_inferred: labeled as putative nucleus based on central position and morphology; not explicitly labeled in figure",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f1-e4",
+      "name": "Yellow organelle-like structures (putative mitochondria)",
+      "category": "component",
+      "description": "Small yellow elongated shapes inside blue cell, putative mitochondria",
+      "bbox": {
+        "x_min": 0.325,
+        "y_min": 0.635,
+        "x_max": 0.36,
+        "y_max": 0.7
+      },
+      "source_evidence": "Multiple small yellow shapes inside blue cell, e.g., bottom-left and top of cell",
+      "confidence": 0.4,
+      "uncertainty": "model_inferred: identification as mitochondria inferred from video context about mitochondria; not labeled in figure",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f1-e5",
+      "name": "Food",
+      "category": "other",
+      "description": "Food input shown as blue oval on left and text 'Food' in bottom equation",
+      "bbox": {
+        "x_min": 0.25,
+        "y_min": 0.88,
+        "x_max": 0.35,
+        "y_max": 0.94
+      },
+      "source_evidence": "Left blue oval labeled 'food' and bottom equation text '+ Food =' ",
+      "confidence": 0.97,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f1-e6",
+      "name": "O2",
+      "category": "molecule",
+      "description": "Oxygen input shown as pink icon labeled O2",
+      "bbox": {
+        "x_min": 0.12,
+        "y_min": 0.87,
+        "x_max": 0.21,
+        "y_max": 0.96
+      },
+      "source_evidence": "Left pink icon labeled 'O2' and bottom equation leftmost 'O2 + Food' icon",
+      "confidence": 0.97,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f1-e7",
+      "name": "Energy",
+      "category": "function",
+      "description": "Energy output shown as text 'Energy' and starburst icon labeled 'ENERGY'",
+      "bbox": {
+        "x_min": 0.4,
+        "y_min": 0.88,
+        "x_max": 0.54,
+        "y_max": 0.95
+      },
+      "source_evidence": "Bottom equation text 'Energy +' and right white starburst labeled 'ENERGY'",
+      "confidence": 0.95,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f1-e8",
+      "name": "CO2",
+      "category": "molecule",
+      "description": "Carbon dioxide output shown as black-red icon labeled CO2",
+      "bbox": {
+        "x_min": 0.59,
+        "y_min": 0.87,
+        "x_max": 0.66,
+        "y_max": 0.96
+      },
+      "source_evidence": "Bottom equation 'CO2' icon and right-side box labeled 'CO2'",
+      "confidence": 0.97,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f1-e9",
+      "name": "H2O",
+      "category": "molecule",
+      "description": "Water output shown as pink icon labeled H2O",
+      "bbox": {
+        "x_min": 0.73,
+        "y_min": 0.87,
+        "x_max": 0.8,
+        "y_max": 0.96
+      },
+      "source_evidence": "Bottom equation '+ H2O' icon and top-right icon labeled 'H2O'",
+      "confidence": 0.97,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f2-e_cell",
+      "name": "Cell",
+      "category": "cell-type",
+      "description": "Large blue cell illustration in center of figure",
+      "bbox": {
+        "x_min": 0.3,
+        "y_min": 0.235,
+        "x_max": 0.67,
+        "y_max": 0.855
+      },
+      "source_evidence": "Large blue irregular cell shape in center of image",
+      "confidence": 0.95,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f2-e_nucleus",
+      "name": "Nucleus",
+      "category": "anatomical-structure",
+      "description": "Dark blue circular nucleus with surrounding membrane loops inside cell",
+      "bbox": {
+        "x_min": 0.465,
+        "y_min": 0.36,
+        "x_max": 0.59,
+        "y_max": 0.59
+      },
+      "source_evidence": "Dark blue central circle inside blue cell with white ER-like loops",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f2-e_food",
+      "name": "Food",
+      "category": "other",
+      "description": "Food input shown as blue oval label",
+      "bbox": {
+        "x_min": 0.008,
+        "y_min": 0.305,
+        "x_max": 0.092,
+        "y_max": 0.395
+      },
+      "source_evidence": "Blue oval with text 'food' on left side and text 'Food' in bottom equation 'O2 + Food = Energy + CO2 + H2O'",
+      "confidence": 0.95,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f2-e_oxygen",
+      "name": "Oxygen (O2)",
+      "category": "molecule",
+      "description": "Oxygen input shown as pink O2 icons",
+      "bbox": {
+        "x_min": 0.12,
+        "y_min": 0.835,
+        "x_max": 0.21,
+        "y_max": 0.935
+      },
+      "source_evidence": "Pink icons labeled 'O2' on left side and at bottom left of equation",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f2-e_energy",
+      "name": "Energy",
+      "category": "function",
+      "description": "Energy output shown as text and starburst icons",
+      "bbox": {
+        "x_min": 0.36,
+        "y_min": 0.855,
+        "x_max": 0.495,
+        "y_max": 0.93
+      },
+      "source_evidence": "Text 'Energy' in bottom equation and white starbursts labeled 'ENERGY' on right side",
+      "confidence": 0.95,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f2-e_carbon_dioxide",
+      "name": "Carbon dioxide (CO2)",
+      "category": "molecule",
+      "description": "Carbon dioxide output shown as black and red CO2 icons",
+      "bbox": {
+        "x_min": 0.795,
+        "y_min": 0.54,
+        "x_max": 0.955,
+        "y_max": 0.965
+      },
+      "source_evidence": "Icons labeled 'CO2' on right side and in bottom equation",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f2-e_water",
+      "name": "Water (H2O)",
+      "category": "molecule",
+      "description": "Water output shown as white and red H2O icons",
+      "bbox": {
+        "x_min": 0.77,
+        "y_min": 0.055,
+        "x_max": 0.885,
+        "y_max": 0.335
+      },
+      "source_evidence": "Icons labeled 'H2O' at top right and in bottom equation",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f2-e_respiration",
+      "name": "Simplified Cellular Respiration",
+      "category": "process",
+      "description": "Overall process titled Simplified Cellular Respiration",
+      "bbox": {
+        "x_min": 0.2,
+        "y_min": 0.025,
+        "x_max": 0.75,
+        "y_max": 0.095
+      },
+      "source_evidence": "Title text 'fig 1: Simplified Cellular Respiration' at top of figure",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f3-e_cell",
+      "name": "Cell",
+      "category": "cell-type",
+      "description": "Large blue circular cell illustration in center-left",
+      "bbox": {
+        "x_min": 0.323,
+        "y_min": 0.236,
+        "x_max": 0.62,
+        "y_max": 0.775
+      },
+      "source_evidence": "Large blue circular shape with internal organelles in center-left of figure",
+      "confidence": 0.95,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f3-e_nucleus",
+      "name": "Nucleus",
+      "category": "anatomical-structure",
+      "description": "Central dark blue circular structure with lighter center surrounded by ER-like membranes",
+      "bbox": {
+        "x_min": 0.466,
+        "y_min": 0.365,
+        "x_max": 0.588,
+        "y_max": 0.602
+      },
+      "source_evidence": "Central dark blue circle inside blue cell illustration",
+      "confidence": 0.65,
+      "uncertainty": "model_inferred from morphology; not labeled in figure",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f3-e_o2",
+      "name": "O2",
+      "category": "molecule",
+      "description": "O2 shown as pink double-circle icon at left of equation",
+      "bbox": {
+        "x_min": 0.121,
+        "y_min": 0.835,
+        "x_max": 0.213,
+        "y_max": 0.935
+      },
+      "source_evidence": "Bottom left pink icon labeled O2 in equation O2 + Food = Energy + CO2 + H2O",
+      "confidence": 0.99,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f3-e_food",
+      "name": "Food",
+      "category": "other",
+      "description": "Food input term in equation",
+      "bbox": {
+        "x_min": 0.249,
+        "y_min": 0.859,
+        "x_max": 0.339,
+        "y_max": 0.914
+      },
+      "source_evidence": "White text Food in bottom equation between + and = signs",
+      "confidence": 0.99,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f3-e_energy",
+      "name": "Energy",
+      "category": "function",
+      "description": "Energy output term and starburst ENERGY icons on right",
+      "bbox": {
+        "x_min": 0.403,
+        "y_min": 0.861,
+        "x_max": 0.534,
+        "y_max": 0.931
+      },
+      "source_evidence": "White text Energy in bottom equation and white starburst icons labeled ENERGY on right side",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f3-e_co2",
+      "name": "CO2",
+      "category": "molecule",
+      "description": "CO2 shown as black-red icon in equation and cluster on right",
+      "bbox": {
+        "x_min": 0.587,
+        "y_min": 0.835,
+        "x_max": 0.658,
+        "y_max": 0.943
+      },
+      "source_evidence": "Bottom equation black icon labeled CO2 and right-side cluster of black icons labeled CO2",
+      "confidence": 0.99,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f3-e_h2o",
+      "name": "H2O",
+      "category": "molecule",
+      "description": "H2O shown as pink-white icon in equation and cluster on top-right",
+      "bbox": {
+        "x_min": 0.731,
+        "y_min": 0.832,
+        "x_max": 0.794,
+        "y_max": 0.941
+      },
+      "source_evidence": "Bottom equation pink icon labeled H2O and top-right cluster of white icons labeled H2O",
+      "confidence": 0.99,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "f3-e_respiration",
+      "name": "Simplified Cellular Respiration",
+      "category": "process",
+      "description": "Simplified Cellular Respiration title process",
+      "bbox": {
+        "x_min": 0.2,
+        "y_min": 0.025,
+        "x_max": 0.66,
+        "y_max": 0.1
+      },
+      "source_evidence": "Top title text fig 1: Simplified Cellular Respiration",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "f0-e_cell",
+      "target_id": "f0-e_nucleus",
+      "rel_type": "contains",
+      "explanation": "Nucleus is spatially enclosed within blue cell body",
+      "supporting_evidence": "Dark blue nucleus visible inside blue cell",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f0-e_cell",
+      "target_id": "f0-e_mito",
+      "rel_type": "contains",
+      "explanation": "Yellow bean structures are spatially enclosed within blue cell body",
+      "supporting_evidence": "Yellow shapes visible inside blue cytoplasm",
+      "confidence": 0.9,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f0-e_cell",
+      "target_id": "f0-e_er",
+      "rel_type": "contains",
+      "explanation": "White perinuclear network is spatially enclosed within blue cell body",
+      "supporting_evidence": "White network visible inside blue cytoplasm surrounding nucleus",
+      "confidence": 0.85,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f0-e_nucleus",
+      "target_id": "f0-e_nucleolus",
+      "rel_type": "contains",
+      "explanation": "Light dot is spatially enclosed within nucleus",
+      "supporting_evidence": "Pale dot visible inside dark nucleus",
+      "confidence": 0.7,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f0-e_cell",
+      "target_id": "f0-e_darkbody",
+      "rel_type": "contains",
+      "explanation": "Dark bodies are spatially enclosed within cell",
+      "supporting_evidence": "Dark blue shapes visible inside blue cytoplasm",
+      "confidence": 0.85,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f0-e_mito",
+      "target_id": "f0-e_resp",
+      "rel_type": "participates-in",
+      "explanation": "model_inferred: no arrow shown; inferred from title and presence of mitochondria in cell diagram and video context about mitochondria roles",
+      "supporting_evidence": "Title 'Simplified Cellular Respiration' with mitochondria depicted in cell",
+      "confidence": 0.45,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f0-e_cell",
+      "target_id": "f0-e_resp",
+      "rel_type": "participates-in",
+      "explanation": "model_inferred: whole cell diagram used to illustrate respiration process, no arrow shown",
+      "supporting_evidence": "Cell cartoon presented as Fig 1: Simplified Cellular Respiration",
+      "confidence": 0.5,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f1-e5",
+      "target_id": "f1-e1",
+      "rel_type": "participates-in",
+      "explanation": "Food is a reactant in the displayed equation O2 + Food = Energy + CO2 + H2O",
+      "supporting_evidence": "Bottom text 'O2 + Food = Energy + CO2 + H2O' and left 'food' icon outside cell",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f1-e6",
+      "target_id": "f1-e1",
+      "rel_type": "participates-in",
+      "explanation": "O2 is a reactant in the displayed respiration equation",
+      "supporting_evidence": "Bottom text 'O2 + Food = Energy + CO2 + H2O'",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f1-e1",
+      "target_id": "f1-e7",
+      "rel_type": "produces",
+      "explanation": "Respiration process yields Energy as shown in equation and ENERGY icon",
+      "supporting_evidence": "Bottom equation '= Energy +' and right 'ENERGY' starburst",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f1-e1",
+      "target_id": "f1-e8",
+      "rel_type": "produces",
+      "explanation": "Respiration process yields CO2 as shown in equation",
+      "supporting_evidence": "Bottom equation '+ CO2 +' and right 'CO2' icon",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f1-e1",
+      "target_id": "f1-e9",
+      "rel_type": "produces",
+      "explanation": "Respiration process yields H2O as shown in equation",
+      "supporting_evidence": "Bottom equation '+ H2O' and top-right 'H2O' icon",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f1-e2",
+      "target_id": "f1-e3",
+      "rel_type": "contains",
+      "explanation": "Central blue cell visually encloses the dark central structure",
+      "supporting_evidence": "Dark blue circle located inside large blue cell",
+      "confidence": 0.65,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f1-e2",
+      "target_id": "f1-e4",
+      "rel_type": "contains",
+      "explanation": "Blue cell visually encloses small yellow shapes",
+      "supporting_evidence": "Yellow shapes positioned inside boundaries of large blue cell",
+      "confidence": 0.45,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f1-e2",
+      "target_id": "f1-e5",
+      "rel_type": "receives-input-from",
+      "explanation": "Cell is depicted with external food icon indicating uptake",
+      "supporting_evidence": "'food' oval on left outside blue cell and 'Food' in input side of equation",
+      "confidence": 0.85,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f1-e2",
+      "target_id": "f1-e6",
+      "rel_type": "receives-input-from",
+      "explanation": "Cell is depicted with external O2 icon indicating uptake",
+      "supporting_evidence": "'O2' icon on left outside blue cell and 'O2' in input side of equation",
+      "confidence": 0.85,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f2-e_respiration",
+      "target_id": "f2-e_food",
+      "rel_type": "receives-input-from",
+      "explanation": "Cellular respiration uses food as input per equation O2 + Food = Energy + CO2 + H2O",
+      "supporting_evidence": "Bottom equation shows 'O2 + Food =' leading to outputs",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f2-e_respiration",
+      "target_id": "f2-e_oxygen",
+      "rel_type": "receives-input-from",
+      "explanation": "Cellular respiration uses oxygen as input per equation",
+      "supporting_evidence": "Bottom equation shows 'O2 + Food =' leading to outputs",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f2-e_respiration",
+      "target_id": "f2-e_energy",
+      "rel_type": "produces",
+      "explanation": "Process produces energy as shown in equation and ENERGY starbursts",
+      "supporting_evidence": "Bottom equation '= Energy +' and ENERGY starburst icons on right",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f2-e_respiration",
+      "target_id": "f2-e_carbon_dioxide",
+      "rel_type": "produces",
+      "explanation": "Process produces CO2 as shown in equation and CO2 icons",
+      "supporting_evidence": "Bottom equation includes CO2 and multiple CO2 icons on right side",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f2-e_respiration",
+      "target_id": "f2-e_water",
+      "rel_type": "produces",
+      "explanation": "Process produces H2O as shown in equation and H2O icons",
+      "supporting_evidence": "Bottom equation includes H2O and multiple H2O icons at top right",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f2-e_cell",
+      "target_id": "f2-e_respiration",
+      "rel_type": "participates-in",
+      "explanation": "Central blue cell is the site depicted for simplified cellular respiration",
+      "supporting_evidence": "Large blue cell in center of figure titled Simplified Cellular Respiration",
+      "confidence": 0.9,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f2-e_cell",
+      "target_id": "f2-e_nucleus",
+      "rel_type": "contains",
+      "explanation": "Central dark circle is contained within the blue cell",
+      "supporting_evidence": "Dark blue nucleus-like circle inside blue cell with surrounding membranes",
+      "confidence": 0.85,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f3-e_o2",
+      "target_id": "f3-e_respiration",
+      "rel_type": "participates-in",
+      "explanation": "O2 is shown as left-side input in O2 + Food = Energy + CO2 + H2O equation for respiration",
+      "supporting_evidence": "Bottom equation O2 + Food = Energy + CO2 + H2O",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f3-e_food",
+      "target_id": "f3-e_respiration",
+      "rel_type": "participates-in",
+      "explanation": "Food is shown as input in O2 + Food = Energy + CO2 + H2O equation",
+      "supporting_evidence": "Bottom equation O2 + Food = Energy + CO2 + H2O",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f3-e_respiration",
+      "target_id": "f3-e_energy",
+      "rel_type": "produces",
+      "explanation": "Energy is shown as output of the respiration equation and as starburst products on right",
+      "supporting_evidence": "Bottom equation = Energy + and right-side ENERGY starbursts with arrow from cell",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f3-e_respiration",
+      "target_id": "f3-e_co2",
+      "rel_type": "produces",
+      "explanation": "CO2 is shown as output in equation and as multiple product icons on right",
+      "supporting_evidence": "Bottom equation + CO2 + and right-side cluster of CO2 icons with arrow from cell",
+      "confidence": 0.97,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f3-e_respiration",
+      "target_id": "f3-e_h2o",
+      "rel_type": "produces",
+      "explanation": "H2O is shown as output in equation and as multiple product icons on top-right",
+      "supporting_evidence": "Bottom equation + H2O and top-right cluster of H2O icons with arrow from cell",
+      "confidence": 0.97,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f3-e_cell",
+      "target_id": "f3-e_respiration",
+      "rel_type": "participates-in",
+      "explanation": "Blue cell illustration is the site performing simplified cellular respiration",
+      "supporting_evidence": "Central blue cell with curved arrow leading to Energy CO2 H2O products and title Simplified Cellular Respiration",
+      "confidence": 0.8,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "f3-e_cell",
+      "target_id": "f3-e_nucleus",
+      "rel_type": "contains",
+      "explanation": "Central dark structure is enclosed within the blue cell",
+      "supporting_evidence": "Dark blue circular structure located inside blue cell illustration",
+      "confidence": 0.65,
+      "provenance": "model",
+      "model_inferred": true
+    }
+  ]
+}
