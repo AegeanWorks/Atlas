@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.22.0 — Text models can be quizzed (2026-11-01)
+
+- The quiz button no longer refuses books and transcripts: without located
+  entities it quizzes on descriptions instead of highlights, with the same
+  grading, score tracking, and question chaining.
+
 ## 0.21.0 — The contract can't rot (2026-11-01)
 
 - A contract-coverage test hits every GET endpoint the machine contract

@@ -1,4 +1,4 @@
 """Atlas — interactive visual knowledge platform for scientific figures."""
 
-__version__ = "0.21.0"
+__version__ = "0.22.0"
 __schema_version__ = "atlas.visual-knowledge/v1"

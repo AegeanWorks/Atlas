@@ -403,17 +403,21 @@ $("btn-link").onclick = async () => {
 let quiz = null; // active on-figure quiz {challenge, score:[got,total]}
 $("btn-quiz").onclick = async () => {
   if (!state.analysis) return alert("Analyze or load a model first.");
-  if (!state.analysis.entities.some((e) => e.bbox)) {
-    $("quiz-box").textContent = "Quiz needs visually located entities — analyze a figure first.";
+  // Text models (books, transcripts) have no canvas to point at: quiz on
+  // descriptions instead of highlights. Same grading, no silent refusal.
+  const visual = state.analysis.entities.some((e) => e.bbox);
+  if (!visual && !state.analysis.entities.some((e) => e.description)) {
+    $("quiz-box").textContent = "Quiz needs descriptions or located entities — this model has neither.";
     return;
   }
-  await nextQuiz();
+  await nextQuiz(visual ? "spatial-recall" : "visual-identification");
 };
-async function nextQuiz() {
+async function nextQuiz(mode) {
   const c = await api("/api/learn", { analysis: state.analysis,
-    mode: "spatial-recall", seed: Date.now() % 100000 }).catch((e) => alert(e.message));
+    mode: mode || "spatial-recall", seed: Date.now() % 100000 }).catch((e) => alert(e.message));
   if (!c) return;
-  quiz = { challenge: c, score: quiz ? quiz.score : [0, 0] };
+  quiz = { challenge: c, score: quiz ? quiz.score : [0, 0], mode: mode || "spatial-recall",
+           visual: mode !== "visual-identification" };
   state._labels = $("toggle-labels").checked;
   $("toggle-labels").checked = false; // names must not leak the answer
   renderQuiz(); renderOverlay();
@@ -423,7 +427,7 @@ function renderQuiz() {
   if (!quiz || !quiz.challenge) return;
   const c = quiz.challenge;
   const p = document.createElement("div");
-  p.textContent = `On-figure quiz — ${c.prompt} (score ${quiz.score[0]}/${quiz.score[1]})`;
+  p.textContent = `${quiz.visual === false ? "Text quiz" : "On-figure quiz"} — ${c.prompt} (score ${quiz.score[0]}/${quiz.score[1]})`;
   box.appendChild(p);
   for (const o of c.options) {
     const b = document.createElement("button"); b.className = "opt"; b.textContent = o.name;
@@ -434,7 +438,7 @@ function renderQuiz() {
       const right = c.options.find((x) => x.id === c.answer_id);
       d.textContent = g.correct ? "correct ✓" : `not quite — answer: ${right ? right.name : c.answer_id}`;
       box.appendChild(d);
-      if (g.correct) setTimeout(nextQuiz, 700);
+      if (g.correct) setTimeout(() => nextQuiz(quiz.mode), 700);
       else renderQuiz();
     };
     box.appendChild(b);
