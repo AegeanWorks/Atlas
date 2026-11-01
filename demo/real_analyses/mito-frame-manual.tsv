@@ -1,0 +1,24 @@
+Which structure is highlighted?	Cell — Eukaryotic cell hosting the reaction. — large blue cell, center frame
+Eukaryotic cell hosting the reaction.	Cell — Category: anatomical-structure — large blue cell, center frame
+Which structure is highlighted?	Mitochondrion — Organelle where respiration runs; folded inner membrane visible. — dark central body with folded membrane
+Organelle where respiration runs; folded inner membrane visible.	Mitochondrion — Category: component — dark central body with folded membrane
+Cell → ? (contains)	Mitochondrion — The mitochondrion sits inside the cell. — dark body inside blue cell
+Which structure is highlighted?	Oxygen (O2) — Electron acceptor feeding respiration. — blue 'O2' pill, mid-left
+Electron acceptor feeding respiration.	Oxygen (O2) — Category: molecule — blue 'O2' pill, mid-left
+Which structure is highlighted?	Food (substrate) — Nutrient substrate entering the cell. — blue 'food' pill, upper-left
+Nutrient substrate entering the cell.	Food (substrate) — Category: molecule — blue 'food' pill, upper-left
+Cell → ? (receives-input-from)	Food (substrate) — The cell takes up food as substrate. — pill outside cell, left
+Which structure is highlighted?	Energy — Useful output of respiration. — 'Energy' in bottom equation
+Useful output of respiration.	Energy — Category: other — 'Energy' in bottom equation
+Cellular respiration → ? (produces)	Energy — Respiration releases energy. — Energy in equation
+Which structure is highlighted?	Carbon dioxide (CO2) — Waste gas output. — 'CO2' in bottom equation
+Waste gas output.	Carbon dioxide (CO2) — Category: molecule — 'CO2' in bottom equation
+Cellular respiration → ? (produces)	Carbon dioxide (CO2) — Respiration releases CO2. — CO2 in equation
+Which structure is highlighted?	Water (H2O) — Byproduct output. — 'H2O' in bottom equation
+Byproduct output.	Water (H2O) — Category: molecule — 'H2O' in bottom equation
+Cellular respiration → ? (produces)	Water (H2O) — Respiration releases water. — H2O in equation
+Which structure is highlighted?	Cellular respiration — O2 + Food = Energy + CO2 + H2O. — bottom equation 'O2 + Food = Energy + CO2 + H2O'
+O2 + Food = Energy + CO2 + H2O.	Cellular respiration — Category: pathway — bottom equation 'O2 + Food = Energy + CO2 + H2O'
+Oxygen (O2) → ? (participates-in)	Cellular respiration — O2 is consumed by respiration. — O2 in equation
+Food (substrate) → ? (participates-in)	Cellular respiration — Food is consumed by respiration. — Food in equation
+Mitochondrion → ? (participates-in)	Cellular respiration — Respiration runs in the mitochondrion. — 'fig 1: Simplified Cellular Respiration'

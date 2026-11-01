@@ -1,0 +1,199 @@
+{
+  "analysis_version": "atlas.visual-knowledge/v1",
+  "document_ref": "",
+  "source_page": 0,
+  "figure_id": "mito-live",
+  "entities": [
+    {
+      "id": "e1_cell",
+      "name": "cell",
+      "category": "cell-type",
+      "description": "Large blue circular cell illustration in center with internal structures",
+      "bbox": {
+        "x_min": 0.322,
+        "y_min": 0.24,
+        "x_max": 0.625,
+        "y_max": 0.85
+      },
+      "source_evidence": "Central blue circular shape labeled by context as cell in Simplified Cellular Respiration diagram",
+      "confidence": 0.92,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e2_food",
+      "name": "food",
+      "category": "other",
+      "description": "Nutrient input labeled food",
+      "bbox": {
+        "x_min": 0.1,
+        "y_min": 0.345,
+        "x_max": 0.185,
+        "y_max": 0.435
+      },
+      "source_evidence": "Blue oval labeled 'food' on left side and 'Food' text in bottom equation 'O2 + Food = Energy + CO2 + H2O'",
+      "confidence": 0.95,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e3_o2",
+      "name": "O2",
+      "category": "molecule",
+      "description": "Oxygen input molecule",
+      "bbox": {
+        "x_min": 0.075,
+        "y_min": 0.61,
+        "x_max": 0.14,
+        "y_max": 0.69
+      },
+      "source_evidence": "Pink icon labeled 'O2' on left side and pink 'O2' icon in bottom equation left of '+'",
+      "confidence": 0.96,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e4_energy",
+      "name": "Energy",
+      "category": "function",
+      "description": "Energy output of respiration",
+      "bbox": {
+        "x_min": 0.88,
+        "y_min": 0.365,
+        "x_max": 0.955,
+        "y_max": 0.455
+      },
+      "source_evidence": "White starburst labeled 'ENERGY' on right side and 'Energy' text in bottom equation",
+      "confidence": 0.95,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e5_co2",
+      "name": "CO2",
+      "category": "molecule",
+      "description": "Carbon dioxide output molecule",
+      "bbox": {
+        "x_min": 0.885,
+        "y_min": 0.69,
+        "x_max": 0.965,
+        "y_max": 0.79
+      },
+      "source_evidence": "Black and red icon labeled 'CO2' on right side and black icon labeled 'CO2' in bottom equation",
+      "confidence": 0.96,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e6_h2o",
+      "name": "H2O",
+      "category": "molecule",
+      "description": "Water output molecule",
+      "bbox": {
+        "x_min": 0.875,
+        "y_min": 0.065,
+        "x_max": 0.935,
+        "y_max": 0.155
+      },
+      "source_evidence": "Pink and white icon labeled 'H2O' at top right and pink icon labeled 'H2O' in bottom equation",
+      "confidence": 0.96,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e7_cellular_respiration",
+      "name": "Simplified Cellular Respiration",
+      "category": "process",
+      "description": "Simplified cellular respiration process named in title",
+      "bbox": {
+        "x_min": 0.235,
+        "y_min": 0.025,
+        "x_max": 0.795,
+        "y_max": 0.1
+      },
+      "source_evidence": "Title text 'fig 1: Simplified Cellular Respiration' at top and bottom equation 'O2 + Food = Energy + CO2 + H2O'",
+      "confidence": 0.95,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "e1_cell",
+      "target_id": "e2_food",
+      "rel_type": "receives-input-from",
+      "explanation": "Food shown as left-side input to central cell and as reactant in equation",
+      "supporting_evidence": "'food' oval on left of blue cell and 'Food' in bottom equation",
+      "confidence": 0.9,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e1_cell",
+      "target_id": "e3_o2",
+      "rel_type": "receives-input-from",
+      "explanation": "O2 shown as left-side input to central cell and as reactant in equation",
+      "supporting_evidence": "'O2' icon on left of blue cell and 'O2' in bottom equation",
+      "confidence": 0.9,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e2_food",
+      "target_id": "e7_cellular_respiration",
+      "rel_type": "participates-in",
+      "explanation": "Food is a reactant that participates in cellular respiration per equation",
+      "supporting_evidence": "Bottom equation 'O2 + Food = Energy + CO2 + H2O' under title Simplified Cellular Respiration",
+      "confidence": 0.92,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e3_o2",
+      "target_id": "e7_cellular_respiration",
+      "rel_type": "participates-in",
+      "explanation": "O2 is a reactant that participates in cellular respiration per equation",
+      "supporting_evidence": "Bottom equation 'O2 + Food = Energy + CO2 + H2O'",
+      "confidence": 0.92,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e7_cellular_respiration",
+      "target_id": "e4_energy",
+      "rel_type": "produces",
+      "explanation": "Energy is shown as product on right and in equation",
+      "supporting_evidence": "'ENERGY' starburst on right and 'Energy' after '=' in bottom equation",
+      "confidence": 0.92,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e7_cellular_respiration",
+      "target_id": "e5_co2",
+      "rel_type": "produces",
+      "explanation": "CO2 is shown as product on right and in equation",
+      "supporting_evidence": "'CO2' icon on right and 'CO2' after '=' in bottom equation",
+      "confidence": 0.92,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e7_cellular_respiration",
+      "target_id": "e6_h2o",
+      "rel_type": "produces",
+      "explanation": "H2O is shown as product on top-right and in equation",
+      "supporting_evidence": "'H2O' icon at top right and 'H2O' after '=' in bottom equation",
+      "confidence": 0.92,
+      "provenance": "model",
+      "model_inferred": true
+    }
+  ]
+}

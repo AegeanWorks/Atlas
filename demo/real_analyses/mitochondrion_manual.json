@@ -1,0 +1,221 @@
+{
+  "analysis_version": "atlas.visual-knowledge/v1",
+  "document_ref": "Materials/3 - WAY More than a Powerhouse (Kurzgesagt-style explainer frame)",
+  "source_page": 0,
+  "figure_id": "mito-frame-manual",
+  "entities": [
+    {
+      "id": "cell",
+      "name": "Cell",
+      "category": "anatomical-structure",
+      "description": "Eukaryotic cell hosting the reaction.",
+      "bbox": {
+        "x_min": 0.375,
+        "y_min": 0.274,
+        "x_max": 0.609,
+        "y_max": 0.788
+      },
+      "source_evidence": "large blue cell, center frame",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "mito",
+      "name": "Mitochondrion",
+      "category": "component",
+      "description": "Organelle where respiration runs; folded inner membrane visible.",
+      "bbox": {
+        "x_min": 0.445,
+        "y_min": 0.411,
+        "x_max": 0.539,
+        "y_max": 0.668
+      },
+      "source_evidence": "dark central body with folded membrane",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "o2",
+      "name": "Oxygen (O2)",
+      "category": "molecule",
+      "description": "Electron acceptor feeding respiration.",
+      "bbox": {
+        "x_min": 0.109,
+        "y_min": 0.565,
+        "x_max": 0.18,
+        "y_max": 0.685
+      },
+      "source_evidence": "blue 'O2' pill, mid-left",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "food",
+      "name": "Food (substrate)",
+      "category": "molecule",
+      "description": "Nutrient substrate entering the cell.",
+      "bbox": {
+        "x_min": 0.086,
+        "y_min": 0.36,
+        "x_max": 0.172,
+        "y_max": 0.462
+      },
+      "source_evidence": "blue 'food' pill, upper-left",
+      "confidence": 0.8,
+      "uncertainty": "generic substrate, precise molecule unspecified",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "energy",
+      "name": "Energy",
+      "category": "other",
+      "description": "Useful output of respiration.",
+      "bbox": {
+        "x_min": 0.375,
+        "y_min": 0.839,
+        "x_max": 0.469,
+        "y_max": 0.942
+      },
+      "source_evidence": "'Energy' in bottom equation",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "co2",
+      "name": "Carbon dioxide (CO2)",
+      "category": "molecule",
+      "description": "Waste gas output.",
+      "bbox": {
+        "x_min": 0.555,
+        "y_min": 0.839,
+        "x_max": 0.617,
+        "y_max": 0.942
+      },
+      "source_evidence": "'CO2' in bottom equation",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "h2o",
+      "name": "Water (H2O)",
+      "category": "molecule",
+      "description": "Byproduct output.",
+      "bbox": {
+        "x_min": 0.688,
+        "y_min": 0.839,
+        "x_max": 0.766,
+        "y_max": 0.942
+      },
+      "source_evidence": "'H2O' in bottom equation",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "resp",
+      "name": "Cellular respiration",
+      "category": "pathway",
+      "description": "O2 + Food = Energy + CO2 + H2O.",
+      "bbox": null,
+      "source_evidence": "bottom equation 'O2 + Food = Energy + CO2 + H2O'",
+      "confidence": 0.9,
+      "uncertainty": "process, no single location",
+      "mask_ref": "",
+      "model_inferred": false
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "cell",
+      "target_id": "food",
+      "rel_type": "receives-input-from",
+      "explanation": "The cell takes up food as substrate.",
+      "supporting_evidence": "pill outside cell, left",
+      "confidence": 0.85,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "o2",
+      "target_id": "resp",
+      "rel_type": "participates-in",
+      "explanation": "O2 is consumed by respiration.",
+      "supporting_evidence": "O2 in equation",
+      "confidence": 0.9,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "food",
+      "target_id": "resp",
+      "rel_type": "participates-in",
+      "explanation": "Food is consumed by respiration.",
+      "supporting_evidence": "Food in equation",
+      "confidence": 0.9,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "resp",
+      "target_id": "energy",
+      "rel_type": "produces",
+      "explanation": "Respiration releases energy.",
+      "supporting_evidence": "Energy in equation",
+      "confidence": 0.9,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "resp",
+      "target_id": "co2",
+      "rel_type": "produces",
+      "explanation": "Respiration releases CO2.",
+      "supporting_evidence": "CO2 in equation",
+      "confidence": 0.9,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "resp",
+      "target_id": "h2o",
+      "rel_type": "produces",
+      "explanation": "Respiration releases water.",
+      "supporting_evidence": "H2O in equation",
+      "confidence": 0.9,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "cell",
+      "target_id": "mito",
+      "rel_type": "contains",
+      "explanation": "The mitochondrion sits inside the cell.",
+      "supporting_evidence": "dark body inside blue cell",
+      "confidence": 0.9,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "mito",
+      "target_id": "resp",
+      "rel_type": "participates-in",
+      "explanation": "Respiration runs in the mitochondrion.",
+      "supporting_evidence": "'fig 1: Simplified Cellular Respiration'",
+      "confidence": 0.85,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    }
+  ]
+}

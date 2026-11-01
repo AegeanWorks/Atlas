@@ -1,0 +1,618 @@
+{
+  "analysis_version": "atlas.visual-knowledge/v1",
+  "document_ref": "",
+  "source_page": 0,
+  "figure_id": "methionine-live",
+  "entities": [
+    {
+      "id": "e_methionine",
+      "name": "Methionine",
+      "category": "molecule",
+      "description": "Green box labeled Methionine in upper center",
+      "bbox": {
+        "x_min": 0.42,
+        "y_min": 0.155,
+        "x_max": 0.545,
+        "y_max": 0.26
+      },
+      "source_evidence": "Green rectangular box labeled 'Methionine' in upper center",
+      "confidence": 0.99,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_sam",
+      "name": "SAM",
+      "category": "molecule",
+      "description": "Green box labeled SAM on right mid",
+      "bbox": {
+        "x_min": 0.675,
+        "y_min": 0.54,
+        "x_max": 0.76,
+        "y_max": 0.65
+      },
+      "source_evidence": "Green rectangular box labeled 'SAM' on right middle",
+      "confidence": 0.99,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_sah",
+      "name": "SAH",
+      "category": "molecule",
+      "description": "Green box labeled SAH at bottom center",
+      "bbox": {
+        "x_min": 0.43,
+        "y_min": 0.83,
+        "x_max": 0.515,
+        "y_max": 0.91
+      },
+      "source_evidence": "Green rectangular box labeled 'SAH' at bottom center",
+      "confidence": 0.99,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_hcy",
+      "name": "Homocysteine",
+      "category": "molecule",
+      "description": "Green box labeled Homocysteine middle left",
+      "bbox": {
+        "x_min": 0.285,
+        "y_min": 0.54,
+        "x_max": 0.465,
+        "y_max": 0.615
+      },
+      "source_evidence": "Green rectangular box labeled 'Homocysteine' middle left",
+      "confidence": 0.99,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_cys",
+      "name": "Cysteine",
+      "category": "molecule",
+      "description": "Green box labeled Cysteine far left",
+      "bbox": {
+        "x_min": 0.005,
+        "y_min": 0.545,
+        "x_max": 0.125,
+        "y_max": 0.615
+      },
+      "source_evidence": "Green box labeled 'Cysteine' on far left with arrow from Homocysteine",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_betaine",
+      "name": "Betaine",
+      "category": "molecule",
+      "description": "Small green box labeled Betaine",
+      "bbox": {
+        "x_min": 0.405,
+        "y_min": 0.605,
+        "x_max": 0.495,
+        "y_max": 0.66
+      },
+      "source_evidence": "Small green box labeled 'Betaine' below Homocysteine",
+      "confidence": 0.97,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_dmg",
+      "name": "Dimethylglycine",
+      "category": "molecule",
+      "description": "Green box labeled Dimethylglycine",
+      "bbox": {
+        "x_min": 0.52,
+        "y_min": 0.54,
+        "x_max": 0.655,
+        "y_max": 0.6
+      },
+      "source_evidence": "Green box labeled 'Dimethylglycine' between Betaine and SAM",
+      "confidence": 0.97,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_adenosine",
+      "name": "Adenosine",
+      "category": "molecule",
+      "description": "Green box labeled Adenosine bottom left",
+      "bbox": {
+        "x_min": 0.235,
+        "y_min": 0.87,
+        "x_max": 0.355,
+        "y_max": 0.93
+      },
+      "source_evidence": "Green box labeled 'Adenosine' at bottom left below AHCY",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_thf",
+      "name": "THF",
+      "category": "molecule",
+      "description": "Small label THF at top",
+      "bbox": {
+        "x_min": 0.295,
+        "y_min": 0.145,
+        "x_max": 0.345,
+        "y_max": 0.195
+      },
+      "source_evidence": "Small text label 'THF' at top center in folate loop",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_5mthf",
+      "name": "5 MTHF",
+      "category": "molecule",
+      "description": "Green box labeled 5 MTHF",
+      "bbox": {
+        "x_min": 0.26,
+        "y_min": 0.325,
+        "x_max": 0.345,
+        "y_max": 0.385
+      },
+      "source_evidence": "Green box labeled '5 MTHF' left of center below Folate cycle",
+      "confidence": 0.97,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_ch3",
+      "name": "CH3",
+      "category": "molecule",
+      "description": "Light purple oval labeled CH3",
+      "bbox": {
+        "x_min": 0.685,
+        "y_min": 0.8,
+        "x_max": 0.745,
+        "y_max": 0.855
+      },
+      "source_evidence": "Light purple oval labeled 'CH3' above Methylations box",
+      "confidence": 0.95,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "p_mat2a",
+      "name": "MAT2A",
+      "category": "protein",
+      "description": "Pink oval labeled MAT2A on Methionine to SAM arrow",
+      "bbox": {
+        "x_min": 0.56,
+        "y_min": 0.345,
+        "x_max": 0.645,
+        "y_max": 0.405
+      },
+      "source_evidence": "Pink oval label 'MAT2A' on arrow from Methionine to SAM",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "p_mt",
+      "name": "MT",
+      "category": "protein",
+      "description": "Pink oval labeled MT near SAM to SAH arrow",
+      "bbox": {
+        "x_min": 0.625,
+        "y_min": 0.665,
+        "x_max": 0.685,
+        "y_max": 0.725
+      },
+      "source_evidence": "Pink oval label 'MT' between SAM and SAH",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "p_ahcy",
+      "name": "AHCY",
+      "category": "protein",
+      "description": "Pink oval labeled AHCY on SAH to Homocysteine path",
+      "bbox": {
+        "x_min": 0.335,
+        "y_min": 0.7,
+        "x_max": 0.41,
+        "y_max": 0.76
+      },
+      "source_evidence": "Pink oval label 'AHCY' left of center above SAH to Homocysteine arrow",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "p_ms",
+      "name": "MS",
+      "category": "protein",
+      "description": "Pink oval labeled MS on Homocysteine to Methionine arrow",
+      "bbox": {
+        "x_min": 0.335,
+        "y_min": 0.355,
+        "x_max": 0.385,
+        "y_max": 0.405
+      },
+      "source_evidence": "Pink oval label 'MS' on arrow from Homocysteine to Methionine",
+      "confidence": 0.97,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "p_bhmt",
+      "name": "BHMT",
+      "category": "protein",
+      "description": "Pink oval labeled BHMT",
+      "bbox": {
+        "x_min": 0.435,
+        "y_min": 0.44,
+        "x_max": 0.515,
+        "y_max": 0.5
+      },
+      "source_evidence": "Pink oval label 'BHMT' below Methionine, above Betaine",
+      "confidence": 0.97,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "pw_pur_pyr",
+      "name": "Purine and pyrimidine synthesis",
+      "category": "pathway",
+      "description": "Dark blue box Purine and pyrimidine synthesis top left",
+      "bbox": {
+        "x_min": 0.06,
+        "y_min": 0.1,
+        "x_max": 0.24,
+        "y_max": 0.23
+      },
+      "source_evidence": "Dark blue box labeled 'Purine and pyrimidine synthesis' top left",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "pw_purine",
+      "name": "Purine synthesis",
+      "category": "pathway",
+      "description": "Dark blue box Purine synthesis top right",
+      "bbox": {
+        "x_min": 0.83,
+        "y_min": 0.055,
+        "x_max": 0.96,
+        "y_max": 0.15
+      },
+      "source_evidence": "Dark blue box labeled 'Purine synthesis' top right",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "pw_polyamine",
+      "name": "Polyamine synthesis",
+      "category": "pathway",
+      "description": "Dark blue box Polyamine synthesis right",
+      "bbox": {
+        "x_min": 0.87,
+        "y_min": 0.445,
+        "x_max": 0.99,
+        "y_max": 0.53
+      },
+      "source_evidence": "Dark blue box labeled 'Polyamine synthesis' on right middle",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "pr_methylations",
+      "name": "Methylations",
+      "category": "process",
+      "description": "Dark blue box Methylations bottom right",
+      "bbox": {
+        "x_min": 0.79,
+        "y_min": 0.88,
+        "x_max": 0.92,
+        "y_max": 0.97
+      },
+      "source_evidence": "Dark blue box labeled 'Methylations' bottom right receiving CH3 arrow",
+      "confidence": 0.98,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "pw_folate",
+      "name": "Folate cycle",
+      "category": "pathway",
+      "description": "Text label Folate cycle",
+      "bbox": {
+        "x_min": 0.3,
+        "y_min": 0.25,
+        "x_max": 0.375,
+        "y_max": 0.325
+      },
+      "source_evidence": "Text label 'Folate cycle' between THF and 5 MTHF",
+      "confidence": 0.92,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "pw_met_cycle",
+      "name": "Methionine cycle",
+      "category": "pathway",
+      "description": "Text label Methionine cycle",
+      "bbox": {
+        "x_min": 0.495,
+        "y_min": 0.68,
+        "x_max": 0.61,
+        "y_max": 0.755
+      },
+      "source_evidence": "Text label 'Methionine cycle' in center below Betaine",
+      "confidence": 0.92,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "pw_salvage",
+      "name": "Methionine salvage cycle",
+      "category": "pathway",
+      "description": "Text label Methionine salvage cycle",
+      "bbox": {
+        "x_min": 0.605,
+        "y_min": 0.2,
+        "x_max": 0.76,
+        "y_max": 0.285
+      },
+      "source_evidence": "Text label 'Methionine salvage cycle' above SAM to Methionine arrow",
+      "confidence": 0.92,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "pw_transsulf",
+      "name": "Transsulfuration pathway",
+      "category": "pathway",
+      "description": "Text label Transsulfuration pathway",
+      "bbox": {
+        "x_min": 0.135,
+        "y_min": 0.48,
+        "x_max": 0.275,
+        "y_max": 0.555
+      },
+      "source_evidence": "Text label 'Transsulfuration pathway' above dashed arrow from Homocysteine to Cysteine",
+      "confidence": 0.92,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "e_methionine",
+      "target_id": "e_sam",
+      "rel_type": "produces",
+      "explanation": "Solid arrow from Methionine box to SAM box labeled MAT2A",
+      "supporting_evidence": "Curved solid arrow from Methionine down to SAM",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "p_mat2a",
+      "target_id": "e_sam",
+      "rel_type": "activates",
+      "explanation": "MAT2A enzyme label sits on Methionine to SAM conversion arrow",
+      "supporting_evidence": "Pink MAT2A oval on Methionine-to-SAM arrow",
+      "confidence": 0.92,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_sam",
+      "target_id": "e_sah",
+      "rel_type": "produces",
+      "explanation": "Solid arrow from SAM down to SAH",
+      "supporting_evidence": "Solid arrow from SAM box to SAH box",
+      "confidence": 0.95,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "p_mt",
+      "target_id": "e_sah",
+      "rel_type": "regulates",
+      "explanation": "MT label on SAM to SAH methyltransfer step producing CH3",
+      "supporting_evidence": "Pink MT oval adjacent to SAM-to-SAH arrow",
+      "confidence": 0.9,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_sah",
+      "target_id": "e_hcy",
+      "rel_type": "produces",
+      "explanation": "Arrow from SAH up to Homocysteine completing cycle",
+      "supporting_evidence": "Solid arrow from SAH box to Homocysteine box",
+      "confidence": 0.93,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_sah",
+      "target_id": "e_adenosine",
+      "rel_type": "produces",
+      "explanation": "SAH to Adenosine branch arrow",
+      "supporting_evidence": "Arrow from SAH to Adenosine green box",
+      "confidence": 0.9,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "p_ahcy",
+      "target_id": "e_hcy",
+      "rel_type": "activates",
+      "explanation": "AHCY label on SAH to Homocysteine/Adenosine step",
+      "supporting_evidence": "Pink AHCY oval on SAH to Homocysteine path",
+      "confidence": 0.9,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_hcy",
+      "target_id": "e_methionine",
+      "rel_type": "produces",
+      "explanation": "Arrow from Homocysteine to Methionine via MS/BHMT",
+      "supporting_evidence": "Solid arrows from Homocysteine box up to Methionine box",
+      "confidence": 0.94,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "p_ms",
+      "target_id": "e_methionine",
+      "rel_type": "activates",
+      "explanation": "MS label on Homocysteine to Methionine remethylation",
+      "supporting_evidence": "Pink MS oval on Homocysteine-to-Methionine arrow with 5MTHF input",
+      "confidence": 0.9,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "p_bhmt",
+      "target_id": "e_methionine",
+      "rel_type": "activates",
+      "explanation": "BHMT label on Homocysteine to Methionine remethylation using Betaine",
+      "supporting_evidence": "Pink BHMT oval on Homocysteine-to-Methionine arrow",
+      "confidence": 0.9,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_betaine",
+      "target_id": "e_dmg",
+      "rel_type": "produces",
+      "explanation": "Betaine to Dimethylglycine conversion coupled to BHMT reaction",
+      "supporting_evidence": "Arrow from Betaine box to Dimethylglycine box",
+      "confidence": 0.88,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_hcy",
+      "target_id": "e_cys",
+      "rel_type": "produces",
+      "explanation": "Dashed arrow from Homocysteine to Cysteine labeled Transsulfuration pathway",
+      "supporting_evidence": "Dashed arrow from Homocysteine leftwards to Cysteine",
+      "confidence": 0.9,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_sam",
+      "target_id": "e_ch3",
+      "rel_type": "produces",
+      "explanation": "SAM provides methyl group CH3 leading to Methylations",
+      "supporting_evidence": "Arrow from SAM via MT/CH3 to Methylations box",
+      "confidence": 0.88,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_ch3",
+      "target_id": "pr_methylations",
+      "rel_type": "participates-in",
+      "explanation": "CH3 arrow points into Methylations dark blue box",
+      "supporting_evidence": "Arrow from CH3 oval to Methylations box",
+      "confidence": 0.9,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_sam",
+      "target_id": "pw_polyamine",
+      "rel_type": "participates-in",
+      "explanation": "Dashed arrow toward Polyamine synthesis from SAM region",
+      "supporting_evidence": "Dashed line connecting SAM area to Polyamine synthesis box",
+      "confidence": 0.85,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_sam",
+      "target_id": "pw_salvage",
+      "rel_type": "participates-in",
+      "explanation": "SAM feeds into Methionine salvage cycle loop",
+      "supporting_evidence": "Curved arrow labeled Methionine salvage cycle originating near SAM",
+      "confidence": 0.85,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "pw_salvage",
+      "target_id": "pw_purine",
+      "rel_type": "participates-in",
+      "explanation": "Dashed arrows from salvage cycle to Purine synthesis box",
+      "supporting_evidence": "Dashed arrows leading to Purine synthesis dark blue box at top right",
+      "confidence": 0.8,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "pw_met_cycle",
+      "target_id": "e_methionine",
+      "rel_type": "contains",
+      "explanation": "Methionine cycle encompasses central Methionine-SAM-SAH-Homocysteine loop",
+      "supporting_evidence": "Text 'Methionine cycle' centered inside loop of Methionine, SAM, SAH, Homocysteine",
+      "confidence": 0.88,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "pw_met_cycle",
+      "target_id": "e_sam",
+      "rel_type": "contains",
+      "explanation": "Methionine cycle contains SAM as core intermediate",
+      "supporting_evidence": "SAM box inside circular Methionine cycle arrows",
+      "confidence": 0.88,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_hcy",
+      "target_id": "pw_transsulf",
+      "rel_type": "participates-in",
+      "explanation": "Homocysteine participates in Transsulfuration to Cysteine",
+      "supporting_evidence": "Homocysteine box with dashed arrow labeled Transsulfuration pathway",
+      "confidence": 0.85,
+      "provenance": "model",
+      "model_inferred": true
+    }
+  ]
+}

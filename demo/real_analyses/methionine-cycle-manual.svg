@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640" viewBox="0 0 960 640">
+<rect width="960" height="640" fill="#0b1530"/>
+<text x="480" y="36" text-anchor="middle" fill="#dbe7ff" font-size="24" font-family="sans-serif">methionine-cycle-manual</text>
+<defs><marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9" fill="none" stroke="#22d3ee" stroke-width="1.6"/></marker></defs>
+<line x1="510" y1="152" x2="700" y2="318" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="605" y="229" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="609" y1="280" x2="700" y2="318" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="654" y="293" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">regulates</text>
+<line x1="700" y1="318" x2="559" y2="460" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="630" y="383" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="675" y1="409" x2="559" y2="460" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="617" y="429" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">regulates</text>
+<line x1="559" y1="460" x2="416" y2="315" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="488" y="381" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="559" y1="460" x2="342" y2="460" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="451" y="454" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="416" y1="315" x2="510" y2="152" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="463" y="227" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="408" y1="272" x2="510" y2="152" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="459" y="206" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">regulates</text>
+<line x1="313" y1="238" x2="510" y2="152" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="411" y="189" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">participates-in</text>
+<line x1="354" y1="186" x2="313" y2="238" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="333" y="206" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="445" y1="315" x2="416" y2="315" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="430" y="309" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">regulates</text>
+<line x1="419" y1="374" x2="502" y2="349" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="461" y="356" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="416" y1="315" x2="136" y2="315" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="276" y="309" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="700" y1="318" x2="819" y2="280" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="759" y="293" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">participates-in</text>
+<line x1="708" y1="443" x2="807" y2="460" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="757" y="446" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">participates-in</text>
+<line x1="700" y1="318" x2="807" y2="460" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="753" y="383" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">participates-in</text>
+<rect x="457" y="130" width="107" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="510" y="157" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Methionine</text>
+<rect x="655" y="293" width="90" height="51" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="700" y="323" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">SAM</text>
+<rect x="514" y="438" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="559" y="465" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">SAH</text>
+<rect x="333" y="293" width="165" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="416" y="320" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Homocysteine</text>
+<rect x="86" y="293" width="99" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="136" y="320" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Cysteine</text>
+<rect x="292" y="438" width="99" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="342" y="465" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Adenosine</text>
+<rect x="374" y="352" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="419" y="379" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Betaine</text>
+<rect x="424" y="327" width="156" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="502" y="354" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Dimethylglycine</text>
+<rect x="309" y="164" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="354" y="191" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">THF</text>
+<rect x="268" y="216" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="313" y="243" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">5-MTHF</text>
+<rect x="363" y="250" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="408" y="277" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">MS (methionine syntha…</text>
+<rect x="400" y="293" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="445" y="320" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">BHMT</text>
+<rect x="564" y="258" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="609" y="285" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">MAT2A</text>
+<rect x="391" y="395" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="436" y="422" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">AHCY</text>
+<rect x="630" y="387" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="675" y="414" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">MT (methyltransferase…</text>
+<rect x="663" y="421" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="708" y="448" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Methyl group (CH3)</text>
+<rect x="753" y="438" width="107" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="807" y="465" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Methylations</text>
+<rect x="769" y="258" width="99" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="819" y="285" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Polyamine synthesis</text>
+<rect x="761" y="78" width="99" height="60" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="811" y="114" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Purine synthesis</text>
+<rect x="235" y="173" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="280" y="200" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Folate cycle</text>
+<rect x="547" y="198" width="148" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="621" y="225" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Methionine salvage cy…</text>
+<rect x="168" y="306" width="157" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="247" y="333" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Transsulfuration path…</text>
+<rect x="441" y="370" width="157" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="519" y="397" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Methionine cycle</text>
+</svg>

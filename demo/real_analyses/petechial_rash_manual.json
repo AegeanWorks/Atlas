@@ -1,0 +1,422 @@
+{
+  "analysis_version": "atlas.visual-knowledge/v1",
+  "document_ref": "Materials/23.jpg (petechial rash diagnostic flowchart)",
+  "source_page": 0,
+  "figure_id": "petechial-rash-manual",
+  "entities": [
+    {
+      "id": "rash",
+      "name": "Petechial rash",
+      "category": "anatomical-structure",
+      "description": "Pinpoint hemorrhagic lesions under 2 mm.",
+      "bbox": {
+        "x_min": 0.3,
+        "y_min": 0.02,
+        "x_max": 0.64,
+        "y_max": 0.21
+      },
+      "source_evidence": "green title box with definition",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "photo",
+      "name": "Rash photograph",
+      "category": "other",
+      "description": "Clinical photo of petechiae, central reference.",
+      "bbox": {
+        "x_min": 0.415,
+        "y_min": 0.36,
+        "x_max": 0.585,
+        "y_max": 0.52
+      },
+      "source_evidence": "central skin photo",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "redflags",
+      "name": "Red flags",
+      "category": "other",
+      "description": "Fever, toxic appearance, hypotension, mucosal lesions, severe pain, extremes of age, immunosuppression, new medication.",
+      "bbox": {
+        "x_min": 0.005,
+        "y_min": 0.02,
+        "x_max": 0.135,
+        "y_max": 0.335
+      },
+      "source_evidence": "pink panel, upper left",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "etiology",
+      "name": "Etiology panel",
+      "category": "other",
+      "description": "Abnormal hemostasis: thrombocytopenia, platelet dysfunction, clotting factor defects.",
+      "bbox": {
+        "x_min": 0.735,
+        "y_min": 0.02,
+        "x_max": 1.0,
+        "y_max": 0.25
+      },
+      "source_evidence": "purple panel, upper right",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "vascular",
+      "name": "Vascular integrity disruption",
+      "category": "process",
+      "description": "Trauma, infection, vasculitis, collagen disorders.",
+      "bbox": {
+        "x_min": 0.875,
+        "y_min": 0.02,
+        "x_max": 1.0,
+        "y_max": 0.2
+      },
+      "source_evidence": "purple sub-panel, far right",
+      "confidence": 0.8,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "febrile",
+      "name": "Febrile, Toxic",
+      "category": "other",
+      "description": "Feverish/toxic branch of the triage.",
+      "bbox": {
+        "x_min": 0.045,
+        "y_min": 0.42,
+        "x_max": 0.285,
+        "y_max": 0.53
+      },
+      "source_evidence": "peach box, left",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "afebrile",
+      "name": "Afebrile, nontoxic",
+      "category": "other",
+      "description": "Non-fever branch of the triage.",
+      "bbox": {
+        "x_min": 0.72,
+        "y_min": 0.42,
+        "x_max": 0.99,
+        "y_max": 0.53
+      },
+      "source_evidence": "pale blue box, right",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "palp_feb",
+      "name": "Palpable (febrile)",
+      "category": "other",
+      "description": "Palpable lesions under febrile/toxic.",
+      "bbox": {
+        "x_min": 0.005,
+        "y_min": 0.68,
+        "x_max": 0.22,
+        "y_max": 0.79
+      },
+      "source_evidence": "peach box, lower left",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "nonpalp_feb",
+      "name": "Non-palpable (febrile)",
+      "category": "other",
+      "description": "Non-palpable lesions under febrile/toxic.",
+      "bbox": {
+        "x_min": 0.315,
+        "y_min": 0.68,
+        "x_max": 0.5,
+        "y_max": 0.79
+      },
+      "source_evidence": "peach box, lower middle",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "palp_afeb",
+      "name": "Palpable (afebrile)",
+      "category": "other",
+      "description": "Palpable lesions under afebrile.",
+      "bbox": {
+        "x_min": 0.645,
+        "y_min": 0.68,
+        "x_max": 0.8,
+        "y_max": 0.79
+      },
+      "source_evidence": "blue box, lower middle-right",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "nonpalp_afeb",
+      "name": "Non-palpable (afebrile)",
+      "category": "other",
+      "description": "Non-palpable lesions under afebrile.",
+      "bbox": {
+        "x_min": 0.845,
+        "y_min": 0.68,
+        "x_max": 1.0,
+        "y_max": 0.79
+      },
+      "source_evidence": "blue box, lower right",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "ddx_feb_palp",
+      "name": "Febrile palpable differentials",
+      "category": "other",
+      "description": "Meningococcemia, disseminated gonococcal infection, RMSF, HSP, endocarditis.",
+      "bbox": {
+        "x_min": 0.005,
+        "y_min": 0.85,
+        "x_max": 0.255,
+        "y_max": 0.995
+      },
+      "source_evidence": "list box, bottom left",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "ddx_feb_nonpalp",
+      "name": "Febrile non-palpable differentials",
+      "category": "other",
+      "description": "Purpura fulminans, DIC, TTP.",
+      "bbox": {
+        "x_min": 0.315,
+        "y_min": 0.85,
+        "x_max": 0.49,
+        "y_max": 0.995
+      },
+      "source_evidence": "list box, bottom middle",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "ddx_afeb_palp",
+      "name": "Afebrile palpable differentials",
+      "category": "other",
+      "description": "Autoimmune vasculitis (lupus, RA, Sjogren, GPA, EGPA, microscopic); viral (echovirus, coxsackie, measles, parvovirus).",
+      "bbox": {
+        "x_min": 0.595,
+        "y_min": 0.85,
+        "x_max": 0.835,
+        "y_max": 0.995
+      },
+      "source_evidence": "list box, bottom middle-right",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "ddx_afeb_nonpalp",
+      "name": "Afebrile non-palpable differentials",
+      "category": "other",
+      "description": "ITP, APLS, HIT, cholesterol embolism, amyloidosis, nutritional deficiency.",
+      "bbox": {
+        "x_min": 0.775,
+        "y_min": 0.85,
+        "x_max": 0.995,
+        "y_max": 0.995
+      },
+      "source_evidence": "list box, bottom right",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "workup",
+      "name": "Work Up",
+      "category": "process",
+      "description": "CBC, coagulation studies, urinalysis, occult blood, hepatitis serology, protein electrophoresis, ASO titre, ANA, ANCA, RF, immunoglobulins, biopsy, ultrasound.",
+      "bbox": {
+        "x_min": 0.3,
+        "y_min": 0.9,
+        "x_max": 0.7,
+        "y_max": 0.995
+      },
+      "source_evidence": "workup panel, bottom center",
+      "confidence": 0.8,
+      "uncertainty": "dense small type; list may be partial",
+      "mask_ref": "",
+      "model_inferred": false
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "rash",
+      "target_id": "febrile",
+      "rel_type": "produces",
+      "explanation": "Triage splits petechiae into febrile/toxic cases.",
+      "supporting_evidence": "blue arrow left",
+      "confidence": 0.9,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "rash",
+      "target_id": "afebrile",
+      "rel_type": "produces",
+      "explanation": "Triage splits petechiae into afebrile cases.",
+      "supporting_evidence": "blue arrow right",
+      "confidence": 0.9,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "febrile",
+      "target_id": "palp_feb",
+      "rel_type": "produces",
+      "explanation": "Febrile branch splits by palpability.",
+      "supporting_evidence": "blue arrows",
+      "confidence": 0.9,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "febrile",
+      "target_id": "nonpalp_feb",
+      "rel_type": "produces",
+      "explanation": "Febrile branch splits by palpability.",
+      "supporting_evidence": "blue arrows",
+      "confidence": 0.9,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "afebrile",
+      "target_id": "palp_afeb",
+      "rel_type": "produces",
+      "explanation": "Afebrile branch splits by palpability.",
+      "supporting_evidence": "blue arrows",
+      "confidence": 0.9,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "afebrile",
+      "target_id": "nonpalp_afeb",
+      "rel_type": "produces",
+      "explanation": "Afebrile branch splits by palpability.",
+      "supporting_evidence": "blue arrows",
+      "confidence": 0.9,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "palp_feb",
+      "target_id": "ddx_feb_palp",
+      "rel_type": "produces",
+      "explanation": "Palpable febrile rash suggests listed infections/vasculitis.",
+      "supporting_evidence": "arrow to list",
+      "confidence": 0.85,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "nonpalp_feb",
+      "target_id": "ddx_feb_nonpalp",
+      "rel_type": "produces",
+      "explanation": "Non-palpable febrile rash suggests purpura fulminans/DIC/TTP.",
+      "supporting_evidence": "arrow to list",
+      "confidence": 0.85,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "palp_afeb",
+      "target_id": "ddx_afeb_palp",
+      "rel_type": "produces",
+      "explanation": "Palpable afebrile rash suggests autoimmune/viral causes.",
+      "supporting_evidence": "arrow to list",
+      "confidence": 0.85,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "nonpalp_afeb",
+      "target_id": "ddx_afeb_nonpalp",
+      "rel_type": "produces",
+      "explanation": "Non-palpable afebrile rash suggests platelet/coagulation causes.",
+      "supporting_evidence": "arrow to list",
+      "confidence": 0.85,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "redflags",
+      "target_id": "febrile",
+      "rel_type": "participates-in",
+      "explanation": "Red flags push toward the febrile/toxic branch.",
+      "supporting_evidence": "adjacent panel",
+      "confidence": 0.75,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "etiology",
+      "target_id": "afebrile",
+      "rel_type": "participates-in",
+      "explanation": "Hemostasis defects frame the afebrile differentials.",
+      "supporting_evidence": "adjacent panel",
+      "confidence": 0.7,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "workup",
+      "target_id": "rash",
+      "rel_type": "regulates",
+      "explanation": "Workup panel governs confirmation for all branches.",
+      "supporting_evidence": "bottom panel spanning tree",
+      "confidence": 0.75,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "photo",
+      "target_id": "rash",
+      "rel_type": "participates-in",
+      "explanation": "Photo grounds what petechiae look like.",
+      "supporting_evidence": "central photo",
+      "confidence": 0.9,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    }
+  ]
+}

@@ -14,3 +14,4 @@ node_modules/
 # Local project state and backups are never published
 .aikit/
 *.bak
+demo/real_analyses/_store/

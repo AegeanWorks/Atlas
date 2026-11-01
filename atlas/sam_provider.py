@@ -13,6 +13,10 @@ Contract:
   noun phrase -> SAM returns mask(s) -> Atlas overlays on the original image.
 - Never confuse boxes with masks: results carry kind="mask" only when a mask
   payload decoded; otherwise kind="bbox-fallback" with the Muse box.
+- Empirical (2026-11-01, live): sam-3.1 via POST /v1/responses returns status
+  completed with EMPTY output_text for the documented noun-phrase shape, so
+  live calls honestly land on bbox-fallback with a sized note; the adapter
+  still scans raw output for localizable boxes/file ids first.
 """
 from __future__ import annotations
 
@@ -88,6 +92,17 @@ class SamProvider:
         result = self.transport(payload)
         mask_ref = str(result.get("mask_ref", "") or result.get("file_id", ""))
         box = result.get("box")
+        note = str(result.get("raw_note", ""))
+        if box is None and not mask_ref:
+            # Live sam-3.1 answers carry no mask_ref/box keys; scan the raw
+            # payload for anything localizable before admitting fallback.
+            raw = result.get("raw", "")
+            box = _scan_box(raw)
+            if not mask_ref:
+                mask_ref = _scan_file_id(raw)
+            if not note and raw:
+                note = (f"sam-3.1 returned no localizable output "
+                        f"({len(raw)} chars); bbox fallback")
         bbox = None
         if box:
             try:
@@ -98,7 +113,27 @@ class SamProvider:
             bbox = fallback_box
         if mask_ref:
             return Segmentation(entity_id, "mask", bbox, mask_ref, "sam-3.1 mask")
-        return Segmentation(entity_id, "bbox-fallback", bbox, "", "bbox fallback; no mask decoded")
+        return Segmentation(entity_id, "bbox-fallback", bbox, "", note or "bbox fallback; no mask decoded")
+
+
+def _scan_box(raw: str) -> list | None:
+    """Best-effort: first [x1,y1,x2,y2] int quad inside the 0..1000 grid."""
+    import re
+    if not isinstance(raw, str):
+        return None
+    for match in re.finditer(r"\[\s*(\d{1,4})\s*,\s*(\d{1,4})\s*,\s*(\d{1,4})\s*,\s*(\d{1,4})\s*\]", raw):
+        vals = [float(g) for g in match.groups()]
+        if all(0 <= v <= 1000 for v in vals) and vals[0] < vals[2] and vals[1] < vals[3]:
+            return vals
+    return None
+
+
+def _scan_file_id(raw: str) -> str:
+    import re
+    if not isinstance(raw, str):
+        return ""
+    match = re.search(r"file[-_ ]?(?:id)?['\"]?\s*[:=]\s*['\"]?([A-Za-z0-9_-]{8,})", raw)
+    return match.group(1) if match else ""
 
     def disclosure(self) -> str:
         return ("Transmits ONLY the selected figure crop + a short noun phrase to Meta "

@@ -1,0 +1,375 @@
+{
+  "analysis_version": "atlas.visual-knowledge/v1",
+  "document_ref": "",
+  "source_page": 0,
+  "figure_id": "rash-live",
+  "entities": [
+    {
+      "id": "e_petechial",
+      "name": "Petechial rash",
+      "category": "process",
+      "description": "Pinpoint areas less than 2 mm of hemorrhage, reddish-purple lesions",
+      "bbox": {
+        "x_min": 0.318,
+        "y_min": 0.0,
+        "x_max": 0.668,
+        "y_max": 0.18
+      },
+      "source_evidence": "Top green box labeled 'Petechial rash' with definition text",
+      "confidence": 0.99,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_febrile",
+      "name": "Febrile, Toxic",
+      "category": "other",
+      "description": "Febrile, Toxic clinical branch",
+      "bbox": {
+        "x_min": 0.067,
+        "y_min": 0.235,
+        "x_max": 0.28,
+        "y_max": 0.345
+      },
+      "source_evidence": "Pink box labeled 'Febrile,Toxic' left side with blue arrow from top",
+      "confidence": 0.99,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_afebrile",
+      "name": "Afebrile, nontoxic",
+      "category": "other",
+      "description": "Afebrile, nontoxic clinical branch",
+      "bbox": {
+        "x_min": 0.719,
+        "y_min": 0.237,
+        "x_max": 0.987,
+        "y_max": 0.342
+      },
+      "source_evidence": "Light blue box labeled 'Afebrile,nontoxic' right side with blue arrow from top",
+      "confidence": 0.99,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_feb_palp",
+      "name": "Palpable (febrile branch)",
+      "category": "other",
+      "description": "Palpable sub-branch of febrile arm",
+      "bbox": {
+        "x_min": 0.0,
+        "y_min": 0.485,
+        "x_max": 0.186,
+        "y_max": 0.575
+      },
+      "source_evidence": "Box labeled 'Palpable' under Febrile,Toxic left",
+      "confidence": 0.97,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_feb_nonpalp",
+      "name": "Non-Palpable (febrile branch)",
+      "category": "other",
+      "description": "Non-Palpable sub-branch of febrile arm",
+      "bbox": {
+        "x_min": 0.317,
+        "y_min": 0.457,
+        "x_max": 0.494,
+        "y_max": 0.565
+      },
+      "source_evidence": "Box labeled 'Non-Palpable' under Febrile,Toxic middle",
+      "confidence": 0.97,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_afeb_palp",
+      "name": "Palpable (afebrile branch)",
+      "category": "other",
+      "description": "Palpable sub-branch of afebrile arm",
+      "bbox": {
+        "x_min": 0.623,
+        "y_min": 0.505,
+        "x_max": 0.752,
+        "y_max": 0.595
+      },
+      "source_evidence": "Box labeled 'Palpable' under Afebrile,nontoxic",
+      "confidence": 0.97,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_afeb_nonpalp",
+      "name": "Non-Palpable (afebrile branch)",
+      "category": "other",
+      "description": "Non-Palpable sub-branch of afebrile arm",
+      "bbox": {
+        "x_min": 0.836,
+        "y_min": 0.51,
+        "x_max": 1.0,
+        "y_max": 0.597
+      },
+      "source_evidence": "Box labeled 'Non-Palpable' under Afebrile,nontoxic right",
+      "confidence": 0.97,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_diff_feb_palp",
+      "name": "Febrile palpable differential: Meningococcemia, Disseminated gonococcal Infection, RMSF, Henoch Schonlein Purpura, Endocarditis",
+      "category": "other",
+      "description": "Differential list for febrile palpable petechiae",
+      "bbox": {
+        "x_min": 0.006,
+        "y_min": 0.692,
+        "x_max": 0.263,
+        "y_max": 0.957
+      },
+      "source_evidence": "Bottom-left black box listing '-Meningococcemia -Disseminated gonococcal Infection -RMSF -Henoch Schonlein Purpura -Endocarditis'",
+      "confidence": 0.96,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_diff_feb_nonpalp",
+      "name": "Febrile non-palpable differential: Purpura fulminans, DIC, TTP",
+      "category": "other",
+      "description": "Differential list for febrile non-palpable petechiae",
+      "bbox": {
+        "x_min": 0.336,
+        "y_min": 0.677,
+        "x_max": 0.538,
+        "y_max": 0.836
+      },
+      "source_evidence": "Middle box listing '-Purpura fulminans -DIC -TTP'",
+      "confidence": 0.96,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_diff_afeb_palp",
+      "name": "Afebrile palpable differential: Autoimmune Vasculitis, Viral infection",
+      "category": "other",
+      "description": "Differential list for afebrile palpable petechiae",
+      "bbox": {
+        "x_min": 0.599,
+        "y_min": 0.642,
+        "x_max": 0.801,
+        "y_max": 0.873
+      },
+      "source_evidence": "Box listing '-Autoimmune Vasculitis - lupus, RA, Sjogrens, GPA,EGPA, Microscopic - Viral echovirus, coxsackie, measles, Parvovirus'",
+      "confidence": 0.96,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_diff_afeb_nonpalp",
+      "name": "Afebrile non-palpable differential: ITP, APLS, HIT, Cholesterol embolism, Amyloidosis, Nutritional deficiency",
+      "category": "other",
+      "description": "Differential list for afebrile non-palpable petechiae",
+      "bbox": {
+        "x_min": 0.817,
+        "y_min": 0.675,
+        "x_max": 0.998,
+        "y_max": 0.997
+      },
+      "source_evidence": "Bottom-right box listing '-ITP -APLS -HIT - ITP -Cholesterol embolism - Amyloidosis - Nutritional deficiency'",
+      "confidence": 0.96,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_skin_photo",
+      "name": "Skin with petechial lesions",
+      "category": "anatomical-structure",
+      "description": "Clinical photograph of skin showing reddish-purple petechial spots",
+      "bbox": {
+        "x_min": 0.43,
+        "y_min": 0.198,
+        "x_max": 0.6,
+        "y_max": 0.365
+      },
+      "source_evidence": "Central color photograph of skin with pinpoint reddish lesions between Febrile and Afebrile boxes",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_red_flags",
+      "name": "Red flags",
+      "category": "other",
+      "description": "List of warning features: Fever, Toxic appearance, Hypotension, etc.",
+      "bbox": {
+        "x_min": 0.005,
+        "y_min": 0.0,
+        "x_max": 0.117,
+        "y_max": 0.24
+      },
+      "source_evidence": "Top-left pink box labeled 'Red flags: -Fever -Toxic appearance -Hypotension -Mucosal lesions...'",
+      "confidence": 0.95,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_etiology",
+      "name": "Etiology: Abnormalities in primary or secondary hemostasis; Disruptions in vascular integrity",
+      "category": "process",
+      "description": "Etiologic categories: hemostasis abnormalities and vascular integrity disruptions",
+      "bbox": {
+        "x_min": 0.686,
+        "y_min": 0.0,
+        "x_max": 1.0,
+        "y_max": 0.18
+      },
+      "source_evidence": "Top-right purple box with 'Etiology: Abnormalities in primary or secondary hemostasis -thrombocytopenia...' and '-Disruptions in vascular integrity -trauma, -infection, -vasculitis...'",
+      "confidence": 0.94,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    },
+    {
+      "id": "e_workup",
+      "name": "Work Up investigations",
+      "category": "other",
+      "description": "Recommended laboratory and diagnostic workup list",
+      "bbox": {
+        "x_min": 0.335,
+        "y_min": 0.879,
+        "x_max": 0.732,
+        "y_max": 1.0
+      },
+      "source_evidence": "Bottom-middle box labeled 'Work Up: complete blood count coagulation studies Urinalysis...'",
+      "confidence": 0.93,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": true
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "e_petechial",
+      "target_id": "e_febrile",
+      "rel_type": "projects-to",
+      "explanation": "Blue arrow from Petechial rash box to Febrile,Toxic box indicates diagnostic branching",
+      "supporting_evidence": "Blue arrow connecting top green box to left pink Febrile box",
+      "confidence": 0.99,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_petechial",
+      "target_id": "e_afebrile",
+      "rel_type": "projects-to",
+      "explanation": "Blue arrow from Petechial rash box to Afebrile,nontoxic box indicates diagnostic branching",
+      "supporting_evidence": "Blue arrow connecting top green box to right Afebrile box",
+      "confidence": 0.99,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_febrile",
+      "target_id": "e_feb_palp",
+      "rel_type": "projects-to",
+      "explanation": "Blue line branches from Febrile,Toxic to left Palpable box",
+      "supporting_evidence": "Blue T-shaped line with down arrow to Palpable box",
+      "confidence": 0.98,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_febrile",
+      "target_id": "e_feb_nonpalp",
+      "rel_type": "projects-to",
+      "explanation": "Blue line branches from Febrile,Toxic to Non-Palpable box",
+      "supporting_evidence": "Blue T-shaped line with down arrow to Non-Palpable box",
+      "confidence": 0.98,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_afebrile",
+      "target_id": "e_afeb_palp",
+      "rel_type": "projects-to",
+      "explanation": "Blue line branches from Afebrile,nontoxic to Palpable box",
+      "supporting_evidence": "Blue T-shaped line with down arrow to Palpable box under afebrile",
+      "confidence": 0.98,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_afebrile",
+      "target_id": "e_afeb_nonpalp",
+      "rel_type": "projects-to",
+      "explanation": "Blue line branches from Afebrile,nontoxic to Non-Palpable box",
+      "supporting_evidence": "Blue T-shaped line with down arrow to Non-Palpable box under afebrile",
+      "confidence": 0.98,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_feb_palp",
+      "target_id": "e_diff_feb_palp",
+      "rel_type": "projects-to",
+      "explanation": "Arrow from febrile Palpable to its differential list",
+      "supporting_evidence": "Vertical blue arrow to box with Meningococcemia, RMSF, etc.",
+      "confidence": 0.97,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_feb_nonpalp",
+      "target_id": "e_diff_feb_nonpalp",
+      "rel_type": "projects-to",
+      "explanation": "Arrow from febrile Non-Palpable to its differential list",
+      "supporting_evidence": "Vertical blue arrow to box with Purpura fulminans, DIC, TTP",
+      "confidence": 0.97,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_afeb_palp",
+      "target_id": "e_diff_afeb_palp",
+      "rel_type": "projects-to",
+      "explanation": "Arrow from afebrile Palpable to its differential list",
+      "supporting_evidence": "Vertical blue arrow to box with Autoimmune Vasculitis, Viral",
+      "confidence": 0.97,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_afeb_nonpalp",
+      "target_id": "e_diff_afeb_nonpalp",
+      "rel_type": "projects-to",
+      "explanation": "Arrow from afebrile Non-Palpable to its differential list",
+      "supporting_evidence": "Vertical blue arrow to box with ITP, APLS, HIT, etc.",
+      "confidence": 0.97,
+      "provenance": "model",
+      "model_inferred": true
+    },
+    {
+      "source_id": "e_skin_photo",
+      "target_id": "e_petechial",
+      "rel_type": "participates-in",
+      "explanation": "Photograph illustrates the petechial rash phenotype",
+      "supporting_evidence": "Photo placed directly below Petechial rash definition box showing pinpoint hemorrhages",
+      "confidence": 0.85,
+      "provenance": "model",
+      "model_inferred": true
+    }
+  ]
+}

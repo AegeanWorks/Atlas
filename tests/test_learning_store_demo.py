@@ -23,6 +23,18 @@ def test_learning_modes_deterministic():
     assert learn.grade(vi, vi["answer_id"])["correct"]
 
 
+def test_deck_dedupes_merged_frames():
+    from atlas import flashcards as fc
+    from atlas.app import _merge_frame_analyses
+    base = VisualAnalysis.from_dict(FIXTURE_ANALYSIS)
+    merged = _merge_frame_analyses([base, base], "d", "vid").to_dict()
+    full = fc.build_deck(merged, dedupe=False)
+    slim = fc.build_deck(merged)
+    assert slim["deduped"] == len(full["cards"]) - len(slim["cards"]) > 0
+    fronts = [(c["kind"], c["front"]["text"], c["back"]["text"]) for c in slim["cards"]]
+    assert len(set(fronts)) == len(fronts)
+
+
 def test_store_keeps_corrections_separate(tmp_path):
     store = AtlasStore(str(tmp_path))
     store.save_analysis("fig", {"entities": []})

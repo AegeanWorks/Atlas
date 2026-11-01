@@ -177,10 +177,19 @@ def auto_create_model(store: AtlasStore, config: AtlasConfig, source: str,
         merged = _merge_frame_analyses(per_frame, doc["document_ref"], fid)
         data = merged.to_dict()
         store.save_analysis(fid, data)
+        located = sum(1 for e in data["entities"] if e.get("bbox"))
+        warning = ""
+        if located == 0:
+            warning = ("frames yielded no grounded boxes: this is a text-only model. "
+                       "Learn via flashcards, summary, and podcast — not the canvas overlay.")
+        elif located < len(data["entities"]) / 2:
+            warning = (f"only {located}/{len(data['entities'])} entities grounded; "
+                       "canvas overlay is partial, text paths are complete.")
         first = os.path.basename(frames[0])
         return {"document": doc, "model_created": True, "figure_id": fid,
                 "figure_url": "/frames/" + os.path.basename(frames_dir) + "/" + first,
-                "frames": len(frames), "analysis": data, "source_kind": "video"}
+                "frames": len(frames), "analysis": data, "source_kind": "video",
+                "located_entities": located, "warning": warning}
     # image path: full-frame figure, visual analysis
     fid = figure_id or ("model-" + doc["sha256"][:8])
     figure = ing.select_figure(bundle["path"], crop or (0.0, 0.0, 1.0, 1.0),

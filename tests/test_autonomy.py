@@ -154,6 +154,48 @@ def test_auto_create_from_url_and_epub_upload(tmp_path, monkeypatch):
         atlas_app.Handler.store = None
 
 
+class _BoxlessMuse:
+    def analyze_figure(self, *a, **k):
+        from atlas.schema import VisualAnalysis, VisualEntity
+        return VisualAnalysis(document_ref=k.get("document_ref", ""),
+                              figure_id=k.get("figure_id", "f"),
+                              entities=[VisualEntity(id="t", name="Thing",
+                                                     category="component")],
+                              relationships=[])
+
+
+def test_video_without_boxes_warns_text_only(tmp_path, monkeypatch):
+    import atlas.sources as sources
+    from PIL import Image
+    from atlas.app import auto_create_model
+    from atlas.config import AtlasConfig
+    from atlas.store import AtlasStore
+
+    real_frames = sources.video_frames
+    monkeypatch.setattr(sources, "video_frames",
+                        lambda path, outdir, max_frames=4: [str(tmp_path / "f.png")])
+    import random
+    from PIL import ImageDraw
+    img = Image.new("RGB", (320, 240), (10, 20, 30))
+    rnd, draw = random.Random(4), ImageDraw.Draw(img)
+    for _ in range(600):
+        draw.point((rnd.randrange(320), rnd.randrange(240)),
+                   fill=(rnd.randrange(256), rnd.randrange(256), rnd.randrange(256)))
+    img.save(tmp_path / "f.png")
+    (tmp_path / "v.mp4").write_bytes(b"fake")
+    import atlas.ingestion as ing
+    real_ingest = ing.import_document
+    monkeypatch.setattr(ing, "import_document",
+                        lambda p, d, page=0: {"document_ref": p, "sha256": "ab" * 32,
+                                             "original_name": "v.mp4"})
+    result = auto_create_model(AtlasStore(str(tmp_path / "d")),
+                               AtlasConfig(api_key="", data_dir=str(tmp_path / "d")),
+                               str(tmp_path / "v.mp4"), muse_provider=_BoxlessMuse())
+    assert result["source_kind"] == "video"
+    assert "text-only" in result["warning"]
+    assert result["located_entities"] == 0
+
+
 def test_upload_rejects_empty_and_missing_file(tmp_path):
     server, thread = _serve(tmp_path / "data")
     port = server.server_address[1]

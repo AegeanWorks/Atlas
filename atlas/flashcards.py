@@ -8,8 +8,13 @@ elsewhere, and the workspace reviews them with self-grading + running score.
 from __future__ import annotations
 
 
-def build_deck(analysis: dict) -> dict:
-    """Analysis → {"cards": [...]}. Deterministic order: stable for review."""
+def build_deck(analysis: dict, dedupe: bool = True) -> dict:
+    """Analysis → {"cards": [...], "deduped": n}. Deterministic order.
+
+    Merged multi-frame models repeat the same Q/A across frames; exact
+    duplicates are dropped (count reported) so review isn't the same card
+    four times. Disable with dedupe=False for auditing.
+    """
     entities = list(analysis.get("entities", []))
     names = {e["id"]: e.get("name", e["id"]) for e in entities}
     rels_by_target: dict[str, list] = {}
@@ -44,7 +49,20 @@ def build_deck(analysis: dict) -> dict:
                          "detail": r.get("explanation", ""),
                          "evidence": r.get("supporting_evidence", "")},
             })
-    return {"figure_id": analysis.get("figure_id", ""), "cards": cards}
+    if dedupe:
+        seen, unique, dropped = set(), [], 0
+        for c in cards:
+            key = (c["kind"], c["front"]["text"], c["back"]["text"])
+            if key in seen:
+                dropped += 1
+                continue
+            seen.add(key)
+            unique.append(c)
+        cards = unique
+    else:
+        dropped = 0
+    return {"figure_id": analysis.get("figure_id", ""), "cards": cards,
+            "deduped": dropped}
 
 
 def _cell(text: str) -> str:

@@ -31,6 +31,25 @@ def test_muse_provider_mock(tmp_path):
     assert analysis.entities[0].id == "striatum"
 
 
+def test_sam_scans_raw_before_fallback(tmp_path):
+    from atlas.sam_provider import _scan_box, _scan_file_id
+    assert _scan_box('{"boxes": [[120, 200, 340, 400]]}') == [120.0, 200.0, 340.0, 400.0]
+    assert _scan_box("no boxes here") is None
+    assert _scan_box('{"a": [5, 5, 5, 5]}') is None  # degenerate, not a box
+    assert _scan_file_id("mask file_id: abcDEF12-34") == "abcDEF12-34"
+    assert _scan_file_id("nothing") == ""
+    cfg = AtlasConfig(api_key="test", data_dir=str(tmp_path))
+    img = tmp_path / "f.png"
+    img.write_bytes(b"fakepng")
+
+    def empty_live(payload):
+        return {"raw": '{"status":"completed","output":[]}'}
+
+    seg = SamProvider(cfg, transport=empty_live).segment(str(img), "cell", "c1")
+    assert seg.kind == "bbox-fallback"
+    assert "no localizable output" in seg.raw_note
+
+
 def test_sam_bbox_fallback(tmp_path):
     img = tmp_path / "f.png"
     img.write_bytes(b"fakepng")

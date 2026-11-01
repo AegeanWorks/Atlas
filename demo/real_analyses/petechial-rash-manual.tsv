@@ -1,0 +1,46 @@
+Which structure is highlighted?	Petechial rash — Pinpoint hemorrhagic lesions under 2 mm. — green title box with definition
+Pinpoint hemorrhagic lesions under 2 mm.	Petechial rash — Category: anatomical-structure — green title box with definition
+Work Up → ? (regulates)	Petechial rash — Workup panel governs confirmation for all branches. — bottom panel spanning tree
+Rash photograph → ? (participates-in)	Petechial rash — Photo grounds what petechiae look like. — central photo
+Which structure is highlighted?	Rash photograph — Clinical photo of petechiae, central reference. — central skin photo
+Clinical photo of petechiae, central reference.	Rash photograph — Category: other — central skin photo
+Which structure is highlighted?	Red flags — Fever, toxic appearance, hypotension, mucosal lesions, severe pain, extremes of age, immunosuppression, new medication. — pink panel, upper left
+Fever, toxic appearance, hypotension, mucosal lesions, severe pain, extremes of age, immunosuppression, new medication.	Red flags — Category: other — pink panel, upper left
+Which structure is highlighted?	Etiology panel — Abnormal hemostasis: thrombocytopenia, platelet dysfunction, clotting factor defects. — purple panel, upper right
+Abnormal hemostasis: thrombocytopenia, platelet dysfunction, clotting factor defects.	Etiology panel — Category: other — purple panel, upper right
+Which structure is highlighted?	Vascular integrity disruption — Trauma, infection, vasculitis, collagen disorders. — purple sub-panel, far right
+Trauma, infection, vasculitis, collagen disorders.	Vascular integrity disruption — Category: process — purple sub-panel, far right
+Which structure is highlighted?	Febrile, Toxic — Feverish/toxic branch of the triage. — peach box, left
+Feverish/toxic branch of the triage.	Febrile, Toxic — Category: other — peach box, left
+Petechial rash → ? (produces)	Febrile, Toxic — Triage splits petechiae into febrile/toxic cases. — blue arrow left
+Red flags → ? (participates-in)	Febrile, Toxic — Red flags push toward the febrile/toxic branch. — adjacent panel
+Which structure is highlighted?	Afebrile, nontoxic — Non-fever branch of the triage. — pale blue box, right
+Non-fever branch of the triage.	Afebrile, nontoxic — Category: other — pale blue box, right
+Petechial rash → ? (produces)	Afebrile, nontoxic — Triage splits petechiae into afebrile cases. — blue arrow right
+Etiology panel → ? (participates-in)	Afebrile, nontoxic — Hemostasis defects frame the afebrile differentials. — adjacent panel
+Which structure is highlighted?	Palpable (febrile) — Palpable lesions under febrile/toxic. — peach box, lower left
+Palpable lesions under febrile/toxic.	Palpable (febrile) — Category: other — peach box, lower left
+Febrile, Toxic → ? (produces)	Palpable (febrile) — Febrile branch splits by palpability. — blue arrows
+Which structure is highlighted?	Non-palpable (febrile) — Non-palpable lesions under febrile/toxic. — peach box, lower middle
+Non-palpable lesions under febrile/toxic.	Non-palpable (febrile) — Category: other — peach box, lower middle
+Febrile, Toxic → ? (produces)	Non-palpable (febrile) — Febrile branch splits by palpability. — blue arrows
+Which structure is highlighted?	Palpable (afebrile) — Palpable lesions under afebrile. — blue box, lower middle-right
+Palpable lesions under afebrile.	Palpable (afebrile) — Category: other — blue box, lower middle-right
+Afebrile, nontoxic → ? (produces)	Palpable (afebrile) — Afebrile branch splits by palpability. — blue arrows
+Which structure is highlighted?	Non-palpable (afebrile) — Non-palpable lesions under afebrile. — blue box, lower right
+Non-palpable lesions under afebrile.	Non-palpable (afebrile) — Category: other — blue box, lower right
+Afebrile, nontoxic → ? (produces)	Non-palpable (afebrile) — Afebrile branch splits by palpability. — blue arrows
+Which structure is highlighted?	Febrile palpable differentials — Meningococcemia, disseminated gonococcal infection, RMSF, HSP, endocarditis. — list box, bottom left
+Meningococcemia, disseminated gonococcal infection, RMSF, HSP, endocarditis.	Febrile palpable differentials — Category: other — list box, bottom left
+Palpable (febrile) → ? (produces)	Febrile palpable differentials — Palpable febrile rash suggests listed infections/vasculitis. — arrow to list
+Which structure is highlighted?	Febrile non-palpable differentials — Purpura fulminans, DIC, TTP. — list box, bottom middle
+Purpura fulminans, DIC, TTP.	Febrile non-palpable differentials — Category: other — list box, bottom middle
+Non-palpable (febrile) → ? (produces)	Febrile non-palpable differentials — Non-palpable febrile rash suggests purpura fulminans/DIC/TTP. — arrow to list
+Which structure is highlighted?	Afebrile palpable differentials — Autoimmune vasculitis (lupus, RA, Sjogren, GPA, EGPA, microscopic); viral (echovirus, coxsackie, measles, parvovirus). — list box, bottom middle-right
+Autoimmune vasculitis (lupus, RA, Sjogren, GPA, EGPA, microscopic); viral (echovirus, coxsackie, measles, parvovirus).	Afebrile palpable differentials — Category: other — list box, bottom middle-right
+Palpable (afebrile) → ? (produces)	Afebrile palpable differentials — Palpable afebrile rash suggests autoimmune/viral causes. — arrow to list
+Which structure is highlighted?	Afebrile non-palpable differentials — ITP, APLS, HIT, cholesterol embolism, amyloidosis, nutritional deficiency. — list box, bottom right
+ITP, APLS, HIT, cholesterol embolism, amyloidosis, nutritional deficiency.	Afebrile non-palpable differentials — Category: other — list box, bottom right
+Non-palpable (afebrile) → ? (produces)	Afebrile non-palpable differentials — Non-palpable afebrile rash suggests platelet/coagulation causes. — arrow to list
+Which structure is highlighted?	Work Up — CBC, coagulation studies, urinalysis, occult blood, hepatitis serology, protein electrophoresis, ASO titre, ANA, ANCA, RF, immunoglobulins, biopsy, ultrasound. — workup panel, bottom center
+CBC, coagulation studies, urinalysis, occult blood, hepatitis serology, protein electrophoresis, ASO titre, ANA, ANCA, RF, immunoglobulins, biopsy, ultrasound.	Work Up — Category: process — workup panel, bottom center

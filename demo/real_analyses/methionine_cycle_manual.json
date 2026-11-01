@@ -1,0 +1,561 @@
+{
+  "analysis_version": "atlas.visual-knowledge/v1",
+  "document_ref": "Materials/26.png (methionine cycle pathway diagram)",
+  "source_page": 0,
+  "figure_id": "methionine-cycle-manual",
+  "entities": [
+    {
+      "id": "methionine",
+      "name": "Methionine",
+      "category": "molecule",
+      "description": "Essential amino acid; cycle entry and hub.",
+      "bbox": {
+        "x_min": 0.472,
+        "y_min": 0.136,
+        "x_max": 0.602,
+        "y_max": 0.233
+      },
+      "source_evidence": "green box 'Methionine', top center",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "sam",
+      "name": "SAM",
+      "category": "molecule",
+      "description": "S-adenosylmethionine; universal methyl donor.",
+      "bbox": {
+        "x_min": 0.713,
+        "y_min": 0.506,
+        "x_max": 0.783,
+        "y_max": 0.623
+      },
+      "source_evidence": "green box 'SAM', right",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "sah",
+      "name": "SAH",
+      "category": "molecule",
+      "description": "S-adenosylhomocysteine; SAM after methyl donation.",
+      "bbox": {
+        "x_min": 0.542,
+        "y_min": 0.837,
+        "x_max": 0.622,
+        "y_max": 0.934
+      },
+      "source_evidence": "green box 'SAH', bottom",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "hcy",
+      "name": "Homocysteine",
+      "category": "molecule",
+      "description": "Branch point: remethylated or transsulfurated.",
+      "bbox": {
+        "x_min": 0.321,
+        "y_min": 0.506,
+        "x_max": 0.522,
+        "y_max": 0.603
+      },
+      "source_evidence": "green box 'Homocysteine', middle-left",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "cysteine",
+      "name": "Cysteine",
+      "category": "molecule",
+      "description": "Transsulfuration end product.",
+      "bbox": {
+        "x_min": 0.02,
+        "y_min": 0.506,
+        "x_max": 0.141,
+        "y_max": 0.603
+      },
+      "source_evidence": "green box 'Cysteine', far left",
+      "confidence": 0.9,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "adenosine",
+      "name": "Adenosine",
+      "category": "molecule",
+      "description": "Released when SAH becomes homocysteine.",
+      "bbox": {
+        "x_min": 0.271,
+        "y_min": 0.837,
+        "x_max": 0.392,
+        "y_max": 0.934
+      },
+      "source_evidence": "green box 'Adenosine', bottom-left",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "betaine",
+      "name": "Betaine",
+      "category": "molecule",
+      "description": "Methyl donor for the BHMT route.",
+      "bbox": {
+        "x_min": 0.371,
+        "y_min": 0.642,
+        "x_max": 0.472,
+        "y_max": 0.739
+      },
+      "source_evidence": "green box 'Betaine'",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "dmg",
+      "name": "Dimethylglycine",
+      "category": "molecule",
+      "description": "Betaine after methyl donation.",
+      "bbox": {
+        "x_min": 0.432,
+        "y_min": 0.584,
+        "x_max": 0.622,
+        "y_max": 0.661
+      },
+      "source_evidence": "green box 'Dimethylglycine'",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "thf",
+      "name": "THF",
+      "category": "molecule",
+      "description": "Tetrahydrofolate; folate loop carrier.",
+      "bbox": {
+        "x_min": 0.291,
+        "y_min": 0.214,
+        "x_max": 0.351,
+        "y_max": 0.292
+      },
+      "source_evidence": "'THF', upper left loop",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "mthf",
+      "name": "5-MTHF",
+      "category": "molecule",
+      "description": "5-methyl-THF; feeds the MS remethylation step.",
+      "bbox": {
+        "x_min": 0.241,
+        "y_min": 0.331,
+        "x_max": 0.341,
+        "y_max": 0.409
+      },
+      "source_evidence": "'5 MTHF', left loop",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "ms",
+      "name": "MS (methionine synthase)",
+      "category": "protein",
+      "description": "Enzyme remethylating homocysteine via folate.",
+      "bbox": {
+        "x_min": 0.357,
+        "y_min": 0.409,
+        "x_max": 0.412,
+        "y_max": 0.486
+      },
+      "source_evidence": "blue 'MS' label on left arrow",
+      "confidence": 0.8,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "bhmt",
+      "name": "BHMT",
+      "category": "protein",
+      "description": "Betaine-homocysteine methyltransferase; alternate route.",
+      "bbox": {
+        "x_min": 0.402,
+        "y_min": 0.506,
+        "x_max": 0.482,
+        "y_max": 0.584
+      },
+      "source_evidence": "blue 'BHMT' label",
+      "confidence": 0.8,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "mat2a",
+      "name": "MAT2A",
+      "category": "protein",
+      "description": "Enzyme synthesizing SAM from methionine.",
+      "bbox": {
+        "x_min": 0.602,
+        "y_min": 0.428,
+        "x_max": 0.693,
+        "y_max": 0.506
+      },
+      "source_evidence": "blue 'MAT2A' label, right arrow",
+      "confidence": 0.8,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "ahcy",
+      "name": "AHCY",
+      "category": "protein",
+      "description": "Enzyme converting SAH to homocysteine + adenosine.",
+      "bbox": {
+        "x_min": 0.392,
+        "y_min": 0.739,
+        "x_max": 0.472,
+        "y_max": 0.817
+      },
+      "source_evidence": "blue 'AHCY' label",
+      "confidence": 0.8,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "mt",
+      "name": "MT (methyltransferases)",
+      "category": "protein",
+      "description": "Enzymes moving methyl groups from SAM.",
+      "bbox": {
+        "x_min": 0.683,
+        "y_min": 0.72,
+        "x_max": 0.723,
+        "y_max": 0.798
+      },
+      "source_evidence": "blue 'MT' label",
+      "confidence": 0.75,
+      "uncertainty": "abbreviation only; class of enzymes",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "ch3",
+      "name": "Methyl group (CH3)",
+      "category": "molecule",
+      "description": "Transferred unit; ends in methylations.",
+      "bbox": {
+        "x_min": 0.723,
+        "y_min": 0.798,
+        "x_max": 0.783,
+        "y_max": 0.875
+      },
+      "source_evidence": "'CH3' label above Methylations",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "methylations",
+      "name": "Methylations",
+      "category": "process",
+      "description": "Downstream methylation reactions.",
+      "bbox": {
+        "x_min": 0.833,
+        "y_min": 0.837,
+        "x_max": 0.964,
+        "y_max": 0.934
+      },
+      "source_evidence": "dark box 'Methylations', bottom-right",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "polyamines",
+      "name": "Polyamine synthesis",
+      "category": "pathway",
+      "description": "SAM-consuming output route.",
+      "bbox": {
+        "x_min": 0.853,
+        "y_min": 0.428,
+        "x_max": 0.974,
+        "y_max": 0.525
+      },
+      "source_evidence": "dark box 'Polyamine synthesis'",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "purines",
+      "name": "Purine synthesis",
+      "category": "pathway",
+      "description": "Folate-linked output at top right.",
+      "bbox": {
+        "x_min": 0.843,
+        "y_min": 0.019,
+        "x_max": 0.964,
+        "y_max": 0.156
+      },
+      "source_evidence": "dark box 'Purine synthesis'",
+      "confidence": 0.85,
+      "uncertainty": "",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "folate_cycle",
+      "name": "Folate cycle",
+      "category": "pathway",
+      "description": "THF/5-MTHF loop feeding remethylation.",
+      "bbox": {
+        "x_min": 0.201,
+        "y_min": 0.233,
+        "x_max": 0.301,
+        "y_max": 0.311
+      },
+      "source_evidence": "'Folate cycle' label, upper left",
+      "confidence": 0.8,
+      "uncertainty": "label region; approximate",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "salvage",
+      "name": "Methionine salvage cycle",
+      "category": "pathway",
+      "description": "Return route shown upper right.",
+      "bbox": {
+        "x_min": 0.582,
+        "y_min": 0.292,
+        "x_max": 0.763,
+        "y_max": 0.37
+      },
+      "source_evidence": "'Methionine salvage cycle' label",
+      "confidence": 0.75,
+      "uncertainty": "label region; approximate",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "transsulf",
+      "name": "Transsulfuration pathway",
+      "category": "pathway",
+      "description": "Homocysteine \u2192 Cysteine drain.",
+      "bbox": {
+        "x_min": 0.12,
+        "y_min": 0.537,
+        "x_max": 0.311,
+        "y_max": 0.615
+      },
+      "source_evidence": "label left of Homocysteine",
+      "confidence": 0.8,
+      "uncertainty": "label overlaps diagram; approximate",
+      "mask_ref": "",
+      "model_inferred": false
+    },
+    {
+      "id": "met_cycle",
+      "name": "Methionine cycle",
+      "category": "pathway",
+      "description": "Core Methionine\u2192SAM\u2192SAH\u2192Homocysteine loop.",
+      "bbox": {
+        "x_min": 0.452,
+        "y_min": 0.681,
+        "x_max": 0.643,
+        "y_max": 0.759
+      },
+      "source_evidence": "center label",
+      "confidence": 0.8,
+      "uncertainty": "label overlaps diagram; approximate",
+      "mask_ref": "",
+      "model_inferred": false
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "methionine",
+      "target_id": "sam",
+      "rel_type": "produces",
+      "explanation": "MAT2A converts methionine to SAM.",
+      "supporting_evidence": "down-right arrow via MAT2A",
+      "confidence": 0.85,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "mat2a",
+      "target_id": "sam",
+      "rel_type": "regulates",
+      "explanation": "MAT2A drives SAM synthesis.",
+      "supporting_evidence": "blue MAT2A on the arrow",
+      "confidence": 0.8,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "sam",
+      "target_id": "sah",
+      "rel_type": "produces",
+      "explanation": "Methyltransferases convert SAM to SAH.",
+      "supporting_evidence": "down arrow via MT",
+      "confidence": 0.85,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "mt",
+      "target_id": "sah",
+      "rel_type": "regulates",
+      "explanation": "MT enzymes mediate SAM\u2192SAH.",
+      "supporting_evidence": "blue MT on the arrow",
+      "confidence": 0.75,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "sah",
+      "target_id": "hcy",
+      "rel_type": "produces",
+      "explanation": "AHCY converts SAH to homocysteine (+adenosine).",
+      "supporting_evidence": "arrow via AHCY",
+      "confidence": 0.85,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "sah",
+      "target_id": "adenosine",
+      "rel_type": "produces",
+      "explanation": "Adenosine released alongside homocysteine.",
+      "supporting_evidence": "branch arrow to Adenosine",
+      "confidence": 0.8,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "hcy",
+      "target_id": "methionine",
+      "rel_type": "produces",
+      "explanation": "MS remethylates homocysteine using 5-MTHF.",
+      "supporting_evidence": "left arrow via MS",
+      "confidence": 0.85,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "ms",
+      "target_id": "methionine",
+      "rel_type": "regulates",
+      "explanation": "MS catalyzes the remethylation.",
+      "supporting_evidence": "blue MS on the arrow",
+      "confidence": 0.8,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "mthf",
+      "target_id": "methionine",
+      "rel_type": "participates-in",
+      "explanation": "5-MTHF donates the methyl group.",
+      "supporting_evidence": "folate loop arrow into MS step",
+      "confidence": 0.8,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "thf",
+      "target_id": "mthf",
+      "rel_type": "produces",
+      "explanation": "Folate loop interconverts THF and 5-MTHF.",
+      "supporting_evidence": "loop arrows upper left",
+      "confidence": 0.75,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "bhmt",
+      "target_id": "hcy",
+      "rel_type": "regulates",
+      "explanation": "BHMT drives the alternate betaine-dependent remethylation.",
+      "supporting_evidence": "blue BHMT label",
+      "confidence": 0.8,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "betaine",
+      "target_id": "dmg",
+      "rel_type": "produces",
+      "explanation": "Betaine becomes dimethylglycine after donation.",
+      "supporting_evidence": "Betaine\u2192Dimethylglycine",
+      "confidence": 0.8,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "hcy",
+      "target_id": "cysteine",
+      "rel_type": "produces",
+      "explanation": "Transsulfuration drains homocysteine to cysteine.",
+      "supporting_evidence": "leftward arrow",
+      "confidence": 0.85,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "sam",
+      "target_id": "polyamines",
+      "rel_type": "participates-in",
+      "explanation": "SAM feeds polyamine synthesis.",
+      "supporting_evidence": "arrow to dark box",
+      "confidence": 0.8,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "ch3",
+      "target_id": "methylations",
+      "rel_type": "participates-in",
+      "explanation": "Methyl groups end in methylations.",
+      "supporting_evidence": "arrow to Methylations",
+      "confidence": 0.8,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    },
+    {
+      "source_id": "sam",
+      "target_id": "methylations",
+      "rel_type": "participates-in",
+      "explanation": "SAM-sourced methyl groups methylate targets.",
+      "supporting_evidence": "via MT/CH3 route",
+      "confidence": 0.75,
+      "provenance": "manual-ai-viewed",
+      "model_inferred": false
+    }
+  ]
+}

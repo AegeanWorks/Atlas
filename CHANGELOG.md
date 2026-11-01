@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.14.0 — Live-model verification (2026-11-01)
+
+- First production Muse runs on real materials: hand analyses vs live Spark
+  analyses score 93.8-100 on the same quality battery; live video auto-create
+  (4 frames, 36 entities) is honest about boxless frames with a text-only
+  warning and partial-grounding notes.
+- SAM adapter scans raw responses for localizable output before falling back,
+  and records the empty-output finding; flashcard decks dedupe exact repeats.
+- `demo/real_analyses/`: three hand-authored analyses, three live Muse
+  analyses, every artifact, and the comparison REPORT.
+
 ## 0.13.0 — Eyes on the material (2026-11-01)
 
 - Frame quality gate: blank transition cards dropped, near-duplicates removed,

@@ -1,0 +1,62 @@
+Which structure is highlighted?	Methionine — Essential amino acid; cycle entry and hub. — green box 'Methionine', top center
+Essential amino acid; cycle entry and hub.	Methionine — Category: molecule — green box 'Methionine', top center
+Homocysteine → ? (produces)	Methionine — MS remethylates homocysteine using 5-MTHF. — left arrow via MS
+MS (methionine synthase) → ? (regulates)	Methionine — MS catalyzes the remethylation. — blue MS on the arrow
+5-MTHF → ? (participates-in)	Methionine — 5-MTHF donates the methyl group. — folate loop arrow into MS step
+Which structure is highlighted?	SAM — S-adenosylmethionine; universal methyl donor. — green box 'SAM', right
+S-adenosylmethionine; universal methyl donor.	SAM — Category: molecule — green box 'SAM', right
+Methionine → ? (produces)	SAM — MAT2A converts methionine to SAM. — down-right arrow via MAT2A
+MAT2A → ? (regulates)	SAM — MAT2A drives SAM synthesis. — blue MAT2A on the arrow
+Which structure is highlighted?	SAH — S-adenosylhomocysteine; SAM after methyl donation. — green box 'SAH', bottom
+S-adenosylhomocysteine; SAM after methyl donation.	SAH — Category: molecule — green box 'SAH', bottom
+SAM → ? (produces)	SAH — Methyltransferases convert SAM to SAH. — down arrow via MT
+MT (methyltransferases) → ? (regulates)	SAH — MT enzymes mediate SAM→SAH. — blue MT on the arrow
+Which structure is highlighted?	Homocysteine — Branch point: remethylated or transsulfurated. — green box 'Homocysteine', middle-left
+Branch point: remethylated or transsulfurated.	Homocysteine — Category: molecule — green box 'Homocysteine', middle-left
+SAH → ? (produces)	Homocysteine — AHCY converts SAH to homocysteine (+adenosine). — arrow via AHCY
+BHMT → ? (regulates)	Homocysteine — BHMT drives the alternate betaine-dependent remethylation. — blue BHMT label
+Which structure is highlighted?	Cysteine — Transsulfuration end product. — green box 'Cysteine', far left
+Transsulfuration end product.	Cysteine — Category: molecule — green box 'Cysteine', far left
+Homocysteine → ? (produces)	Cysteine — Transsulfuration drains homocysteine to cysteine. — leftward arrow
+Which structure is highlighted?	Adenosine — Released when SAH becomes homocysteine. — green box 'Adenosine', bottom-left
+Released when SAH becomes homocysteine.	Adenosine — Category: molecule — green box 'Adenosine', bottom-left
+SAH → ? (produces)	Adenosine — Adenosine released alongside homocysteine. — branch arrow to Adenosine
+Which structure is highlighted?	Betaine — Methyl donor for the BHMT route. — green box 'Betaine'
+Methyl donor for the BHMT route.	Betaine — Category: molecule — green box 'Betaine'
+Which structure is highlighted?	Dimethylglycine — Betaine after methyl donation. — green box 'Dimethylglycine'
+Betaine after methyl donation.	Dimethylglycine — Category: molecule — green box 'Dimethylglycine'
+Betaine → ? (produces)	Dimethylglycine — Betaine becomes dimethylglycine after donation. — Betaine→Dimethylglycine
+Which structure is highlighted?	THF — Tetrahydrofolate; folate loop carrier. — 'THF', upper left loop
+Tetrahydrofolate; folate loop carrier.	THF — Category: molecule — 'THF', upper left loop
+Which structure is highlighted?	5-MTHF — 5-methyl-THF; feeds the MS remethylation step. — '5 MTHF', left loop
+5-methyl-THF; feeds the MS remethylation step.	5-MTHF — Category: molecule — '5 MTHF', left loop
+THF → ? (produces)	5-MTHF — Folate loop interconverts THF and 5-MTHF. — loop arrows upper left
+Which structure is highlighted?	MS (methionine synthase) — Enzyme remethylating homocysteine via folate. — blue 'MS' label on left arrow
+Enzyme remethylating homocysteine via folate.	MS (methionine synthase) — Category: protein — blue 'MS' label on left arrow
+Which structure is highlighted?	BHMT — Betaine-homocysteine methyltransferase; alternate route. — blue 'BHMT' label
+Betaine-homocysteine methyltransferase; alternate route.	BHMT — Category: protein — blue 'BHMT' label
+Which structure is highlighted?	MAT2A — Enzyme synthesizing SAM from methionine. — blue 'MAT2A' label, right arrow
+Enzyme synthesizing SAM from methionine.	MAT2A — Category: protein — blue 'MAT2A' label, right arrow
+Which structure is highlighted?	AHCY — Enzyme converting SAH to homocysteine + adenosine. — blue 'AHCY' label
+Enzyme converting SAH to homocysteine + adenosine.	AHCY — Category: protein — blue 'AHCY' label
+Which structure is highlighted?	MT (methyltransferases) — Enzymes moving methyl groups from SAM. — blue 'MT' label
+Enzymes moving methyl groups from SAM.	MT (methyltransferases) — Category: protein — blue 'MT' label
+Which structure is highlighted?	Methyl group (CH3) — Transferred unit; ends in methylations. — 'CH3' label above Methylations
+Transferred unit; ends in methylations.	Methyl group (CH3) — Category: molecule — 'CH3' label above Methylations
+Which structure is highlighted?	Methylations — Downstream methylation reactions. — dark box 'Methylations', bottom-right
+Downstream methylation reactions.	Methylations — Category: process — dark box 'Methylations', bottom-right
+Methyl group (CH3) → ? (participates-in)	Methylations — Methyl groups end in methylations. — arrow to Methylations
+SAM → ? (participates-in)	Methylations — SAM-sourced methyl groups methylate targets. — via MT/CH3 route
+Which structure is highlighted?	Polyamine synthesis — SAM-consuming output route. — dark box 'Polyamine synthesis'
+SAM-consuming output route.	Polyamine synthesis — Category: pathway — dark box 'Polyamine synthesis'
+SAM → ? (participates-in)	Polyamine synthesis — SAM feeds polyamine synthesis. — arrow to dark box
+Which structure is highlighted?	Purine synthesis — Folate-linked output at top right. — dark box 'Purine synthesis'
+Folate-linked output at top right.	Purine synthesis — Category: pathway — dark box 'Purine synthesis'
+Which structure is highlighted?	Folate cycle — THF/5-MTHF loop feeding remethylation. — 'Folate cycle' label, upper left
+THF/5-MTHF loop feeding remethylation.	Folate cycle — Category: pathway — 'Folate cycle' label, upper left
+Which structure is highlighted?	Methionine salvage cycle — Return route shown upper right. — 'Methionine salvage cycle' label
+Return route shown upper right.	Methionine salvage cycle — Category: pathway — 'Methionine salvage cycle' label
+Which structure is highlighted?	Transsulfuration pathway — Homocysteine → Cysteine drain. — label left of Homocysteine
+Homocysteine → Cysteine drain.	Transsulfuration pathway — Category: pathway — label left of Homocysteine
+Which structure is highlighted?	Methionine cycle — Core Methionine→SAM→SAH→Homocysteine loop. — center label
+Core Methionine→SAM→SAH→Homocysteine loop.	Methionine cycle — Category: pathway — center label
