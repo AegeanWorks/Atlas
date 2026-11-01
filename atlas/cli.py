@@ -134,6 +134,31 @@ def cmd_agent(args) -> int:
     return 0 if report["failed"] == 0 else 1
 
 
+def cmd_materials(args) -> int:
+    from . import materials as mat
+    data = AtlasStore(args.data).load_analysis(args.figure_id)
+    if data is None:
+        print(json.dumps({"ok": False, "error": f"unknown figure_id {args.figure_id!r}"}))
+        return 1
+    kind = args.kind
+    if kind == "tour":
+        print(json.dumps(mat.tour_3d(data), indent=2))
+    elif kind == "questions":
+        print(json.dumps(mat.question_bank(data), indent=2))
+    elif kind == "podcast-json":
+        print(json.dumps(mat.podcast_script(data), indent=2))
+    else:
+        payload = {"diagram-svg": (mat.diagram_svg(data).encode(), ".svg"),
+                   "diagram-png": (mat.diagram_png(data), ".png"),
+                   "podcast-md": (mat.podcast_markdown(mat.podcast_script(data)).encode(), ".md"),
+                   }[kind]
+        out = args.out or f"{args.figure_id}-{kind}{payload[1]}"
+        with open(out, "wb") as fh:
+            fh.write(payload[0])
+        print(json.dumps({"ok": True, "file": out}))
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Atlas headless CLI for AI agents")
     ap.add_argument("--data", default="data")
@@ -169,6 +194,12 @@ def main(argv=None) -> int:
     smry = sub.add_parser("summary", help="print the auto study brief")
     smry.add_argument("figure_id")
     smry.set_defaults(func=cmd_summary)
+    mat = sub.add_parser("materials", help="study pack: diagram/tour/podcast/questions")
+    mat.add_argument("figure_id")
+    mat.add_argument("kind", choices=["diagram-svg", "diagram-png", "tour",
+                                      "podcast-md", "podcast-json", "questions"])
+    mat.add_argument("--out", default="")
+    mat.set_defaults(func=cmd_materials)
     ag = sub.add_parser("agent", help="prove AI autonomy: fixture model end to end")
     ag.add_argument("--figure-id", default="agent-demo")
     ag.set_defaults(func=cmd_agent)

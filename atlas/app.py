@@ -253,6 +253,10 @@ def api_contract() -> dict:
             "GET /api/model3d?figure_id=&format=json|obj": "isometric view or OBJ 3D export",
             "POST /api/flashcards {analysis}": "flashcard deck",
             "GET /api/flashcards/export?figure_id=": "Anki TSV download",
+            "GET /api/diagram?figure_id=&format=svg|png": "printable study poster",
+            "GET /api/tour?figure_id=": "ordered 3D-layer walkthrough",
+            "GET /api/podcast?figure_id=&format=md|json": "two-host audio script",
+            "GET /api/questions?figure_id=&format=json|md": "question bank + worksheet",
             "POST /api/learn {analysis, mode, seed}": "challenge",
             "POST /api/learn/grade {challenge, answer}": "grade",
         },
@@ -323,6 +327,76 @@ class Handler(BaseHTTPRequestHandler):
                 self.wfile.write(body)
                 return
             return _json(self, {"models": list_models(self.get_store())})
+        if parsed.path == "/api/diagram":
+            from . import materials as mat
+            q = urllib.parse.parse_qs(parsed.query)
+            fid = (q.get("figure_id") or [""])[0]
+            saved = self.get_store().load_analysis(fid)
+            if saved is None:
+                return _json(self, {"error": f"unknown figure_id {fid!r}"}, 404)
+            fmt = (q.get("format") or ["svg"])[0]
+            try:
+                if fmt == "png":
+                    body = mat.diagram_png(saved)
+                    ctype = "image/png"
+                    fname = f"{fid}.png"
+                else:
+                    body = mat.diagram_svg(saved).encode()
+                    ctype = "image/svg+xml"
+                    fname = f"{fid}.svg"
+            except ImportError as exc:
+                return _json(self, {"error": str(exc)}, 400)
+            self.send_response(200)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Disposition", f'attachment; filename="{fname}"')
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        if parsed.path == "/api/tour":
+            from . import materials as mat
+            q = urllib.parse.parse_qs(parsed.query)
+            fid = (q.get("figure_id") or [""])[0]
+            saved = self.get_store().load_analysis(fid)
+            if saved is None:
+                return _json(self, {"error": f"unknown figure_id {fid!r}"}, 404)
+            return _json(self, mat.tour_3d(saved))
+        if parsed.path == "/api/podcast":
+            from . import materials as mat
+            q = urllib.parse.parse_qs(parsed.query)
+            fid = (q.get("figure_id") or [""])[0]
+            saved = self.get_store().load_analysis(fid)
+            if saved is None:
+                return _json(self, {"error": f"unknown figure_id {fid!r}"}, 404)
+            script = mat.podcast_script(saved)
+            if (q.get("format") or ["md"])[0] == "json":
+                return _json(self, script)
+            body = mat.podcast_markdown(script).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/markdown")
+            self.send_header("Content-Disposition", f'attachment; filename="{fid}-podcast.md"')
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        if parsed.path == "/api/questions":
+            from . import materials as mat
+            q = urllib.parse.parse_qs(parsed.query)
+            fid = (q.get("figure_id") or [""])[0]
+            saved = self.get_store().load_analysis(fid)
+            if saved is None:
+                return _json(self, {"error": f"unknown figure_id {fid!r}"}, 404)
+            bank = mat.question_bank(saved)
+            if (q.get("format") or ["json"])[0] == "md":
+                body = mat.questions_markdown(bank).encode("utf-8")
+                self.send_response(200)
+                self.send_header("Content-Type", "text/markdown")
+                self.send_header("Content-Disposition", f'attachment; filename="{fid}-questions.md"')
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
+            return _json(self, bank)
         if parsed.path == "/api/state":
             q = urllib.parse.parse_qs(parsed.query)
             fid = (q.get("figure_id") or [""])[0]

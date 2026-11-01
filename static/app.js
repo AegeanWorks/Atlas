@@ -36,7 +36,21 @@ function renderAll() {
   const fid = state.figureId || "workspace-figure";
   $("download-obj").href = `/api/model3d?figure_id=${encodeURIComponent(fid)}&format=obj`;
   $("anki-link").href = `/api/flashcards/export?figure_id=${encodeURIComponent(fid)}`;
+  $("link-diagram-svg").href = `/api/diagram?figure_id=${encodeURIComponent(fid)}&format=svg`;
+  $("link-diagram-png").href = `/api/diagram?figure_id=${encodeURIComponent(fid)}&format=png`;
+  $("link-podcast").href = `/api/podcast?figure_id=${encodeURIComponent(fid)}&format=md`;
+  $("link-questions").href = `/api/questions?figure_id=${encodeURIComponent(fid)}&format=md`;
 }
+
+$("btn-tour").onclick = async () => {
+  const fid = state.figureId || "workspace-figure";
+  const box = $("summary"); box.textContent = "Planning 3D tour…";
+  try {
+    const t = await api(`/api/tour?figure_id=${encodeURIComponent(fid)}`);
+    box.textContent = t.stops.map((s) =>
+      `Stop ${s.stop} — ${s.name} (layer ${s.layer}): ${s.observe} | links: ${s.connections.join("; ") || "—"} | ${s.camera}`).join("\n\n");
+  } catch (err) { box.textContent = `Tour failed: ${err.message}`; }
+};
 
 function resetModelView() {
   state.iso = false; state.isoData = null;

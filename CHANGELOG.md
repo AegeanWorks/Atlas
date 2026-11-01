@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.10.0 — Every format is learning material (2026-11-01)
+
+- Study diagram posters (SVG + Pillow PNG) redrawn from boxes and arrows.
+- 3D layer tours: ordered stops with observation cues and camera hints.
+- Podcast scripts: two-host walkthrough with evidence, pathway segment, recap,
+  quiz teasers, and speaking-time estimate (markdown + JSON, TTS-ready).
+- Question banks: every generatable question with answers + evidence, JSON or
+  markdown worksheet; CLI `materials` covers all four.
+
 ## 0.9.0 — AI-testable, AI-seeable, AI-usable (2026-11-01)
 
 - `python -m atlas.selftest`: one offline command proves every layer works and
