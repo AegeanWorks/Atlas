@@ -146,11 +146,20 @@ def epub_text(path: str) -> dict:
         opf = next((n for n in names if n.endswith(".opf")), None)
         texts: list[str] = []
         title = os.path.basename(path)
+
+        def _attrs(tag: str) -> dict:
+            return dict(re.findall(r'''(\w+)\s*=\s*["']([^"']*)["']''', tag))
+
         if opf:
             root = os.path.dirname(opf)
             manifest = archive.read(opf).decode("utf-8", "replace")
-            items = dict(re.findall(r'<item[^>]*id="([^"]+)"[^>]*href="([^"]+)"', manifest))
-            spine = re.findall(r'<itemref[^>]*idref="([^"]+)"', manifest)
+            items = {}
+            for tag in re.findall(r"<item\b[^>]*>", manifest):
+                a = _attrs(tag)
+                if a.get("id") and a.get("href"):
+                    items[a["id"]] = a["href"]
+            spine = [_attrs(t).get("idref", "") for t in re.findall(r"<itemref\b[^>]*>", manifest)]
+            spine = [s for s in spine if s]
             if not spine:
                 spine = list(items)
             title_match = re.search(r"<dc:title[^>]*>(.*?)</dc:title>", manifest, re.S)
@@ -243,7 +252,7 @@ def ingest_any(source: str) -> dict:
     if not os.path.isfile(source):
         raise FileNotFoundError(source)
     ext = os.path.splitext(source)[1].lower()
-    if ext in (".png", ".jpg", ".jpeg", ".gif", ".webp"):
+    if ext in (".png", ".jpg", ".jpeg", ".jfif", ".gif", ".webp", ".bmp"):
         return {"kind": "image", "path": source, "document_ref": source}
     if ext == ".epub":
         got = epub_text(source)

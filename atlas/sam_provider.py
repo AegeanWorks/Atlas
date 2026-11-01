@@ -74,7 +74,9 @@ class SamProvider:
             raise ValueError("image exceeds the 50 MB inline limit; downscale first.")
         import os as _os
         _mime = {".png": "image/png", ".jpg": "image/jpeg",
-                 ".jpeg": "image/jpeg"}.get(_os.path.splitext(image_path)[1].lower(), "image/png")
+                 ".jpeg": "image/jpeg", ".jfif": "image/jpeg",
+                 ".gif": "image/gif", ".webp": "image/webp",
+                 ".bmp": "image/bmp"}.get(_os.path.splitext(image_path)[1].lower(), "image/png")
         b64 = base64.b64encode(raw).decode()
         payload = {
             "model": self.config.sam_model,

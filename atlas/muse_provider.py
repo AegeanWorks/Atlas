@@ -163,8 +163,9 @@ class MuseProvider:
                 "downscale the figure crop before analysis (see docs).")
         ext = os.path.splitext(image_path)[1].lower()
         mime = {".png": "image/png", ".jpg": "image/jpeg",
-                ".jpeg": "image/jpeg", ".gif": "image/gif",
-                ".webp": "image/webp"}.get(ext, "image/png")
+                ".jpeg": "image/jpeg", ".jfif": "image/jpeg",
+                ".gif": "image/gif", ".webp": "image/webp",
+                ".bmp": "image/bmp"}.get(ext, "image/png")
         payload = build_request(base64.b64encode(raw).decode(), mime, note, self.model)
         response = self.transport(payload)
         content = self._extract_content(response)

@@ -189,6 +189,45 @@ def cmd_batch(args) -> int:
     return 0
 
 
+def cmd_quality(args) -> int:
+    import tempfile
+    from . import flashcards as fc
+    from . import materials as mat
+    from . import models3d as m3d
+    from . import quality as qa
+    data = AtlasStore(args.data).load_analysis(args.figure_id)
+    if data is None:
+        print(json.dumps({"ok": False, "error": f"unknown figure_id {args.figure_id!r}"}))
+        return 1
+    artifacts = {"deck": fc.build_deck(data), "podcast": mat.podcast_script(data),
+                 "diagram_svg": mat.diagram_svg(data)}
+    try:
+        artifacts["obj"] = m3d.export_obj(data)
+    except ValueError:
+        pass
+    if args.video:
+        vdir = tempfile.mkdtemp(prefix="atlas-vid-")
+        artifacts["video_mp4"] = mat.video_slideshow(data, vdir)["mp4"]
+    print(json.dumps(qa.quality_report(data, artifacts), indent=2))
+    return 0
+
+
+def cmd_video(args) -> int:
+    from . import materials as mat
+    data = AtlasStore(args.data).load_analysis(args.figure_id)
+    if data is None:
+        print(json.dumps({"ok": False, "error": f"unknown figure_id {args.figure_id!r}"}))
+        return 1
+    info = mat.video_slideshow(data, args.out and os.path.dirname(os.path.abspath(args.out))
+                               or tempfile.mkdtemp(prefix="atlas-vid-"))
+    if args.out and info["mp4"] != args.out:
+        import shutil
+        shutil.copyfile(info["mp4"], args.out)
+        info["mp4"] = args.out
+    print(json.dumps({"ok": True, **info}))
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Atlas headless CLI for AI agents")
     ap.add_argument("--data", default="data")
@@ -224,6 +263,14 @@ def main(argv=None) -> int:
     smry = sub.add_parser("summary", help="print the auto study brief")
     smry.add_argument("figure_id")
     smry.set_defaults(func=cmd_summary)
+    ql = sub.add_parser("quality", help="score every generated artifact")
+    ql.add_argument("figure_id")
+    ql.add_argument("--video", action="store_true")
+    ql.set_defaults(func=cmd_quality)
+    vd = sub.add_parser("video", help="render the study MP4")
+    vd.add_argument("figure_id")
+    vd.add_argument("--out", default="")
+    vd.set_defaults(func=cmd_video)
     mat = sub.add_parser("materials", help="study pack: diagram/tour/podcast/questions")
     mat.add_argument("figure_id")
     mat.add_argument("kind", choices=["diagram-svg", "diagram-png", "tour",

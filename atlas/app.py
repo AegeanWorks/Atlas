@@ -257,6 +257,8 @@ def api_contract() -> dict:
             "GET /api/tour?figure_id=": "ordered 3D-layer walkthrough",
             "GET /api/podcast?figure_id=&format=md|json": "two-host audio script",
             "GET /api/questions?figure_id=&format=json|md": "question bank + worksheet",
+            "POST /api/video {figure_id|analysis}": "render the H.264 study MP4",
+            "POST /api/quality {figure_id|analysis, include_video?}": "score every artifact 0-100",
             "POST /api/learn {analysis, mode, seed}": "challenge",
             "POST /api/learn/grade {challenge, answer}": "grade",
         },
@@ -397,6 +399,13 @@ class Handler(BaseHTTPRequestHandler):
                 self.wfile.write(body)
                 return
             return _json(self, bank)
+        if parsed.path.startswith("/videos/"):
+            tail = parsed.path[len("/videos/"):]
+            parts = [p for p in tail.split("/") if p not in ("", ".", "..")]
+            if len(parts) != 2:
+                return _json(self, {"error": "not found"}, 404)
+            return self._serve_file(os.path.join(
+                self.get_store().data_dir, "videos", parts[0], parts[1]))
         if parsed.path == "/api/state":
             q = urllib.parse.parse_qs(parsed.query)
             fid = (q.get("figure_id") or [""])[0]
@@ -602,6 +611,56 @@ class Handler(BaseHTTPRequestHandler):
             if route == "/api/flashcards":
                 from . import flashcards as fc
                 return _json(self, fc.build_deck(body["analysis"]))
+            if route == "/api/video":
+                from . import materials as mat
+                saved = None
+                if body.get("analysis"):
+                    saved = VisualAnalysis.from_dict(body["analysis"]).to_dict()
+                elif body.get("figure_id"):
+                    saved = store.load_analysis(body["figure_id"])
+                if saved is None:
+                    raise ValueError("video needs figure_id or inline analysis")
+                fid = body.get("figure_id", "") or saved.get("figure_id", "film")
+                vdir = os.path.join(store.data_dir, "videos", AtlasStore.cache_key(fid)[:12])
+                fps = max(1, min(int(body.get("fps", 24)), 30))
+                sps = max(0.5, min(float(body.get("seconds_per_scene", 1.5)), 4.0))
+                try:
+                    info = mat.video_slideshow(saved, vdir, fps=fps, seconds_per_scene=sps)
+                except ImportError as exc:
+                    raise ValueError(str(exc)) from exc
+                return _json(self, {"mp4_url": "/videos/" + os.path.basename(vdir) + "/study.mp4",
+                                    **info, "figure_id": saved.get("figure_id", "")})
+            if route == "/api/quality":
+                from . import flashcards as fc
+                from . import materials as mat
+                from . import models3d as m3d
+                from . import quality as qa
+                saved = None
+                if body.get("analysis"):
+                    saved = VisualAnalysis.from_dict(body["analysis"]).to_dict()
+                elif body.get("figure_id"):
+                    saved = store.load_analysis(body["figure_id"])
+                if saved is None:
+                    raise ValueError("quality needs figure_id or inline analysis")
+                artifacts = {"deck": fc.build_deck(saved),
+                             "podcast": mat.podcast_script(saved),
+                             "diagram_svg": mat.diagram_svg(saved)}
+                skipped = []
+                try:
+                    artifacts["obj"] = m3d.export_obj(saved)
+                except ValueError as exc:
+                    skipped.append(f"model3d: {exc}")
+                if body.get("include_video"):
+                    try:
+                        vdir = os.path.join(store.data_dir, "videos",
+                                            AtlasStore.cache_key(saved.get("figure_id", "q"))[:12])
+                        artifacts["video_mp4"] = mat.video_slideshow(saved, vdir)["mp4"]
+                    except (ValueError, ImportError) as exc:
+                        skipped.append(f"video: {exc}")
+                report = qa.quality_report(saved, artifacts)
+                if skipped:
+                    report["skipped"] = skipped
+                return _json(self, report)
             if route == "/api/summary":
                 from . import summaries as sm
                 saved = store.load_analysis(body.get("figure_id", ""))

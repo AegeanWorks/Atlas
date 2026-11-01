@@ -18,7 +18,8 @@ except ImportError:  # pragma: no cover
     Image = None
 
 
-SUPPORTED_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg", ".gif", ".webp",
+SUPPORTED_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg", ".jfif", ".gif",
+                            ".webp", ".bmp",
                             ".epub", ".txt", ".md",
                             ".mp4", ".webm", ".mov", ".mkv", ".avi", ".m4v"}
 
@@ -92,11 +93,11 @@ def select_figure(image_path: str, crop_rel: tuple[float, float, float, float],
         raise ImportError("Pillow is required (pip install -r requirements.txt)")
     if not os.path.isfile(image_path):
         raise FileNotFoundError(image_path)
-    if os.path.splitext(image_path)[1].lower() not in (".png", ".jpg", ".jpeg"):
+    if os.path.splitext(image_path)[1].lower() not in (
+            ".png", ".jpg", ".jpeg", ".jfif", ".gif", ".webp", ".bmp"):
         raise ValueError(
-            f"figure selection needs a rendered image (PNG/JPEG), got {image_path!r}. "
-            "For PDFs: extract the page as an image first, then select the figure. "
-            "PDF page rendering is a P1 hook (no poppler bundled in P0).")
+            f"figure selection needs a rendered image, got {image_path!r}. "
+            "For PDFs: render the page first (POST /api/pdf/render), then select.")
     crop = _validate_crop(crop_rel)
     with Image.open(image_path) as im:
         im = im.convert("RGB")

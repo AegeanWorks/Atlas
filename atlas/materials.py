@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import html as _html
 import io
+import os
 
 from .models3d import iso_view, layer_of
 
@@ -186,6 +187,76 @@ def podcast_markdown(script: dict) -> str:
     for s in script["segments"]:
         lines += [f"## {s['speaker']} — {s['cue']}", "", s["text"], ""]
     return "\n".join(lines)
+
+
+def _ffmpeg_exe() -> str:
+    try:
+        import imageio_ffmpeg
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except ImportError as exc:
+        raise ImportError("Video rendering needs imageio-ffmpeg (pip install -r requirements.txt).") from exc
+
+
+def video_slideshow(analysis: dict, outdir: str, fps: int = 30,
+                    seconds_per_scene: float = 2.0) -> dict:
+    """Model → narrated-caption MP4 study video (title, entity spotlights, outro).
+
+    Frames are Pillow storyboards; the bundled imageio-ffmpeg binary encodes
+    real H.264 — no system ffmpeg, no key, fully offline after pip install.
+    """
+    import subprocess
+    from PIL import Image, ImageDraw
+    names = _names(analysis)
+    entities = list(analysis.get("entities", []))[:8]  # keep study videos tight
+    if not entities:
+        raise ValueError("no entities: nothing to film")
+    names_subset = names
+    os.makedirs(outdir, exist_ok=True)
+
+    def card(title: str, lines: list[str], highlight: str | None = None) -> "Image.Image":
+        img = Image.new("RGB", (W, H), (11, 21, 48))
+        draw = ImageDraw.Draw(img)
+        draw.text((MARGIN, 40), title[:60], fill=(125, 211, 252))
+        y = 120
+        for line in lines[:8]:
+            draw.text((MARGIN, y), line[:100], fill=(219, 231, 255))
+            y += 34
+        if highlight:
+            draw.rectangle([MARGIN - 8, 108, W - MARGIN + 8, 108 + 8], fill=(34, 211, 238))
+        return img
+
+    scenes: list[tuple["Image.Image", str]] = [
+        (card(str(analysis.get("figure_id", "Atlas study film")),
+              [f"{len(entities)} structures", f"{len(analysis.get('relationships', []))} connections"]),
+         "title")]
+    for e in entities:
+        eid = e["id"]
+        links = [r for r in analysis.get("relationships", [])
+                 if r["source_id"] == eid or r["target_id"] == eid][:4]
+        lines = ([e.get("description", "")] +
+                 [f"{names_subset.get(r['source_id'], '?')} {r['rel_type']} "
+                  f"{names_subset.get(r['target_id'], '?')}" for r in links])
+        scenes.append((card(names.get(eid, eid), [l for l in lines if l], highlight=eid), eid))
+    scenes.append((card("Recap", [f"{names.get(e['id'], e['id'])}" for e in entities]), "recap"))
+
+    per_scene = max(1, int(fps * seconds_per_scene))
+    frame = 0
+    for img, _tag in scenes:
+        for _ in range(per_scene):
+            img.save(os.path.join(outdir, f"f_{frame:04d}.png"))
+            frame += 1
+    mp4 = os.path.join(outdir, "study.mp4")
+    cmd = [_ffmpeg_exe(), "-y", "-v", "error", "-framerate", str(fps),
+           "-i", os.path.join(outdir, "f_%04d.png"),
+           "-c:v", "libx264", "-pix_fmt", "yuv420p", mp4]
+    try:
+        subprocess.run(cmd, timeout=300, check=True,  # noqa: S603
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except (subprocess.SubprocessError, OSError) as exc:
+        raise ValueError(f"ffmpeg could not encode the study video: {exc}") from exc
+    duration = len(scenes) * seconds_per_scene
+    return {"mp4": mp4, "duration_s": round(duration, 1),
+            "scenes": len(scenes), "fps": fps}
 
 
 def question_bank(analysis: dict) -> dict:

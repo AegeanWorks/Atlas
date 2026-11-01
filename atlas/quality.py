@@ -1,0 +1,257 @@
+"""Automatic quality analysis for every generated artifact (0-100 each).
+
+Every analyzer returns {"score", "checks": [{name, ok, detail}], "issues": []}.
+Scores are heuristic but strict: missing coverage, broken references, empty
+content, and invalid files all cost points openly. quality_report() rolls the
+requested artifacts into one verdict so an AI (or person) can see at a glance
+what is study-ready and what needs work.
+"""
+from __future__ import annotations
+
+import os
+import re
+
+
+def _result(score: int, checks: list, issues: list) -> dict:
+    return {"score": max(0, min(100, score)), "checks": checks, "issues": issues}
+
+
+def _check(name: str, ok: bool, detail: str = "") -> dict:
+    return {"name": name, "ok": bool(ok), "detail": detail}
+
+
+def flashcard_quality(deck: dict, analysis: dict) -> dict:
+    """Coverage, clarity, grounding, and duplication of a flashcard deck."""
+    cards = deck.get("cards", [])
+    entities = list(analysis.get("entities", []))
+    relationships = list(analysis.get("relationships", []))
+    checks, issues = [], []
+    covered = {c.get("entity_id") for c in cards}
+    missing = [e["id"] for e in entities if e["id"] not in covered]
+    checks.append(_check("entity-coverage", not missing,
+                         f"{len(covered)}/{len(entities)} entities have cards"))
+    if missing:
+        issues.append(f"no cards for: {', '.join(missing[:5])}")
+    rel_kinds = {c.get("kind") for c in cards}
+    checks.append(_check("relation-cards", "relation" in rel_kinds or not relationships,
+                         "relation recall present" if "relation" in rel_kinds else "no relationships to quiz"))
+    long_fronts = [c["id"] for c in cards if len(c.get("front", {}).get("text", "")) > 280]
+    checks.append(_check("front-clarity", not long_fronts,
+                         "all fronts ≤280 chars" if not long_fronts else f"verbose: {long_fronts[:3]}"))
+    if long_fronts:
+        issues.append(f"{len(long_fronts)} fronts exceed 280 chars")
+    no_back = [c["id"] for c in cards if not c.get("back", {}).get("text")]
+    checks.append(_check("answers-present", not no_back,
+                         "every card has an answer" if not no_back else f"missing: {no_back[:3]}"))
+    if no_back:
+        issues.append(f"{len(no_back)} cards lack answers")
+    grounded = sum(1 for c in cards if c.get("back", {}).get("evidence"))
+    checks.append(_check("evidence-grounding", grounded == len(cards) and cards != [],
+                         f"{grounded}/{len(cards)} backs cite evidence"))
+    if cards and grounded < len(cards):
+        issues.append(f"{len(cards) - grounded} backs lack source evidence")
+    seen, dupes = set(), 0
+    for c in cards:
+        key = (c.get("front", {}).get("text", ""), c.get("back", {}).get("text", ""))
+        if key in seen:
+            dupes += 1
+        seen.add(key)
+    checks.append(_check("no-duplicates", dupes == 0, "unique Q/A pairs" if not dupes else f"{dupes} duplicates"))
+    if dupes:
+        issues.append(f"{dupes} duplicate cards")
+    score = 100 - 25 * sum(1 for c in checks if not c["ok"])
+    return _result(score, checks, issues)
+
+
+def infographic_quality(svg: str, analysis: dict) -> dict:
+    """The study diagram: labels, overlap, legibility, arrow validity."""
+    import xml.etree.ElementTree as ET
+    checks, issues = [], []
+    try:
+        root = ET.fromstring(svg)
+        checks.append(_check("well-formed-svg", True, f"root {root.tag.split('}')[-1]}"))
+    except ET.ParseError as exc:
+        return _result(0, [_check("well-formed-svg", False, str(exc)[:100])],
+                       [f"SVG does not parse: {exc}"])
+    texts = [t.text or "" for t in root.iter() if t.tag.endswith("text")]
+    names = [e.get("name", e["id"]) for e in analysis.get("entities", [])]
+    unlabeled = [n for n in names if not any(n in t or (len(n) > 22 and n[:21] in t) for t in texts)]
+    checks.append(_check("all-entities-labeled", not unlabeled,
+                         "every entity on the poster" if not unlabeled else f"missing: {unlabeled[:3]}"))
+    if unlabeled:
+        issues.append(f"unlabeled: {', '.join(unlabeled[:5])}")
+    rects = [(float(r.get("x", 0)), float(r.get("y", 0)),
+              float(r.get("width", 0)), float(r.get("height", 0)))
+             for r in root.iter() if r.tag.endswith("rect")]
+    # A full-canvas backdrop is decoration, not a colliding box.
+    canvas = max([w * h for _, _, w, h in rects] or [1])
+    rects = [r for r in rects if r[2] * r[3] < 0.9 * canvas]
+    overlaps = 0
+    for i, a in enumerate(rects):
+        for b in rects[i + 1:]:
+            if (a[0] < b[0] + b[2] and b[0] < a[0] + a[2]
+                    and a[1] < b[1] + b[3] and b[1] < a[1] + a[3]):
+                overlaps += 1
+    checks.append(_check("no-box-overlap", overlaps == 0,
+                         "clean layout" if not overlaps else f"{overlaps} overlapping box pairs"))
+    if overlaps:
+        issues.append(f"{overlaps} overlapping boxes hurt readability")
+    small = [t for t in root.iter() if t.tag.endswith("text")
+             and float(t.get("font-size", "99") or 99) < 10]
+    checks.append(_check("legible-type", not small,
+                         "all type ≥10px" if not small else f"{len(small)} tiny labels"))
+    if small:
+        issues.append(f"{len(small)} labels under 10px")
+    arrows = sum(1 for l in root.iter() if l.tag.endswith("line"))
+    expected = len(analysis.get("relationships", []))
+    checks.append(_check("arrows-match-relationships", arrows == expected,
+                         f"{arrows}/{expected} relationships drawn"))
+    if arrows != expected:
+        issues.append(f"drawn {arrows} arrows for {expected} relationships")
+    score = 100 - 25 * sum(1 for c in checks if not c["ok"])
+    return _result(score, checks, issues)
+
+
+def podcast_quality(script: dict, analysis: dict) -> dict:
+    """Coverage, duration sanity, structure, and density of the audio script."""
+    segments = script.get("segments", [])
+    text = " ".join(s.get("text", "") for s in segments)
+    checks, issues = [], []
+    names = [e.get("name", e["id"]) for e in analysis.get("entities", [])]
+    missing = [n for n in names if n not in text]
+    checks.append(_check("entity-coverage", not missing,
+                         f"script walks all {len(names)} structures"
+                         if not missing else f"unmentioned: {missing[:3]}"))
+    if missing:
+        issues.append(f"script skips: {', '.join(missing[:5])}")
+    minutes = float(script.get("estimated_minutes", 0) or 0)
+    checks.append(_check("duration-sane", 1 <= minutes <= 30,
+                         f"~{minutes} min spoken"))
+    if not 1 <= minutes <= 30:
+        issues.append(f"duration {minutes} min outside the 1-30 min study window")
+    cues = [s.get("cue", "") for s in segments]
+    checks.append(_check("has-cold-open", any("cold open" in c for c in cues), "hooks the listener"))
+    checks.append(_check("has-recap", any("recap" in c for c in cues), "closes the loop"))
+    if not any("recap" in c for c in cues):
+        issues.append("no recap segment")
+    words = text.split()
+    avg = len(words) / max(1, len([s for s in text.split(".") if s.strip()]))
+    checks.append(_check("spoken-density", avg <= 25, f"~{avg:.0f} words/sentence"))
+    if avg > 25:
+        issues.append(f"sentences average {avg:.0f} words — dense for audio")
+    score = 100 - 20 * sum(1 for c in checks if not c["ok"])
+    return _result(score, checks, issues)
+
+
+def model3d_quality(obj_text: str, analysis: dict) -> dict:
+    """OBJ validity: groups, vertex/face math, bounds, naming, NaNs."""
+    lines = obj_text.splitlines()
+    checks, issues = [], []
+    groups = [l[2:].strip() for l in lines if l.startswith("g ")]
+    located = [e["id"] for e in analysis.get("entities", []) if e.get("bbox")]
+    missing = [i for i in located
+               if not any(g == i or g.startswith(i + "_") or i.startswith(g) for g in groups)]
+    checks.append(_check("every-located-entity-meshed", not missing,
+                         f"{len(groups)} groups" if not missing else f"missing: {missing[:3]}"))
+    if missing:
+        issues.append(f"unmeshed: {', '.join(missing[:5])}")
+    verts = [l for l in lines if l.startswith("v ")]
+    faces = [l for l in lines if l.startswith("f ")]
+    checks.append(_check("cuboid-math", len(verts) == 8 * len(groups) and len(faces) == 6 * len(groups),
+                         f"{len(verts)}v/{len(faces)}f for {len(groups)} cuboids"))
+    if not (len(verts) == 8 * len(groups) and len(faces) == 6 * len(groups)):
+        issues.append("vertex/face counts break the 8v/6f cuboid invariant")
+    bad, coords = [], []
+    for l in verts:
+        try:
+            vals = [float(x) for x in l.split()[1:4]]
+        except ValueError:
+            bad.append(l)
+            continue
+        if any(v != v or v in (float("inf"), float("-inf")) for v in vals):
+            bad.append(l)
+            continue
+        coords.extend(vals)
+    checks.append(_check("finite-geometry", not bad, "no NaN/Inf" if not bad else f"{len(bad)} bad lines"))
+    if bad:
+        issues.append(f"{len(bad)} non-finite geometry lines")
+    out = [c for c in coords if abs(c) > 1.5]
+    checks.append(_check("unit-bounds", not out, "model fits the unit frame" if not out else f"{len(out)} runaway coords"))
+    if out:
+        issues.append(f"{len(out)} coordinates outside the unit frame")
+    score = 100 - 25 * sum(1 for c in checks if not c["ok"])
+    return _result(score, checks, issues)
+
+
+def video_quality_mp4(path: str) -> dict:
+    """Technical quality of a rendered study MP4 (container, size, duration)."""
+    checks, issues = [], []
+    if not os.path.isfile(path):
+        return _result(0, [_check("file-exists", False, path)], ["video file missing"])
+    size = os.path.getsize(path)
+    checks.append(_check("file-exists", True, f"{size // 1024} KB"))
+    with open(path, "rb") as fh:
+        head = fh.read(64)
+    checks.append(_check("mp4-container", b"ftyp" in head, "ISO BMFF brand found"
+                         if b"ftyp" in head else "no ftyp brand"))
+    if b"ftyp" not in head:
+        issues.append("not a recognizable MP4 container")
+    checks.append(_check("nontrivial-size", size > 50_000, "real content, not a stub"
+                         if size > 50_000 else f"only {size} bytes"))
+    if size <= 50_000:
+        issues.append("file suspiciously small for a study video")
+    duration = _mp4_duration(path)
+    if duration is None:
+        checks.append(_check("duration-known", False, "could not probe duration"))
+        issues.append("duration unknown — verify playback manually")
+    else:
+        ok = 5 <= duration <= 600
+        checks.append(_check("duration-sane", ok, f"{duration:.0f}s"))
+        if not ok:
+            issues.append(f"{duration:.0f}s outside the 5s-10min study window")
+    score = 100 - 25 * sum(1 for c in checks if not c["ok"])
+    return _result(score, checks, issues)
+
+
+def _mp4_duration(path: str) -> float | None:
+    try:
+        from atlas.materials import _ffmpeg_exe
+        exe = _ffmpeg_exe()
+    except ImportError:
+        return None
+    import subprocess
+    try:
+        proc = subprocess.run([exe, "-i", path], capture_output=True,  # noqa: S603
+                              text=True, timeout=60)
+        match = re.search(r"Duration: (\d+):(\d+):([\d.]+)", proc.stderr)
+        if not match:
+            return None
+        h, m, s = int(match.group(1)), int(match.group(2)), float(match.group(3))
+        return h * 3600 + m * 60 + s
+    except (subprocess.SubprocessError, OSError, ValueError):
+        return None
+
+
+def quality_report(analysis: dict, artifacts: dict) -> dict:
+    """Score the requested artifacts; overall = mean of what was assessed."""
+    from . import flashcards as fc
+    from . import materials as mat
+    report: dict[str, dict] = {}
+    if "deck" in artifacts or "flashcards" in artifacts:
+        deck = artifacts.get("deck") or fc.build_deck(analysis)
+        report["flashcards"] = flashcard_quality(deck, analysis)
+    if "podcast" in artifacts:
+        script = artifacts["podcast"]
+        if isinstance(script, str):
+            import json as _json
+            script = _json.loads(script)
+        report["podcast"] = podcast_quality(script, analysis)
+    if "diagram_svg" in artifacts:
+        report["infographic"] = infographic_quality(artifacts["diagram_svg"], analysis)
+    if "obj" in artifacts:
+        report["model3d"] = model3d_quality(artifacts["obj"], analysis)
+    if "video_mp4" in artifacts:
+        report["video"] = video_quality_mp4(artifacts["video_mp4"])
+    scores = [r["score"] for r in report.values()]
+    report["overall"] = round(sum(scores) / len(scores), 1) if scores else 0.0
+    return report

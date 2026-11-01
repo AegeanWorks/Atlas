@@ -40,7 +40,30 @@ function renderAll() {
   $("link-diagram-png").href = `/api/diagram?figure_id=${encodeURIComponent(fid)}&format=png`;
   $("link-podcast").href = `/api/podcast?figure_id=${encodeURIComponent(fid)}&format=md`;
   $("link-questions").href = `/api/questions?figure_id=${encodeURIComponent(fid)}&format=md`;
+  $("link-video").onclick = async (e) => {
+    e.preventDefault();
+    const box = $("summary"); box.textContent = "Rendering study video (title, spotlights, recap)…";
+    try {
+      const v = await api("/api/video", { figure_id: fid });
+      box.textContent = `Video ready: ${v.scenes} scenes, ${v.duration_s}s, ${v.fps}fps.`;
+      const a = document.createElement("a");
+      a.href = v.mp4_url; a.textContent = "Download study MP4 ↓";
+      box.appendChild(document.createElement("br")); box.appendChild(a);
+    } catch (err) { box.textContent = `Video failed: ${err.message}`; }
+  };
 }
+
+$("btn-quality").onclick = async () => {
+  const fid = state.figureId || "workspace-figure";
+  const box = $("summary"); box.textContent = "Scoring flashcards, podcast, infographic, 3D model…";
+  try {
+    const q = await api("/api/quality", { figure_id: fid });
+    const rows = Object.entries(q).filter(([k]) => k !== "overall" && k !== "skipped");
+    box.textContent = `Overall quality: ${q.overall}/100\n\n` + rows.map(([k, r]) =>
+      `${k}: ${r.score}/100` + (r.issues.length ? `\n  ! ${r.issues.join("\n  ! ")}` : "\n  all checks pass")
+    ).join("\n\n") + (q.skipped ? `\n\nSkipped: ${q.skipped.join("; ")}` : "");
+  } catch (err) { box.textContent = `Quality check failed: ${err.message}`; }
+};
 
 $("btn-tour").onclick = async () => {
   const fid = state.figureId || "workspace-figure";

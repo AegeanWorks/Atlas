@@ -1,4 +1,4 @@
-# Atlas 0.11.0
+# Atlas 0.12.0
 
 [![AIKit Integrated](https://img.shields.io/badge/AIKit-integrated-6f42c1)](https://github.com/AegeanWorks/AIKit)
 
@@ -56,7 +56,8 @@ python demo/basal_ganglia_demo.py --fixture-only
 6. **Segment**: select a structure → "Segment selected (SAM)" cuts a mask with SAM 3.1 and attaches it to the entity (honest `bbox-fallback` when no mask decodes).
 7. **Learn**: spatial recall, pathway tracing, visual identification, relationship recall — plus flashcard review (flip + score), Anki TSV export, and **on-figure quizzes** (a structure lights up, you answer right on the canvas).
 8. **3D**: toggle the isometric stacked view (peel layers with the slider); download the model as OBJ for 3D tools and printing.
-9. **Study pack**: one click builds an auto summary (offline extractive brief; Muse-polished when a key is set), a printable study diagram (SVG/PNG), a 3D layer tour, a two-host podcast script with duration estimate, and a question bank worksheet — all from the same model.
+9. **Study pack**: one click builds an auto summary, a printable study diagram (SVG/PNG), a 3D layer tour, a two-host podcast script, a question bank worksheet, and a narrated-caption **study video (real MP4)** — all from the same model.
+10. **Quality analysis**: every artifact is scored 0–100 with named checks (coverage, grounding, validity, duration) — in-app, via API, or `atlas.cli quality`.
 
 ## Independence
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.12.0 — Automatic video + quality analysis (2026-11-01)
+
+- Automatic study-video creation: Pillow storyboard (title, entity spotlights,
+  recap) encoded to real H.264 MP4 via the bundled imageio-ffmpeg binary —
+  no system tools, no key, fully offline after install.
+- `atlas/quality.py`: 0–100 analyzers with named checks for videos, flashcards,
+  infographics, podcasts, and 3D models; `POST /api/quality`, in-app scores,
+  CLI `quality`/`video`. Real trials: fixture deck/podcast/diagram/OBJ score
+  100; stub videos and broken geometry score low with named issues.
+- Real-materials hardening (204 mixed files: 201 import): EPUB manifest parsing
+  no longer assumes attribute order; JFIF/WebP/GIF/BMP ingest end to end;
+  ingestion keeps full text (trimming only at the Muse boundary); AES-encrypted
+  PDFs read via `cryptography`; fixed an inline-import scoping crash that broke
+  every route after the quality endpoints landed.
+
 ## 0.11.0 — Proven on 81 real medical PDFs (2026-11-01)
 
 - Trialled against a real 81-file, 77 MB medical library: 78 import with fast

@@ -30,7 +30,7 @@ def test_select_figure_rejects_pdf_with_guidance(tmp_path):
     pdf = str(tmp_path / "paper.pdf")
     with open(pdf, "wb") as fh:
         fh.write(b"%PDF-1.4 fake")
-    with pytest.raises(ValueError, match="PNG/JPEG"):
+    with pytest.raises(ValueError, match="render the page first"):
         ing.select_figure(pdf, (0, 0, 0.5, 0.5), str(tmp_path))
 
 
