@@ -1,0 +1,479 @@
+"""Atlas standalone application entry point.
+
+  python -m atlas.app [--port 8765] [--data data]
+
+Serves the visual workspace (static/) and a JSON API. Stdlib only.
+Fully standalone; all document handling is in-project.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import mimetypes
+import os
+import urllib.parse
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+from . import __version__
+from .config import AtlasConfig
+from . import text_backend as nd
+from . import ingestion as ing
+from . import learning as learn
+from .muse_provider import MuseProvider
+from .sam_provider import SamProvider
+from .schema import BoundingBox, VisualAnalysis
+from .store import AtlasStore
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+STATIC = os.path.join(ROOT, "static")
+
+
+def _json(handler: BaseHTTPRequestHandler, obj, status: int = 200) -> None:
+    body = json.dumps(obj).encode()
+    handler.send_response(status)
+    handler.send_header("Content-Type", "application/json")
+    handler.send_header("Content-Length", str(len(body)))
+    handler.end_headers()
+    handler.wfile.write(body)
+
+
+MAX_UPLOAD_BYTES = 60_000_000
+
+
+def _parse_multipart(body: bytes, content_type: str) -> tuple[dict, dict]:
+    """Minimal single-file multipart/form-data parser (stdlib only).
+
+    Returns (fields, files) where files maps field name to
+    {"filename": str, "content_type": str, "data": bytes}.
+    """
+    parts = content_type.split("boundary=")
+    if len(parts) != 2 or not parts[1]:
+        raise ValueError("multipart body needs a boundary")
+    boundary = ("--" + parts[1].strip().strip('"')).encode()
+    if len(body) > MAX_UPLOAD_BYTES:
+        raise ValueError(f"upload exceeds {MAX_UPLOAD_BYTES} bytes")
+    fields: dict = {}
+    files: dict = {}
+    for chunk in body.split(boundary):
+        chunk = chunk.strip(b"\r\n")
+        if not chunk or chunk == b"--":
+            continue
+        head, _, payload = chunk.partition(b"\r\n\r\n")
+        if not payload:
+            continue
+        headers = head.decode("latin-1")
+        name = ""
+        filename = ""
+        part_type = "application/octet-stream"
+        for line in headers.split("\r\n"):
+            low = line.lower()
+            if low.startswith("content-disposition:"):
+                for seg in line.split(";"):
+                    seg = seg.strip()
+                    if seg.startswith("name="):
+                        name = seg[5:].strip('"')
+                    elif seg.startswith("filename="):
+                        filename = os.path.basename(seg[9:].strip('"'))
+            elif low.startswith("content-type:"):
+                part_type = line.split(":", 1)[1].strip()
+        if not name:
+            continue
+        data = payload.rstrip(b"\r\n")
+        if filename:
+            files[name] = {"filename": filename, "content_type": part_type, "data": data}
+        else:
+            fields[name] = data.decode("utf-8", "replace")
+    return fields, files
+
+
+def _merge_frame_analyses(analyses: list, document_ref: str, figure_id: str):
+    """Merge per-frame visual analyses, namespacing ids per frame (f0-, f1-...)."""
+    from .schema import VisualAnalysis, VisualEntity, VisualRelationship
+    entities, relationships = [], []
+    for i, analysis in enumerate(analyses):
+        prefix = f"f{i}-"
+        for e in analysis.entities:
+            d = e.to_dict()
+            d["id"] = prefix + d["id"]
+            d["bbox"] = None
+            entities.append(VisualEntity(**_entity_kwargs(d)))
+        for r in analysis.relationships:
+            d = r.to_dict()
+            relationships.append(VisualRelationship(
+                source_id=prefix + d["source_id"], target_id=prefix + d["target_id"],
+                rel_type=d["rel_type"], explanation=d.get("explanation", ""),
+                supporting_evidence=d.get("supporting_evidence", ""),
+                confidence=d.get("confidence", 0.0),
+                provenance=d.get("provenance", "model"),
+                model_inferred=d.get("model_inferred", True)))
+    return VisualAnalysis(document_ref=document_ref, figure_id=figure_id,
+                          entities=entities, relationships=relationships)
+
+
+def _entity_kwargs(d: dict) -> dict:
+    from .schema import BoundingBox
+    bbox = None
+    if d.get("bbox"):
+        b = d["bbox"]
+        bbox = BoundingBox(x_min=b["x_min"], y_min=b["y_min"],
+                           x_max=b["x_max"], y_max=b["y_max"])
+    return {"id": d["id"], "name": d["name"], "category": d.get("category", "other"),
+            "description": d.get("description", ""), "bbox": bbox,
+            "source_evidence": d.get("source_evidence", ""),
+            "confidence": d.get("confidence", 0.0),
+            "uncertainty": d.get("uncertainty", ""),
+            "mask_ref": d.get("mask_ref", ""),
+            "model_inferred": d.get("model_inferred", False)}
+
+
+def auto_create_model(store: AtlasStore, config: AtlasConfig, source: str,
+                      note: str = "", figure_id: str = "", use_wonder: bool = False,
+                      muse_provider=None, crop: tuple | None = None) -> dict:
+    """One drop → one model, from anything: image, PDF, book, text, link,
+    YouTube, or video. Images/frames take the visual path; everything textual
+    takes the text path; both land in one validated model driving canvas,
+    graph, and learning. `muse_provider` injectable for offline-safe use.
+    """
+    from . import sources as src
+    is_url = source.startswith(("http://", "https://"))
+    if is_url:
+        bundle = src.ingest_any(source)
+        doc = {"document_ref": bundle["document_ref"], "title": bundle.get("title", ""),
+               "text_chars": len(bundle.get("text", ""))}
+    else:
+        doc = ing.import_document(source, store.data_dir)
+        bundle = src.ingest_any(source)
+    kind = bundle["kind"]
+    if kind == "text":
+        doc["title"] = bundle.get("title", doc.get("original_name", ""))
+        doc["text_chars"] = len(bundle["text"])
+        fid = figure_id or ("model-" + AtlasStore.cache_key(bundle["document_ref"])[:8])
+        provider = muse_provider or MuseProvider(config, use_wonder=use_wonder)
+        analysis = provider.analyze_text(bundle["text"], note,
+                                         document_ref=bundle["document_ref"], figure_id=fid)
+        data = analysis.to_dict()
+        store.save_analysis(fid, data)
+        return {"document": doc, "model_created": True, "figure_id": fid,
+                "analysis": data, "source_kind": "text"}
+    if kind == "video":
+        frames_dir = os.path.join(store.data_dir, "frames",
+                                  AtlasStore.cache_key(bundle["path"])[:12])
+        frames = src.video_frames(bundle["path"], frames_dir)
+        provider = muse_provider or MuseProvider(config, use_wonder=use_wonder)
+        per_frame = [provider.analyze_figure(
+            frame, (note + f" [video frame {i + 1}/{len(frames)}]") if note else
+            f"Video frame {i + 1} of {len(frames)} from {os.path.basename(bundle['path'])}.",
+            document_ref=doc["document_ref"], figure_id=f"frame-{i}")
+            for i, frame in enumerate(frames)]
+        fid = figure_id or ("model-" + doc["sha256"][:8])
+        merged = _merge_frame_analyses(per_frame, doc["document_ref"], fid)
+        data = merged.to_dict()
+        store.save_analysis(fid, data)
+        first = os.path.basename(frames[0])
+        return {"document": doc, "model_created": True, "figure_id": fid,
+                "figure_url": "/frames/" + os.path.basename(frames_dir) + "/" + first,
+                "frames": len(frames), "analysis": data, "source_kind": "video"}
+    # image path: full-frame figure, visual analysis
+    fid = figure_id or ("model-" + doc["sha256"][:8])
+    figure = ing.select_figure(bundle["path"], crop or (0.0, 0.0, 1.0, 1.0),
+                               store.data_dir, document_ref=doc["document_ref"])
+    provider = muse_provider or MuseProvider(config, use_wonder=use_wonder)
+    analysis = provider.analyze_figure(figure.image_path, note,
+                                       document_ref=doc["document_ref"],
+                                       figure_id=fid)
+    data = analysis.to_dict()
+    store.save_analysis(fid, data)
+    return {"document": doc, "model_created": True, "figure_id": fid,
+            "figure_url": "/figures/" + os.path.basename(figure.image_path),
+            "analysis": data, "source_kind": "image"}
+
+
+def list_models(store: AtlasStore) -> list[dict]:
+    """Every model Atlas holds — the machine-visible model index."""
+    out = []
+    analyses = os.path.join(store.data_dir, "analyses")
+    if not os.path.isdir(analyses):
+        return out
+    for name in sorted(os.listdir(analyses)):
+        if not name.endswith(".analysis.json"):
+            continue
+        try:
+            with open(os.path.join(analyses, name), encoding="utf-8") as fh:
+                data = json.load(fh)
+            out.append({"figure_id": data.get("figure_id", name[:-14]),
+                        "entities": len(data.get("entities", [])),
+                        "relationships": len(data.get("relationships", [])),
+                        "document_ref": data.get("document_ref", "")})
+        except (OSError, ValueError):
+            continue
+    return out
+
+
+def api_contract() -> dict:
+    """Versioned machine contract so AI agents can drive Atlas autonomously."""
+    return {
+        "contract_version": "atlas.api/v1",
+        "atlas_version": __version__,
+        "workflow": ["health", "upload|import", "auto-create", "models",
+                      "analysis", "segment", "learn"],
+        "endpoints": {
+            "GET /api/health": "version, config (redacted), backend info",
+            "GET /api/contract": "this contract",
+            "GET /api/models": "list of created models",
+            "POST /api/upload (multipart file=)": "browser/AI file drop import",
+            "POST /api/auto-create {path|document_ref, note?, figure_id?, crop?}":
+                "one drop -> one model: image/PDF/EPUB/TXT/video/URL/YouTube",
+            "sources": "pdf, epub, txt, md, docx, pptx, transcripts, images, "
+                       "video (ffmpeg), article URLs, YouTube captions",
+            "POST /api/segment {image_path, prompt, entity_id, bbox?}": "SAM 3.1 mask",
+            "POST /api/analysis/attach-mask": "attach a mask to an entity",
+            "GET /api/analysis?figure_id=": "read one model",
+            "POST /api/learn {analysis, mode, seed}": "challenge",
+            "POST /api/learn/grade {challenge, answer}": "grade",
+        },
+        "notes": ("Only figure crops (+ optional note) leave the machine toward Meta; "
+                  "keys via MODEL_API_KEY/META_API_KEY env; no key needed to read models."),
+    }
+
+
+class Handler(BaseHTTPRequestHandler):
+    store: AtlasStore | None = None
+    config: AtlasConfig = AtlasConfig.from_env()
+
+    @classmethod
+    def get_store(cls) -> AtlasStore:
+        if cls.store is None:
+            cls.store = AtlasStore(cls.config.data_dir)
+        return cls.store
+
+    def log_message(self, fmt, *args):  # quieter; no secrets ever logged
+        pass
+
+    # -- GET ------------------------------------------------------------
+    def do_GET(self):
+        parsed = urllib.parse.urlparse(self.path)
+        if parsed.path in ("/", "/index.html"):
+            return self._serve_file(os.path.join(STATIC, "index.html"))
+        if parsed.path.startswith("/static/"):
+            name = os.path.basename(parsed.path)
+            return self._serve_file(os.path.join(STATIC, name))
+        if parsed.path.startswith("/figures/"):
+            name = os.path.basename(parsed.path)
+            return self._serve_file(os.path.join(self.get_store().data_dir, "figures", name))
+        if parsed.path.startswith("/masks/"):
+            name = os.path.basename(parsed.path)
+            return self._serve_file(os.path.join(self.get_store().data_dir, "masks", name))
+        if parsed.path.startswith("/frames/"):
+            tail = parsed.path[len("/frames/"):]
+            parts = [p for p in tail.split("/") if p not in ("", ".", "..")]
+            if len(parts) != 2:
+                return _json(self, {"error": "not found"}, 404)
+            return self._serve_file(os.path.join(
+                self.get_store().data_dir, "frames", parts[0], parts[1]))
+        if parsed.path == "/api/health":
+            return _json(self, {"ok": True, "version": __version__,
+                                "config": self.config.redacted(),
+                                "integration": nd.describe_integration()})
+        if parsed.path == "/api/integration":
+            return _json(self, nd.describe_integration())
+        if parsed.path == "/api/analysis":
+            q = urllib.parse.parse_qs(parsed.query)
+            fid = (q.get("figure_id") or [""])[0]
+            return _json(self, {"analysis": self.get_store().load_analysis(fid)})
+        if parsed.path == "/api/corrections":
+            return _json(self, {"corrections": self.get_store().load_corrections()})
+        if parsed.path == "/api/models":
+            return _json(self, {"models": list_models(self.get_store())})
+        if parsed.path == "/api/contract":
+            return _json(self, api_contract())
+        return _json(self, {"error": "not found"}, 404)
+
+    def _serve_file(self, path: str):
+        if not os.path.isfile(path):
+            return _json(self, {"error": "not found"}, 404)
+        mime, _ = mimetypes.guess_type(path)
+        with open(path, "rb") as fh:
+            body = fh.read()
+        self.send_response(200)
+        self.send_header("Content-Type", mime or "application/octet-stream")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    # -- POST -----------------------------------------------------------
+    def do_POST(self):
+        length = int(self.headers.get("Content-Length", "0") or 0)
+        raw = self.rfile.read(length) if length > 0 else b""
+        try:
+            body = json.loads(raw.decode("utf-8", "replace")) if raw else {}
+        except json.JSONDecodeError:
+            body = {}
+        route = urllib.parse.urlparse(self.path).path
+        store = self.get_store()
+        try:
+            if route == "/api/import":
+                if not body.get("path"):
+                    raise ValueError("missing 'path': provide a server-local file path or URL")
+                if body["path"].startswith(("http://", "https://")):
+                    return _json(self, {"staged_path": body["path"],
+                                        "hint": "URL: call /api/auto-create directly"})
+                result = ing.import_document(body["path"], store.data_dir,
+                                             int(body.get("page", 0)))
+                try:
+                    from . import sources as _src
+                    bundle = _src.ingest_any(body["path"])
+                    if bundle["kind"] == "text":
+                        result["text_chars"] = len(bundle["text"])
+                        result["title"] = bundle.get("title", "")
+                    else:
+                        result["text_chars"] = 0
+                        result["media"] = bundle["kind"]
+                    result["text_backend"] = "atlas"
+                except Exception as exc:
+                    result["text_chars"] = 0
+                    result["text_backend"] = f"unavailable: {type(exc).__name__}"
+                if result["mime"] == "application/pdf":
+                    result["figure_hint"] = ("PDF stored with text. Convert the target page to PNG/JPEG "
+                                             "for figure overlays, or auto-create a text model as-is.")
+                return _json(self, result)
+            if route == "/api/figure/select":
+                crop = ing.select_figure(
+                    body["image_path"], tuple(body["crop"]), store.data_dir,
+                    body.get("document_ref", ""), int(body.get("page", 0)))
+                payload = crop.to_dict()
+                payload["figure_url"] = "/figures/" + os.path.basename(crop.image_path)
+                return _json(self, payload)
+            if route == "/api/analyze":
+                key = AtlasStore.cache_key("muse", body.get("image_path", ""),
+                                           body.get("note", ""), str(body.get("use_wonder", False)))
+                cached = store.cache_get(key)
+                if cached:
+                    return _json(self, {"analysis": cached, "cached": True})
+                provider = MuseProvider(self.config, use_wonder=bool(body.get("use_wonder", False)))
+                analysis = provider.analyze_figure(
+                    body["image_path"], body.get("note", ""),
+                    body.get("document_ref", ""), int(body.get("page", 0)),
+                    body.get("figure_id", "figure"))
+                data = analysis.to_dict()
+                store.save_analysis(body.get("figure_id", "figure"), data)
+                store.cache_put(key, data)
+                return _json(self, {"analysis": data, "cached": False})
+            if route == "/api/segment":
+                bbox = None
+                if body.get("bbox"):
+                    b = body["bbox"]
+                    bbox = BoundingBox(x_min=b["x_min"], y_min=b["y_min"],
+                                       x_max=b["x_max"], y_max=b["y_max"])
+                provider = SamProvider(self.config)
+                seg = provider.segment(body["image_path"], body.get("prompt", ""),
+                                       body.get("entity_id", ""), bbox)
+                key = AtlasStore.cache_key("sam", body.get("image_path", ""), body.get("prompt", ""))
+                store.cache_put(key, {"kind": seg.kind, "mask_ref": seg.mask_ref})
+                return _json(self, {"kind": seg.kind, "mask_ref": seg.mask_ref,
+                                    "bbox": seg.bbox.to_dict() if seg.bbox else None,
+                                    "note": seg.raw_note})
+            if route == "/api/analysis/load":
+                analysis = VisualAnalysis.from_dict(body["analysis"])
+                store.save_analysis(body.get("figure_id", "figure"), analysis.to_dict())
+                return _json(self, {"ok": True})
+            if route == "/api/analysis/attach-mask":
+                figure_id = body.get("figure_id", "")
+                saved = store.load_analysis(figure_id)
+                if saved is None:
+                    raise ValueError(f"unknown figure_id {figure_id!r}")
+                kind = body.get("kind", "")
+                if kind not in ("mask", "bbox-fallback"):
+                    raise ValueError(f"kind must be 'mask' or 'bbox-fallback', got {kind!r}")
+                mask_ref = str(body.get("mask_ref", ""))
+                entity_id = body.get("entity_id", "")
+                entity = next((e for e in saved.get("entities", []) if e.get("id") == entity_id), None)
+                if entity is None:
+                    raise ValueError(f"unknown entity_id {entity_id!r}")
+                entity["mask_ref"] = mask_ref
+                if body.get("bbox"):
+                    entity["bbox"] = body["bbox"]
+                store.save_analysis(figure_id, saved)
+                return _json(self, {"ok": True, "analysis": saved})
+            if route == "/api/corrections":
+                items = store.add_correction(body)
+                return _json(self, {"corrections": items})
+            if route == "/api/learn":
+                mode = body.get("mode", "spatial-recall")
+                analysis = body["analysis"]
+                seed = int(body.get("seed", 0))
+                fn = {"spatial-recall": learn.spatial_recall_challenge,
+                      "pathway-tracing": learn.pathway_tracing_challenge,
+                      "visual-identification": learn.visual_identification_challenge,
+                      "relationship-recall": learn.relationship_recall_challenge}[mode]
+                return _json(self, fn(analysis, seed))
+            if route == "/api/learn/grade":
+                return _json(self, learn.grade(body["challenge"], body["answer"]))
+            if route == "/api/upload":
+                ctype = self.headers.get("Content-Type", "")
+                if not raw or len(raw) > MAX_UPLOAD_BYTES:
+                    raise ValueError("upload needs a non-empty body "
+                                     f"(max {MAX_UPLOAD_BYTES} bytes)")
+                _, files = _parse_multipart(raw, ctype)
+                upload = files.get("file")
+                if upload is None:
+                    raise ValueError("multipart field 'file' is required")
+                safe = "".join(c if c.isalnum() or c in "-_." else "_"
+                               for c in upload["filename"]) or "upload.bin"
+                incoming = os.path.join(store.data_dir, "documents",
+                                        "incoming_" + safe)
+                with open(incoming, "wb") as fh:
+                    fh.write(upload["data"])
+                result = ing.import_document(incoming, store.data_dir)
+                try:
+                    from . import sources as _src
+                    bundle = _src.ingest_any(incoming)
+                    if bundle["kind"] == "text":
+                        result["text_chars"] = len(bundle["text"])
+                        result["text_backend"] = "atlas"
+                        result["title"] = bundle.get("title", "")
+                    elif bundle["kind"] == "video":
+                        result["text_chars"] = 0
+                        result["text_backend"] = "atlas"
+                        result["media"] = "video"
+                    else:
+                        result["text_chars"] = 0
+                        result["text_backend"] = "atlas"
+                        result["media"] = "image"
+                except Exception as exc:
+                    result["text_chars"] = 0
+                    result["text_backend"] = f"unavailable: {type(exc).__name__}"
+                result["staged_path"] = incoming
+                return _json(self, result)
+            if route == "/api/auto-create":
+                path = body.get("path") or body.get("document_ref") or body.get("staged_path", "")
+                if not path:
+                    raise ValueError("auto-create needs 'path' (or staged_path/document_ref)")
+                crop = tuple(body["crop"]) if body.get("crop") else None
+                return _json(self, auto_create_model(
+                    store, self.config, path, body.get("note", ""),
+                    body.get("figure_id", ""), bool(body.get("use_wonder", False)),
+                    crop=crop))
+            return _json(self, {"error": "not found"}, 404)
+        except Exception as exc:
+            return _json(self, {"error": f"{type(exc).__name__}: {exc}"}, 400)
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description="Atlas standalone app")
+    ap.add_argument("--port", type=int, default=8765)
+    ap.add_argument("--data", default="data")
+    args = ap.parse_args(argv)
+    Handler.store = AtlasStore(args.data)
+    Handler.config = AtlasConfig.from_env(data_dir=args.data)
+    server = HTTPServer(("127.0.0.1", args.port), Handler)
+    print(f"Atlas on http://127.0.0.1:{args.port} (data={args.data})")
+    print("Standalone visual knowledge app; visual AI: Meta Muse + SAM 3.1.")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

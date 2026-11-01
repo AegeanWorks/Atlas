@@ -1,0 +1,111 @@
+"""Atlas headless CLI — AI agents and scripts drive Atlas without a browser.
+
+  python -m atlas.cli create figure.png --note "caption..."   # one drop -> one model
+  python -m atlas.cli models                                  # see every model
+  python -m atlas.cli show <figure-id>                        # read one model
+  python -m atlas.cli learn <figure-id> spatial-recall        # practice headlessly
+  python -m atlas.cli contract                                # machine contract
+
+Live creation needs MODEL_API_KEY/META_API_KEY; reading models never does.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from atlas.app import api_contract, auto_create_model, list_models  # noqa: E402
+from atlas.config import AtlasConfig  # noqa: E402
+from atlas import learning as learn  # noqa: E402
+from atlas.store import AtlasStore  # noqa: E402
+
+
+def cmd_create(args) -> int:
+    store = AtlasStore(args.data)
+    config = AtlasConfig.from_env(data_dir=args.data)
+    try:
+        result = auto_create_model(store, config, args.file, args.note,
+                                   args.figure_id, args.wonder)
+    except Exception as exc:
+        print(json.dumps({"ok": False, "error": f"{type(exc).__name__}: {exc}"}))
+        return 1
+    if result.get("model_created"):
+        a = result["analysis"]
+        print(json.dumps({"ok": True, "figure_id": result["figure_id"],
+                          "entities": len(a["entities"]),
+                          "relationships": len(a["relationships"]),
+                          "figure_url": result.get("figure_url", "")}))
+    else:
+        print(json.dumps({"ok": True, "model_created": False,
+                          "document": result["document"]}))
+    return 0
+
+
+def cmd_models(args) -> int:
+    print(json.dumps({"models": list_models(AtlasStore(args.data))}, indent=2))
+    return 0
+
+
+def cmd_show(args) -> int:
+    data = AtlasStore(args.data).load_analysis(args.figure_id)
+    if data is None:
+        print(json.dumps({"ok": False, "error": f"unknown figure_id {args.figure_id!r}"}))
+        return 1
+    print(json.dumps(data, indent=2))
+    return 0
+
+
+def cmd_learn(args) -> int:
+    data = AtlasStore(args.data).load_analysis(args.figure_id)
+    if data is None:
+        print(json.dumps({"ok": False, "error": f"unknown figure_id {args.figure_id!r}"}))
+        return 1
+    fn = {"spatial-recall": learn.spatial_recall_challenge,
+          "pathway-tracing": learn.pathway_tracing_challenge,
+          "visual-identification": learn.visual_identification_challenge,
+          "relationship-recall": learn.relationship_recall_challenge}[args.mode]
+    challenge = fn(data, args.seed)
+    if args.answer is None:
+        print(json.dumps(challenge, indent=2))
+        return 0
+    answer = args.answer
+    if challenge.get("mode") == "pathway-tracing":
+        answer = [a.strip() for a in answer.split(",")]
+    print(json.dumps({"challenge": challenge.get("prompt"),
+                      "grade": learn.grade(challenge, answer)}, indent=2))
+    return 0
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description="Atlas headless CLI for AI agents")
+    ap.add_argument("--data", default="data")
+    sub = ap.add_subparsers(dest="command", required=True)
+    c = sub.add_parser("create", help="one file -> one model")
+    c.add_argument("file")
+    c.add_argument("--note", default="")
+    c.add_argument("--figure-id", default="")
+    c.add_argument("--wonder", action="store_true")
+    c.set_defaults(func=cmd_create)
+    m = sub.add_parser("models", help="list every model")
+    m.set_defaults(func=cmd_models)
+    s = sub.add_parser("show", help="read one model")
+    s.add_argument("figure_id")
+    s.set_defaults(func=cmd_show)
+    lrn = sub.add_parser("learn", help="challenge (and optionally grade)")
+    lrn.add_argument("figure_id")
+    lrn.add_argument("mode", choices=["spatial-recall", "pathway-tracing",
+                                      "visual-identification", "relationship-recall"])
+    lrn.add_argument("--seed", type=int, default=0)
+    lrn.add_argument("--answer", default=None)
+    lrn.set_defaults(func=cmd_learn)
+    ct = sub.add_parser("contract", help="print the machine contract")
+    ct.set_defaults(func=lambda a: (print(json.dumps(api_contract(), indent=2)), 0)[1])
+    args = ap.parse_args(argv)
+    return args.func(args)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
