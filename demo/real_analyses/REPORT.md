@@ -28,3 +28,7 @@ E=245 R=225 across ~18 chunks merged by normalized name
 quality overall=76.7 (flashcards 100, podcast 80, infographic 50: text-only, nothing to draw)
 Turkish concepts preserved (Antik Babil, Milli zenginlik, Bireysel zenginlik ...)
 timed Muse Spark key, env-only, never stored
+
+## 0.17.0 re-score (dedup + trim-scope + capped pathways)
+book: overall 83.3 (flashcards 100, podcast 100 with trim scope, infographic 50: 245 grid boxes overlap; honest)
+video model: quality 91.7 pre-dedup; deck dedupes repeats, warning shown when zero boxes ground

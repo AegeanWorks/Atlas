@@ -190,7 +190,9 @@ def podcast_script(analysis: dict, max_segments: int = 24) -> dict:
     words = sum(len(s["text"].split()) for s in segments)
     return {"title": f"Atlas audio walkthrough: {analysis.get('figure_id', 'model')}",
             "segments": segments,
-            "estimated_minutes": round(words / 150, 1)}
+            "estimated_minutes": round(words / 150, 1),
+            "covered_ids": [e["id"] for e in entities],
+            "trimmed_from": len(analysis.get("entities", []))}
 
 
 def podcast_markdown(script: dict) -> str:

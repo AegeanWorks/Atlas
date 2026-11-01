@@ -119,10 +119,17 @@ def podcast_quality(script: dict, analysis: dict) -> dict:
     segments = script.get("segments", [])
     text = " ".join(s.get("text", "") for s in segments)
     checks, issues = [], []
-    names = [e.get("name", e["id"]) for e in analysis.get("entities", [])]
+    covered_ids = script.get("covered_ids")
+    if covered_ids is not None:
+        scope = [e for e in analysis.get("entities", []) if e["id"] in set(covered_ids)]
+        scope_note = f" (trimmed episode: {len(scope)} of {len(analysis.get('entities', []))} covered)"
+    else:
+        scope = list(analysis.get("entities", []))
+        scope_note = ""
+    names = [e.get("name", e["id"]) for e in scope]
     missing = [n for n in names if n not in text]
     checks.append(_check("entity-coverage", not missing,
-                         f"script walks all {len(names)} structures"
+                         f"script walks all {len(names)} structures{scope_note}"
                          if not missing else f"unmentioned: {missing[:3]}"))
     if missing:
         issues.append(f"script skips: {', '.join(missing[:5])}")

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.17.0 — Big-model honesty (2026-11-01)
+
+- Pathway lists cap at 12 with totals (a 245-entity book yields 562 routes;
+  the worksheet shows the best, not all of them).
+- Podcast quality scores the trimmed episode scope, not the whole book;
+  scripts record covered_ids/trimmed_from.
+- Full book artifacts committed (TSV, questions, podcast, diagram) with
+  re-scored REPORT (83.3).
+
 ## 0.16.0 — Editor's pass on real output (2026-11-01)
 
 - Summaries use arrow-form relations with hub caps (no more doubled verbs or

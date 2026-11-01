@@ -459,7 +459,8 @@ $("btn-summary").onclick = async () => {
     box.textContent =
       ex.title + "\n" + ex.overview + "\n\n" +
       ex.entities.map((e) => "· " + e).join("\n") + "\n\n" +
-      (ex.pathways.length ? "Pathways:\n" + ex.pathways.map((p) => "→ " + p).join("\n") + "\n\n" : "") +
+      (ex.pathways.length ? "Pathways:\n" + ex.pathways.map((p) => "→ " + p).join("\n") +
+        (ex.pathways_truncated ? `\n… and ${ex.pathways_total - ex.pathways.length} more distinct routes` : "") + "\n\n" : "") +
       (s.polished ? "POLISHED SUMMARY:\n" + s.polished
                   : "(offline extractive brief — add MODEL_API_KEY for a polished summary)");
   } catch (err) { box.textContent = `Summary failed: ${err.message}`; }

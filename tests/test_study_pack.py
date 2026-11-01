@@ -68,6 +68,31 @@ def test_podcast_trims_big_models_with_note():
     assert "top of 40" in script["segments"][0]["text"]
 
 
+def test_pathways_capped_with_total():
+    from atlas import summaries as sm
+    ents = [{"id": "root", "name": "R", "category": "other",
+             "bbox": None, "confidence": 1.0}]
+    rels = [{"source_id": "root", "target_id": f"n{i}", "rel_type": "activates",
+             "explanation": "", "supporting_evidence": "", "confidence": 1.0,
+             "provenance": "source", "model_inferred": False} for i in range(30)]
+    ents += [{"id": f"n{i}", "name": f"N{i}", "category": "other",
+              "bbox": None, "confidence": 1.0} for i in range(30)]
+    brief = sm.extractive_summary({"figure_id": "x", "entities": ents, "relationships": rels})
+    assert len(brief["pathways"]) <= 12 and brief["pathways_total"] >= len(brief["pathways"])
+    assert brief["pathways_truncated"] is True
+
+
+def test_podcast_coverage_respects_trim_scope():
+    from atlas import materials as mat
+    from atlas import quality as qa
+    ents = [{"id": f"e{i}", "name": f"Person{i}", "category": "person",
+             "bbox": None, "confidence": 1.0} for i in range(40)]
+    script = mat.podcast_script({"figure_id": "big", "entities": ents, "relationships": []})
+    assert script["trimmed_from"] == 40 and len(script["covered_ids"]) == 24
+    report = qa.podcast_quality(script, {"figure_id": "big", "entities": ents, "relationships": []})
+    assert report["score"] == 100, report["issues"]
+
+
 def test_selftest_passes_offline(tmp_path):
     from atlas.selftest import run
     report = run(str(tmp_path / "selftest-data"))
