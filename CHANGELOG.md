@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.30.1 — Quizzes point at visible things (2026-11-01)
+
+- Spatial-recall draws its target from located entities when any exist, so
+  mixed models never ask the learner to point at something with no location.
+
 ## 0.30.0 — Podcasts with chapters, videos with billing (2026-11-01)
 
 - Every podcast segment carries a [MM:SS] start stamp (monotonic, from 00:00)

@@ -35,6 +35,19 @@ def test_deck_dedupes_merged_frames():
     assert len(set(fronts)) == len(fronts)
 
 
+def test_spatial_recall_prefers_located_entities():
+    from atlas import learning as learn
+    analysis = {"entities": [
+        {"id": "ghost", "name": "Ghost", "category": "other", "bbox": None},
+        {"id": "seen", "name": "Seen", "category": "component",
+         "bbox": {"x_min": 0.1, "y_min": 0.1, "x_max": 0.5, "y_max": 0.5}}],
+        "relationships": []}
+    for seed in range(10):
+        c = learn.spatial_recall_challenge(analysis, seed=seed)
+        assert c["target_id"] == "seen"
+        assert c["highlight_bbox"] is not None
+
+
 def test_store_keeps_corrections_separate(tmp_path):
     store = AtlasStore(str(tmp_path))
     store.save_analysis("fig", {"entities": []})
