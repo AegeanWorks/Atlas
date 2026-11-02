@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.26.0 — Video chapters + fixed brand card (2026-11-01)
+
+- Study videos carry scene counters ("6 / 9") and a progress bar, so long
+  model walkthroughs stay oriented.
+- Fixed the repo social card's leftover "aikit" chip (now "atlas") after
+  source-level review of the sibling's brand assets.
+
 ## 0.25.0 — Workspace visage + sleek posters (2026-11-01)
 
 - Workspace restyle: two-column zodiac with full-width learn row, sticky

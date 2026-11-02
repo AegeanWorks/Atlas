@@ -313,7 +313,8 @@ def video_slideshow(analysis: dict, outdir: str, fps: int = 30,
     title_font, _ = _font(30)
     body_font, _ = _font(16)
 
-    def card(title: str, lines: list[str], highlight: str | None = None) -> "Image.Image":
+    def card(title: str, lines: list[str], highlight: str | None = None,
+             scene: tuple[int, int] | None = None) -> "Image.Image":
         img = Image.new("RGB", (W, H), (11, 21, 48))
         draw = ImageDraw.Draw(img)
         shown = title[:60]
@@ -326,21 +327,33 @@ def video_slideshow(analysis: dict, outdir: str, fps: int = 30,
             # Underline the title itself, not the whole frame width.
             bar_w = max(60, min(draw.textlength(shown, font=title_font) + 16, W - 2 * MARGIN))
             draw.rectangle([MARGIN - 8, 108, MARGIN - 8 + bar_w, 108 + 8], fill=(34, 211, 238))
+        if scene is not None:
+            i, n = scene
+            tag = f"{i} / {n}"
+            tw = draw.textlength(tag, font=body_font)
+            draw.text((W - MARGIN - tw, 44), tag, font=body_font, fill=(125, 211, 252))
+            draw.rectangle([MARGIN, H - 26, W - MARGIN, H - 20], outline=(34, 53, 99))
+            draw.rectangle([MARGIN, H - 26, MARGIN + (W - 2 * MARGIN) * i / max(1, n), H - 20],
+                           fill=(34, 211, 238))
         return img
 
+    total_scenes = len(entities) + 2
     scenes: list[tuple["Image.Image", str]] = [
         (card(str(analysis.get("figure_id", "Atlas study film")),
-              [f"{len(entities)} structures", f"{len(analysis.get('relationships', []))} connections"]),
+              [f"{len(entities)} structures", f"{len(analysis.get('relationships', []))} connections"],
+              scene=(1, total_scenes)),
          "title")]
-    for e in entities:
+    for k, e in enumerate(entities, start=2):
         eid = e["id"]
         links = [r for r in analysis.get("relationships", [])
                  if r["source_id"] == eid or r["target_id"] == eid][:4]
         lines = ([e.get("description", "")] +
                  [f"{names_subset.get(r['source_id'], '?')} {r['rel_type']} "
                   f"{names_subset.get(r['target_id'], '?')}" for r in links])
-        scenes.append((card(names.get(eid, eid), [l for l in lines if l], highlight=eid), eid))
-    scenes.append((card("Recap", [f"{names.get(e['id'], e['id'])}" for e in entities]), "recap"))
+        scenes.append((card(names.get(eid, eid), [l for l in lines if l], highlight=eid,
+                            scene=(k, total_scenes)), eid))
+    scenes.append((card("Recap", [f"{names.get(e['id'], e['id'])}" for e in entities],
+                          scene=(total_scenes, total_scenes)), "recap"))
 
     per_scene = max(1, int(fps * seconds_per_scene))
     frame = 0

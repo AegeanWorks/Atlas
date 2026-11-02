@@ -84,6 +84,30 @@ def test_diagram_poster_has_header_legend_footer():
     assert len(strokes) == 2  # boxes shaded by knowledge layer
 
 
+def test_brand_assets_name_the_right_project():
+    import pathlib
+    assets = pathlib.Path(__file__).resolve().parent.parent / "assets"
+    social = (assets / "social-preview.svg").read_text(encoding="utf-8")
+    assert "github.com/AegeanWorks/Atlas" in social
+    assert ">aikit<" not in social  # template leftover, not this project
+    assert "Atlas" in social
+
+
+def test_video_frames_carry_scene_counter_and_progress():
+    import tempfile
+    from PIL import Image
+    from atlas import materials as mat
+    from atlas.schema import VisualAnalysis
+    from demo.basal_ganglia_fixture import FIXTURE_ANALYSIS
+    a = VisualAnalysis.from_dict(FIXTURE_ANALYSIS).to_dict()
+    info = mat.video_slideshow(a, tempfile.mkdtemp(), fps=2, seconds_per_scene=0.5)
+    assert info["scenes"] == len(a["entities"]) + 2
+    last = sorted(__import__("glob").glob(info["mp4"].replace("study.mp4", "f_*.png")))[-1]
+    strip = Image.open(last).convert("RGB").crop((70, mat.H - 26, mat.W - 70, mat.H - 20))
+    teal = sum(1 for px in strip.getdata() if px[0] < 80 and px[1] > 150 and px[2] > 150)
+    assert teal > strip.width * 0.5  # final scene: progress bar (nearly) full
+
+
 def test_diagram_png_opens():
     from PIL import Image
     import io
