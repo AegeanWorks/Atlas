@@ -8,6 +8,21 @@ function visibleEntities() {
   return state.analysis.entities.filter((e) => e.category === state.category);
 }
 
+// Busy state for slow calls: disables the button and labels it, so users
+// never fire duplicate Muse/SAM requests while one is in flight.
+async function withBusy(btn, label, fn) {
+  if (!btn || btn.disabled) return;
+  const old = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = label || "Working…";
+  try {
+    return await fn();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = old;
+  }
+}
+
 async function api(path, body) {
   const r = await fetch(path, { method: body ? "POST" : "GET",
     headers: { "Content-Type": "application/json" },
@@ -40,7 +55,7 @@ function renderAll() {
   $("link-diagram-png").href = `/api/diagram?figure_id=${encodeURIComponent(fid)}&format=png`;
   $("link-podcast").href = `/api/podcast?figure_id=${encodeURIComponent(fid)}&format=md`;
   $("link-questions").href = `/api/questions?figure_id=${encodeURIComponent(fid)}&format=md`;
-  $("link-video").onclick = async (e) => {
+  $("link-video").onclick = (e) => withBusy($("link-video"), "Rendering…", async () => {
     e.preventDefault();
     const box = $("summary"); box.textContent = "Rendering study video (title, spotlights, recap)…";
     try {
@@ -50,10 +65,10 @@ function renderAll() {
       a.href = v.mp4_url; a.textContent = "Download study MP4 ↓";
       box.appendChild(document.createElement("br")); box.appendChild(a);
     } catch (err) { box.textContent = `Video failed: ${err.message}`; }
-  };
+  });
 }
 
-$("btn-quality").onclick = async () => {
+$("btn-quality").onclick = () => withBusy($("btn-quality"), "Scoring…", async () => {
   const fid = state.figureId || "workspace-figure";
   const box = $("summary"); box.textContent = "Scoring flashcards, podcast, infographic, 3D model…";
   try {
@@ -63,7 +78,7 @@ $("btn-quality").onclick = async () => {
       `${k}: ${r.score}/100` + (r.issues.length ? `\n  ! ${r.issues.join("\n  ! ")}` : "\n  all checks pass")
     ).join("\n\n") + (q.skipped ? `\n\nSkipped: ${q.skipped.join("; ")}` : "");
   } catch (err) { box.textContent = `Quality check failed: ${err.message}`; }
-};
+});
 
 $("btn-tour").onclick = async () => {
   const fid = state.figureId || "workspace-figure";
@@ -279,7 +294,7 @@ $("category-filter").onchange = (e) => { state.category = e.target.value; render
   window.addEventListener("mouseup", () => { panning = false; });
 })();
 
-$("btn-segment").onclick = async () => {
+$("btn-segment").onclick = () => withBusy($("btn-segment"), "Segmenting…", async () => {
   const box = $("segment-status");
   if (!state.analysis || !state.selected) { box.textContent = "Select a structure first."; return; }
   if (!state.figureFile) { box.textContent = "Segmentation needs a server-side figure (not the demo SVG). Select a figure, then analyze."; return; }
@@ -296,7 +311,7 @@ $("btn-segment").onclick = async () => {
       : `SAM returned no decodable mask — honest bbox fallback kept for "${e.name}".`;
     renderAll();
   } catch (err) { box.textContent = `Segmentation failed: ${err.message}`; }
-};
+});
 $("zoom-in").onclick = () => { state.zoom = Math.min(4, state.zoom + .25); $("figure").style.width = `${state.zoom * 100}%`; renderOverlay(); };
 $("zoom-out").onclick = () => { state.zoom = Math.max(.5, state.zoom - .25); $("figure").style.width = `${state.zoom * 100}%`; renderOverlay(); };
 $("reset-view").onclick = () => { state.zoom = 1; $("figure").style.width = "100%"; renderOverlay(); };
@@ -323,12 +338,12 @@ $("btn-figure").onclick = async () => {
   const r = await api("/api/figure/select", { image_path: src, crop }).catch((e) => alert(e.message));
   if (r) { setFigure(r.image_path, r.figure_url); $("provenance").textContent = JSON.stringify(r, null, 2); }
 };
-$("btn-analyze").onclick = async () => {
+$("btn-analyze").onclick = () => withBusy($("btn-analyze"), "Analyzing…", async () => {
   const src = state.figureFile || $("doc-path").value.trim();
   const r = await api("/api/analyze", { image_path: src, note: $("note").value,
     figure_id: "workspace-figure" }).catch((e) => alert(e.message));
   if (r) { state.analysis = r.analysis; state.selected = null; state.figureId = "workspace-figure"; resetModelView(); renderAll(); }
-};
+});
 $("btn-demo").onclick = async () => {
   const r = await fetch("/static/basal_ganglia_sample.json").then((x) => x.json()).catch(() => null);
   // Demo fixture ships with the app when present; otherwise explain the live path.
@@ -454,8 +469,8 @@ function renderQuiz() {
 
 $("layer").onchange = renderOverlay;
 
-$("btn-summary").onclick = async () => {
-  if (!state.analysis) return alert("Analyze or load a model first.");
+$("btn-summary").onclick = () => withBusy($("btn-summary"), "Generating…", async () => {
+  if (!state.analysis) { alert("Analyze or load a model first."); return; }
   const box = $("summary"); box.textContent = "Generating study pack…";
   try {
     const s = await api("/api/summary", { analysis: state.analysis });
@@ -468,7 +483,7 @@ $("btn-summary").onclick = async () => {
       (s.polished ? "POLISHED SUMMARY:\n" + s.polished
                   : "(offline extractive brief — add MODEL_API_KEY for a polished summary)");
   } catch (err) { box.textContent = `Summary failed: ${err.message}`; }
-};
+});
 
 $("btn-learn").onclick = async () => {
   if (!state.analysis) return alert("Analyze a figure first.");
