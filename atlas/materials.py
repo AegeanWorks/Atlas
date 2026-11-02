@@ -264,12 +264,14 @@ def podcast_script(analysis: dict, max_segments: int = 24) -> dict:
         if key not in seen:
             seen.add(key)
             chains.append(f"{names.get(r['source_id'], '?')} {r['rel_type']} {names.get(r['target_id'], '?')}")
-    segments.append({"speaker": "HOST", "cue": "pathway walk",
-                     "text": "Now trace it end to end: " + "; ".join(chains[:8]) + "."})
+    walk = ("Now trace it end to end: " + "; ".join(chains[:8]) + "." if chains
+            else "A single-structure study: hold its definition and evidence in mind.")
+    segments.append({"speaker": "HOST", "cue": "pathway walk", "text": walk})
     teasers = [f"What does {e.get('name', e['id'])} connect to?" for e in entities[:3]]
+    recap = ("Recap in one breath: " + "; ".join(chains[:5]) + ". " if chains
+             else "Recap in one breath: " + (entities[0].get("description", "") if entities else "review the card above") + ". ")
     segments.append({"speaker": "GUIDE", "cue": "recap + quiz teasers",
-                     "text": "Recap in one breath: " + "; ".join(chains[:5]) +
-                             ". Test yourself: " + " ".join(teasers)})
+                     "text": recap + "Test yourself: " + " ".join(teasers)})
     # Chapter timestamps: cumulative spoken time so TTS pipelines and show
     # notes can jump straight to a segment.
     elapsed = 0.0

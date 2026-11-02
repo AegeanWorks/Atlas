@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.30.3 — No dangling walks (2026-11-01)
+
+- Podcast scripts for single-structure models no longer trail off into
+  "trace it end to end: ." — rounded recap instead. Plus byte-identical
+  social-card regeneration confirmed.
+
 ## 0.30.2 — Quiz pool clarity (2026-11-01)
 
 - Unshadowed the target-pool variable in spatial recall (no behavior change).

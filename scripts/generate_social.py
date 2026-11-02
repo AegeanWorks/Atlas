@@ -3,6 +3,9 @@
 GitHub/Twitter do not render SVG social cards, so this rasterizes the Atlas
 brand lockup: gradient field, dot grid, kicker, title, rule, tagline, chips,
 fold mark, footer URL. Run: python scripts/generate_social.py
+
+Layout is tuned for Arial/DejaVu metrics and Pillow renders deterministically,
+so regenerating on the same fonts yields byte-identical output.
 """
 import os
 

@@ -139,6 +139,18 @@ def test_tour_orders_layers():
     assert all(s["connections"] for s in tour["stops"] if s["entity_id"] != "snr")
 
 
+def test_podcast_single_entity_has_no_dangling_walk():
+    from atlas import materials as mat
+    script = mat.podcast_script({"figure_id": "solo", "entities": [
+        {"id": "only", "name": "Only", "category": "other",
+         "description": "The whole lesson.", "confidence": 0.9}],
+        "relationships": []})
+    walk = next(s for s in script["segments"] if s["cue"] == "pathway walk")
+    assert "end to end: ." not in walk["text"]
+    recap = next(s for s in script["segments"] if s["cue"] == "recap + quiz teasers")
+    assert "Recap in one breath: ." not in recap["text"]
+
+
 def test_podcast_covers_entities_and_times():
     script = mat.podcast_script(_analysis())
     text = " ".join(s["text"] for s in script["segments"])
