@@ -86,11 +86,16 @@ def test_diagram_poster_has_header_legend_footer():
 
 def test_brand_assets_name_the_right_project():
     import pathlib
+    from PIL import Image
     assets = pathlib.Path(__file__).resolve().parent.parent / "assets"
     social = (assets / "social-preview.svg").read_text(encoding="utf-8")
     assert "github.com/AegeanWorks/Atlas" in social
     assert ">aikit<" not in social  # template leftover, not this project
     assert "Atlas" in social
+    png = assets / "social-preview.png"  # GitHub can't display SVG cards
+    assert png.is_file()
+    with Image.open(png) as im:
+        assert im.size == (1280, 640)
 
 
 def test_video_frames_carry_scene_counter_and_progress():

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.28.0 — Fold mark with a seat (2026-11-01)
+
+- The social card's mark now matches the approved fold: inner face shading,
+  center spine, and the checkpoint node with halo seated in the structure
+  instead of floating beside a cube outline. Eye-reviewed, PNG pinned.
+
 ## 0.27.0 — Busy states for slow calls (2026-11-01)
 
 - Analyze / Segment / Study pack / Quality / Video controls now disable with

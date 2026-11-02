@@ -53,10 +53,16 @@ def main() -> str:
     pts_top = [(-52, -34), (8, -54), (52, -22), (-8, -2)]
     pts_leg = [(-52, -34), (-52, 22), (-8, 50), (52, 20), (52, -22)]
     top = [(cx + x * s, cy + y * s) for x, y in pts_top]
-    d.polygon(top, fill=(125, 211, 252, 46), outline=(125, 211, 252))
+    d.polygon(top, fill=(125, 211, 252, 52), outline=(125, 211, 252))
+    inner = [(cx + x * s * 0.55, cy + y * s * 0.55 - 6) for x, y in pts_top]
+    d.polygon(inner, fill=(125, 211, 252, 26))
     leg = [(cx + x * s, cy + y * s) for x, y in pts_leg]
     d.line(leg, fill=(125, 211, 252), width=7, joint="curve")
-    d.ellipse([cx - 16, cy - 127 - 16, cx + 16, cy - 127 + 16], fill=(139, 92, 246))
+    spine = [(cx - 8 * s, cy - 2 * s), (cx - 8 * s, cy + 50 * s)]
+    d.line(spine, fill=(125, 211, 252), width=5, joint="curve")
+    nx, ny = cx, cy  # group origin, as in the approved SVG mark
+    d.ellipse([nx - 28, ny - 28, nx + 28, ny + 28], outline=(139, 92, 246, 140), width=3)
+    d.ellipse([nx - 16, ny - 16, nx + 16, ny + 16], fill=(139, 92, 246))
     # Editorial column.
     f_title = _font(76, bold=True)
     f_kick = _font(20)
