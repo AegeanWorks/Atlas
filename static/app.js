@@ -28,7 +28,11 @@ async function api(path, body) {
     headers: { "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : undefined });
   const data = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(data.error || r.statusText);
+  if (!r.ok) {
+    const err = new Error(data.error || r.statusText);
+    err.cause = data.cause; err.fix = data.fix;
+    throw err;
+  }
   return data;
 }
 
@@ -64,20 +68,21 @@ function renderAll() {
       const a = document.createElement("a");
       a.href = v.mp4_url; a.textContent = "Download study MP4 ↓";
       box.appendChild(document.createElement("br")); box.appendChild(a);
-    } catch (err) { box.textContent = `Video failed: ${err.message}`; }
+    } catch (err) { box.textContent = `Video failed: ${honestMsg(err)}`; }
   });
 }
 
 $("btn-quality").onclick = () => withBusy($("btn-quality"), "Scoring…", async () => {
-  const fid = state.figureId || "workspace-figure";
-  const box = $("summary"); box.textContent = "Scoring flashcards, podcast, infographic, 3D model…";
+  const box = $("summary"); box.textContent = "Scoring flashcards, podcast, infographic, 3D model, tour, questions, summary, learn…";
   try {
-    const q = await api("/api/quality", { figure_id: fid });
+    // Inline analysis: scores the model on screen even when it only lives in
+    // the browser (demo fixture), not just server-saved figure_ids.
+    const q = await api("/api/quality", { analysis: state.analysis });
     const rows = Object.entries(q).filter(([k]) => k !== "overall" && k !== "skipped");
     box.textContent = `Overall quality: ${q.overall}/100\n\n` + rows.map(([k, r]) =>
       `${k}: ${r.score}/100` + (r.issues.length ? `\n  ! ${r.issues.join("\n  ! ")}` : "\n  all checks pass")
     ).join("\n\n") + (q.skipped ? `\n\nSkipped: ${q.skipped.join("; ")}` : "");
-  } catch (err) { box.textContent = `Quality check failed: ${err.message}`; }
+  } catch (err) { box.textContent = `Quality check failed: ${honestMsg(err)}`; }
 });
 
 $("btn-tour").onclick = async () => {
@@ -87,7 +92,7 @@ $("btn-tour").onclick = async () => {
     const t = await api(`/api/tour?figure_id=${encodeURIComponent(fid)}`);
     box.textContent = t.stops.map((s) =>
       `Stop ${s.stop} — ${s.name} (layer ${s.layer}): ${s.observe} | links: ${s.connections.join("; ") || "—"} | ${s.camera}`).join("\n\n");
-  } catch (err) { box.textContent = `Tour failed: ${err.message}`; }
+  } catch (err) { box.textContent = `Tour failed: ${honestMsg(err)}`; }
 };
 
 function resetModelView() {
@@ -310,7 +315,7 @@ $("btn-segment").onclick = () => withBusy($("btn-segment"), "Segmenting…", asy
       ? `Mask attached to "${e.name}".`
       : `SAM returned no decodable mask — honest bbox fallback kept for "${e.name}".`;
     renderAll();
-  } catch (err) { box.textContent = `Segmentation failed: ${err.message}`; }
+  } catch (err) { box.textContent = `Segmentation failed: ${honestMsg(err)}`; }
 });
 $("zoom-in").onclick = () => { state.zoom = Math.min(4, state.zoom + .25); $("figure").style.width = `${state.zoom * 100}%`; renderOverlay(); };
 $("zoom-out").onclick = () => { state.zoom = Math.max(.5, state.zoom - .25); $("figure").style.width = `${state.zoom * 100}%`; renderOverlay(); };
@@ -366,7 +371,15 @@ function setFigure(filePath, displayUrl) {
 // stale image can never pose as the current model's evidence.
 function showModel(auto, stagedPath) {
   state.analysis = auto.analysis;
+  state.offline = !!auto.offline;
+  state.modelWarning = auto.warning || "";
+  const eh = document.getElementById("empty-hint");
+  if (eh) eh.hidden = true;
   state.selected = null; state.figureId = auto.figure_id;
+  if (auto.offline || auto.warning) {
+    $("provenance").textContent =
+      (auto.offline ? "[offline-extractive model: no API key] " : "") + (auto.warning || "");
+  }
   if (auto.figure_url) {
     state.figureFile = stagedPath || "";
     setFigure(stagedPath || "", auto.figure_url);
@@ -381,6 +394,13 @@ function showModel(auto, stagedPath) {
 
 // One drop -> one model: upload the file, then auto-create (images fully automatic).
 const dz = $("dropzone");
+function honestMsg(err) {
+  // api() throws Error(data.error); structured cause/fix ride on err.cause/err.fix.
+  const parts = [String((err && err.message) || err)];
+  if (err && err.cause) parts.push(`Cause: ${err.cause}`);
+  if (err && err.fix) parts.push(`Fix: ${err.fix}`);
+  return parts.join(" ");
+}
 ["dragover", "dragenter"].forEach((ev) => dz.addEventListener(ev, (e) => { e.preventDefault(); dz.classList.add("over"); }));
 ["dragleave", "drop"].forEach((ev) => dz.addEventListener(ev, (e) => { e.preventDefault(); dz.classList.remove("over"); }));
 dz.addEventListener("drop", async (e) => {
@@ -388,32 +408,64 @@ dz.addEventListener("drop", async (e) => {
   if (!file) return;
   const fd = new FormData();
   fd.append("file", file, file.name);
-  dz.textContent = `Uploading ${file.name}…`;
+  dz.textContent = `Uploading ${file.name}… (1/3)`;
   try {
     const up = await fetch("/api/upload", { method: "POST", body: fd }).then((r) => r.json());
-    if (up.error) throw new Error(up.error);
+    if (up.error) {
+      const err = new Error(up.error); err.cause = up.cause; err.fix = up.fix;
+      throw err;
+    }
     $("provenance").textContent = JSON.stringify(up, null, 2);
-    dz.textContent = "Creating model…";
+    dz.textContent = `Reading ${file.name}… (2/3)`;
+    await new Promise((r) => setTimeout(r, 30));
+    dz.textContent = `Building learning model… (3/3)`;
     const auto = await api("/api/auto-create", { path: up.staged_path, note: $("note").value, figure_id: "workspace-figure" });
     if (!auto.model_created) { dz.textContent = "Stored. " + (auto.document.figure_hint || "Done."); return; }
     showModel(auto, up.staged_path);
+    const tag = auto.offline ? "offline-extractive (no key)" : auto.source_kind;
+    const extra = auto.warning ? ` ${auto.warning}` : "";
+    const frames = auto.frames_report
+      ? ` Frames kept ${auto.frames_report.kept.length}/${auto.frames_report.frames.length}.` : "";
     dz.textContent = auto.figure_url
-      ? `Model created: ${auto.analysis.entities.length} entities, ${auto.analysis.relationships.length} relationships.`
-      : `Text model created (${auto.source_kind}): graph + learning ready, no figure overlay.`;
-  } catch (err) { dz.textContent = `Drop failed: ${err.message}`; }
+      ? `Model created (${tag}): ${auto.analysis.entities.length} entities, ${auto.analysis.relationships.length} relationships.${frames}${extra}`
+      : `Text model created (${tag}): graph + learning ready, no figure overlay.${extra}`;
+  } catch (err) { dz.textContent = `Drop failed: ${honestMsg(err)}`; }
 });
 
 $("btn-link").onclick = async () => {
   const url = $("link-input").value.trim();
   if (!url) return;
-  dz.textContent = `Creating model from link…`;
+  dz.textContent = `Creating model from link… (1/2)`;
   try {
     const auto = await api("/api/auto-create", { path: url, note: $("note").value, figure_id: "workspace-figure" });
     if (!auto.model_created) { dz.textContent = "Stored. " + (auto.document.figure_hint || "Done."); return; }
     showModel(auto, "");
-    dz.textContent = `Model created from link: ${auto.analysis.entities.length} entities, ${auto.analysis.relationships.length} relationships (graph + learning ready).`;
-  } catch (err) { dz.textContent = `Link failed: ${err.message}`; }
+    const tag = auto.offline ? "offline-extractive (no key)" : auto.source_kind;
+    dz.textContent = `Model created from link (${tag}): ${auto.analysis.entities.length} entities, ${auto.analysis.relationships.length} relationships (graph + learning ready).${auto.warning ? " " + auto.warning : ""}`;
+  } catch (err) { dz.textContent = `Link failed: ${honestMsg(err)}`; }
 };
+
+// One click: PDF page -> figure overlay -> live/offline analysis. Composes the
+// existing render + select + analyze endpoints; no new backend route.
+$("btn-pdf-figure").onclick = () => withBusy($("btn-pdf-figure"), "Building figure…", async () => {
+  const src = $("doc-path").value.trim();
+  if (!src) return alert("Enter a server-local PDF path first (or drop the PDF above).");
+  const page = Math.max(1, parseInt($("page").value || "1", 10));
+  try {
+    dz.textContent = `Rendering PDF page ${page}…`;
+    const r = await api("/api/pdf/render", { path: src, page });
+    const crop = ($("crop").value || "0.05,0.05,0.95,0.95").split(",").map(Number);
+    dz.textContent = `Selecting figure…`;
+    const fig = await api("/api/figure/select", { image_path: r.image_path, crop });
+    setFigure(fig.image_path, fig.figure_url);
+    dz.textContent = `Analyzing figure…`;
+    const a = await api("/api/analyze", { image_path: fig.image_path,
+      note: $("note").value, figure_id: "workspace-figure" });
+    state.analysis = a.analysis; state.selected = null; state.figureId = "workspace-figure";
+    resetModelView(); renderAll();
+    dz.textContent = `Figure overlay ready: page ${page}, ${a.analysis.entities.length} entities.`;
+  } catch (e) { dz.textContent = `Figure failed: ${honestMsg(e)}`; }
+});
 
 let quiz = null; // active on-figure quiz {challenge, score:[got,total]}
 $("btn-quiz").onclick = async () => {
@@ -482,7 +534,32 @@ $("btn-summary").onclick = () => withBusy($("btn-summary"), "Generating…", asy
         (ex.pathways_truncated ? `\n… and ${ex.pathways_total - ex.pathways.length} more distinct routes` : "") + "\n\n" : "") +
       (s.polished ? "POLISHED SUMMARY:\n" + s.polished
                   : "(offline extractive brief — add MODEL_API_KEY for a polished summary)");
-  } catch (err) { box.textContent = `Summary failed: ${err.message}`; }
+  } catch (err) { box.textContent = `Summary failed: ${honestMsg(err)}`; }
+});
+
+$("btn-study-all").onclick = () => withBusy($("btn-study-all"), "Building…", async () => {
+  if (!state.analysis) { alert("Analyze or load a model first."); return; }
+  const box = $("summary"); box.textContent = "Building study pack: summary (1/4)…";
+  try {
+    const s = await api("/api/summary", { analysis: state.analysis });
+    box.textContent = "Building study pack: 3D tour (2/4)…";
+    const t = await api("/api/tour", { analysis: state.analysis }).catch(() => null);
+    box.textContent = "Building study pack: flashcards (3/4)…";
+    const deck = await api("/api/flashcards", { analysis: state.analysis }).catch(() => null);
+    box.textContent = "Building study pack: quality (4/4)…";
+    const q = await api("/api/quality", { analysis: state.analysis }).catch(() => null);
+    const ex = s.extractive;
+    box.textContent =
+      ex.title + "\n" + ex.overview + "\n\n" +
+      (t && t.stops ? `3D tour: ${t.stops.length} stops.\n` : "") +
+      (deck ? `Flashcards: ${deck.cards.length} cards.\n` : "") +
+      (q ? `Quality overall: ${q.overall}/100` +
+        Object.entries(q).filter(([k]) => !["overall", "skipped"].includes(k))
+          .map(([k, r]) => `\n  ${k}: ${r.score}/100`).join("") +
+        (q.skipped ? `\nSkipped: ${q.skipped.join("; ")}` : "") : "") +
+      (state.modelWarning ? `\n\nNote: ${state.modelWarning}` : "") +
+      (state.offline ? "\n[offline-extractive model: add MODEL_API_KEY for live Muse vision]" : "");
+  } catch (err) { box.textContent = `Study pack failed: ${honestMsg(err)}`; }
 });
 
 $("btn-learn").onclick = async () => {

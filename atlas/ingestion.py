@@ -51,7 +51,9 @@ def _sha256_file(path: str) -> str:
 def _check_ext(path: str) -> str:
     ext = os.path.splitext(path)[1].lower()
     if ext not in SUPPORTED_EXTENSIONS:
-        raise ValueError(f"unsupported file type {ext!r}; use PDF/PNG/JPEG")
+        raise ValueError(
+            f"unsupported file type {ext!r}; use PDF, PNG, JPEG, EPUB, TXT, MD, "
+            "DOCX, PPTX, MP4/WebM/MOV, or a VTT/SRT transcript")
     if not os.path.isfile(path):
         raise FileNotFoundError(path)
     return ext

@@ -30,7 +30,8 @@ def cmd_create(args) -> int:
         result = auto_create_model(store, config, args.file, args.note,
                                    args.figure_id, args.wonder)
     except Exception as exc:
-        print(json.dumps({"ok": False, "error": f"{type(exc).__name__}: {exc}"}))
+        from atlas.app import honest_error
+        print(json.dumps({"ok": False, **honest_error(exc)}))
         return 1
     if result.get("model_created"):
         a = result["analysis"]
@@ -207,12 +208,15 @@ def cmd_quality(args) -> int:
     from . import materials as mat
     from . import models3d as m3d
     from . import quality as qa
+    from . import summaries as sm
     data = AtlasStore(args.data).load_analysis(args.figure_id)
     if data is None:
         print(json.dumps({"ok": False, "error": f"unknown figure_id {args.figure_id!r}"}))
         return 1
     artifacts = {"deck": fc.build_deck(data), "podcast": mat.podcast_script(data),
-                 "diagram_svg": mat.diagram_svg(data)}
+                 "diagram_svg": mat.diagram_svg(data), "tour": mat.tour_3d(data),
+                 "questions": mat.question_bank(data), "summary": sm.extractive_summary(data),
+                 "include_learn": True}
     try:
         artifacts["obj"] = m3d.export_obj(data)
     except ValueError:

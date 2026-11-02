@@ -40,6 +40,46 @@ def _json(handler: BaseHTTPRequestHandler, obj, status: int = 200) -> None:
 MAX_UPLOAD_BYTES = 60_000_000
 
 
+def honest_error(exc: Exception) -> dict:
+    """Every failure is a message with the reason, never a silent nothing.
+
+    Maps known error text to {error, cause, fix}; unknown errors pass through
+    with empty cause/fix so the UI still shows the raw message.
+    """
+    msg = f"{type(exc).__name__}: {exc}"
+    cause, fix = "", ""
+    if "No text on any of" in msg and "page(s)" in msg:
+        cause = "scanned-image PDF: the file has pages but no extractable text"
+        fix = ("render the target page to PNG (Advanced: Render page → figure), "
+               "or run OCR first (e.g. ocrmypdf) and retry")
+    elif "no public captions" in msg:
+        cause = "caption-less or age-gated YouTube video: no public captions found"
+        fix = "paste the article URL instead, or upload a VTT/SRT transcript file"
+    elif "video needs ffmpeg" in msg or "ffmpeg" in msg and "needs" in msg:
+        cause = "video needs ffmpeg and none is installed"
+        fix = "install system ffmpeg, or pip install imageio-ffmpeg, then retry"
+    elif "not set; refusing live call" in msg:
+        cause = "live AI call needs MODEL_API_KEY/META_API_KEY and none is set"
+        fix = ("no key needed for the offline path: drop the file again for an "
+               "offline-extractive model, or set MODEL_API_KEY for live Muse/SAM")
+    elif "supply a transcript" in msg:
+        cause = "audio/video transcription is not bundled with Atlas"
+        fix = "upload a VTT/SRT/JSON transcript file instead"
+    elif "non-textual content" in msg:
+        cause = "the URL serves non-textual content (file download, app page)"
+        fix = "paste the article URL, or download the file and drop it directly"
+    elif "Unsupported file type" in msg:
+        cause = "unsupported file type"
+        fix = "use PDF, PNG, JPEG, EPUB, TXT, MD, DOCX, PPTX, MP4/WebM/MOV, or a VTT/SRT transcript"
+    elif "blank transition cards or duplicates" in msg:
+        cause = "narration-heavy video: stills carry little lesson content"
+        fix = "supply a VTT/SRT transcript or PNG stills instead"
+    elif "PyMuPDF" in msg:
+        cause = "PDF page rendering needs the optional PyMuPDF package"
+        fix = "pip install PyMuPDF, or auto-create a text model as-is"
+    return {"error": msg, "cause": cause, "fix": fix}
+
+
 def _parse_multipart(body: bytes, content_type: str) -> tuple[dict, dict]:
     """Minimal single-file multipart/form-data parser (stdlib only).
 
@@ -134,6 +174,11 @@ def auto_create_model(store: AtlasStore, config: AtlasConfig, source: str,
     graph, and learning. `muse_provider` injectable for offline-safe use.
     """
     from . import sources as src
+    from . import muse_provider as _mp
+    # Tests (and power users) patch atlas.app.MuseProvider with a fake; honor
+    # that ahead of the offline fallback so injected doubles keep working.
+    _Provider = globals().get("MuseProvider", _mp.MuseProvider)
+    _patched = _Provider is not _mp.MuseProvider
     is_url = source.startswith(("http://", "https://"))
     if is_url:
         bundle = src.ingest_any(source)
@@ -147,18 +192,36 @@ def auto_create_model(store: AtlasStore, config: AtlasConfig, source: str,
         doc["title"] = bundle.get("title", doc.get("original_name", ""))
         doc["text_chars"] = len(bundle["text"])
         fid = figure_id or ("model-" + AtlasStore.cache_key(bundle["document_ref"])[:8])
-        provider = muse_provider or MuseProvider(config, use_wonder=use_wonder)
-        analyze = getattr(provider, "analyze_long_text", None)
-        if callable(analyze):
-            analysis = analyze(bundle["text"], note,
-                               document_ref=bundle["document_ref"], figure_id=fid)
-        else:  # injected test doubles without chunking: single pass
-            analysis = provider.analyze_text(bundle["text"], note,
-                                             document_ref=bundle["document_ref"], figure_id=fid)
+        if muse_provider is not None:
+            provider = muse_provider
+            offline = False
+        elif _patched or config.has_api_key:
+            provider = _Provider(config, use_wonder=use_wonder)
+            offline = False
+        else:
+            provider = None
+            offline = True
+        if not offline:
+            analyze = getattr(provider, "analyze_long_text", None)
+            if callable(analyze):
+                analysis = analyze(bundle["text"], note,
+                                   document_ref=bundle["document_ref"], figure_id=fid)
+            else:  # injected test doubles without chunking: single pass
+                analysis = provider.analyze_text(bundle["text"], note,
+                                                 document_ref=bundle["document_ref"], figure_id=fid)
+        else:
+            from . import offline as _offline
+            analysis = _offline.build_offline_analysis(
+                bundle["text"], document_ref=bundle["document_ref"],
+                figure_id=fid, source_kind="text")
         data = analysis.to_dict()
         store.save_analysis(fid, data)
-        return {"document": doc, "model_created": True, "figure_id": fid,
-                "analysis": data, "source_kind": "text"}
+        out = {"document": doc, "model_created": True, "figure_id": fid,
+               "analysis": data, "source_kind": "text", "offline": offline}
+        if offline:
+            out["warning"] = ("offline-extractive model (no API key): keyword "
+                              "frequency, not Muse vision. Add MODEL_API_KEY for live analysis.")
+        return out
     if kind == "video":
         from . import quality as qa
         frames_dir = os.path.join(store.data_dir, "frames",
@@ -171,7 +234,24 @@ def auto_create_model(store: AtlasStore, config: AtlasConfig, source: str,
                              "(motion-graphics/live-action need their transcript: "
                              "narration carries the lesson, stills carry little). "
                              "Supply a VTT/SRT transcript or PNG stills instead.")
-        provider = muse_provider or MuseProvider(config, use_wonder=use_wonder)
+        if muse_provider is None and not _patched and not config.has_api_key:
+            from . import offline as _offline
+            fid = figure_id or ("model-" + doc["sha256"][:8])
+            context = _offline.offline_text_for_source(bundle, note)
+            analysis = _offline.build_offline_analysis(
+                context, document_ref=doc["document_ref"], figure_id=fid,
+                source_kind="video")
+            data = analysis.to_dict()
+            store.save_analysis(fid, data)
+            first = os.path.basename(frames[0])
+            return {"document": doc, "model_created": True, "figure_id": fid,
+                    "figure_url": "/frames/" + os.path.basename(frames_dir) + "/" + first,
+                    "frames": len(frames), "frames_report": fq, "analysis": data,
+                    "source_kind": "video", "offline": True, "located_entities": 0,
+                    "warning": ("offline-extractive video model (no API key): frames kept "
+                                f"{len(frames)}/{len(raw_frames)}, visual entities not detected. "
+                                "Add MODEL_API_KEY for live frame analysis.")}
+        provider = muse_provider if muse_provider is not None else _Provider(config, use_wonder=use_wonder)
         per_frame = []
         for i, frame in enumerate(frames):
             frame_note = ((note + " ") if note else "") + \
@@ -203,21 +283,39 @@ def auto_create_model(store: AtlasStore, config: AtlasConfig, source: str,
         first = os.path.basename(frames[0])
         return {"document": doc, "model_created": True, "figure_id": fid,
                 "figure_url": "/frames/" + os.path.basename(frames_dir) + "/" + first,
-                "frames": len(frames), "analysis": data, "source_kind": "video",
+                "frames": len(frames), "frames_report": fq, "analysis": data,
+                "source_kind": "video", "offline": False,
                 "located_entities": located, "warning": warning}
     # image path: full-frame figure, visual analysis
     fid = figure_id or ("model-" + doc["sha256"][:8])
     figure = ing.select_figure(bundle["path"], crop or (0.0, 0.0, 1.0, 1.0),
                                store.data_dir, document_ref=doc["document_ref"])
-    provider = muse_provider or MuseProvider(config, use_wonder=use_wonder)
-    analysis = provider.analyze_figure(figure.image_path, note,
-                                       document_ref=doc["document_ref"],
-                                       figure_id=fid)
+    if muse_provider is not None:
+        provider = muse_provider
+        analysis = provider.analyze_figure(figure.image_path, note,
+                                           document_ref=doc["document_ref"],
+                                           figure_id=fid)
+        offline = False
+    elif _patched or config.has_api_key:
+        analysis = _Provider(config, use_wonder=use_wonder).analyze_figure(
+            figure.image_path, note, document_ref=doc["document_ref"], figure_id=fid)
+        offline = False
+    else:
+        from . import offline as _offline
+        context = _offline.offline_text_for_source(bundle, note)
+        analysis = _offline.build_offline_analysis(
+            context, document_ref=doc["document_ref"], figure_id=fid,
+            source_kind="image")
+        offline = True
     data = analysis.to_dict()
     store.save_analysis(fid, data)
-    return {"document": doc, "model_created": True, "figure_id": fid,
-            "figure_url": "/figures/" + os.path.basename(figure.image_path),
-            "analysis": data, "source_kind": "image"}
+    out = {"document": doc, "model_created": True, "figure_id": fid,
+           "figure_url": "/figures/" + os.path.basename(figure.image_path),
+           "analysis": data, "source_kind": "image", "offline": offline}
+    if offline:
+        out["warning"] = ("offline-extractive image model (no API key): figure shown, "
+                          "visual entities not detected. Add MODEL_API_KEY for live vision.")
+    return out
 
 
 def list_models(store: AtlasStore) -> list[dict]:
@@ -287,6 +385,7 @@ def api_contract() -> dict:
             "GET /api/flashcards/export?figure_id=": "Anki TSV download",
             "GET /api/diagram?figure_id=&format=svg|png": "printable study poster",
             "GET /api/tour?figure_id=": "ordered 3D-layer walkthrough",
+            "POST /api/tour {figure_id|analysis}": "ordered 3D-layer walkthrough (inline analysis supported)",
             "GET /api/podcast?figure_id=&format=md|json": "two-host audio script",
             "GET /api/questions?figure_id=&format=json|md": "question bank + worksheet",
             "POST /api/video {figure_id|analysis}": "render the H.264 study MP4",
@@ -643,6 +742,18 @@ class Handler(BaseHTTPRequestHandler):
             if route == "/api/flashcards":
                 from . import flashcards as fc
                 return _json(self, fc.build_deck(body["analysis"]))
+            if route == "/api/tour":
+                from . import materials as _mat
+                if body.get("analysis"):
+                    data = VisualAnalysis.from_dict(body["analysis"]).to_dict()
+                    return _json(self, _mat.tour_3d(data))
+                saved = store.load_analysis(body.get("figure_id", ""))
+                if saved is None:
+                    raise ValueError(
+                        f"unknown figure_id {body.get('figure_id')!r}: the demo fixture "
+                        "lives in the browser only — drop the file to create a "
+                        "server-side model, or send inline analysis")
+                return _json(self, _mat.tour_3d(saved))
             if route == "/api/video":
                 from . import materials as mat
                 saved = None
@@ -673,10 +784,20 @@ class Handler(BaseHTTPRequestHandler):
                 elif body.get("figure_id"):
                     saved = store.load_analysis(body["figure_id"])
                 if saved is None:
+                    if body.get("figure_id"):
+                        raise ValueError(
+                            f"unknown figure_id {body.get('figure_id')!r}: the demo fixture "
+                            "lives in the browser only — drop the file to create a "
+                            "server-side model, or send inline analysis")
                     raise ValueError("quality needs figure_id or inline analysis")
+                from . import summaries as sm
                 artifacts = {"deck": fc.build_deck(saved),
                              "podcast": mat.podcast_script(saved),
-                             "diagram_svg": mat.diagram_svg(saved)}
+                             "diagram_svg": mat.diagram_svg(saved),
+                             "tour": mat.tour_3d(saved),
+                             "questions": mat.question_bank(saved),
+                             "summary": sm.extractive_summary(saved),
+                             "include_learn": True}
                 skipped = []
                 try:
                     artifacts["obj"] = m3d.export_obj(saved)
@@ -756,7 +877,7 @@ class Handler(BaseHTTPRequestHandler):
                     crop=crop))
             return _json(self, {"error": "not found"}, 404)
         except Exception as exc:
-            return _json(self, {"error": f"{type(exc).__name__}: {exc}"}, 400)
+            return _json(self, honest_error(exc), 400)
 
 
 def main(argv=None) -> int:

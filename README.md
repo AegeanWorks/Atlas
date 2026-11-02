@@ -40,8 +40,10 @@ needs public captions. No key? Everything except live Muse/SAM calls works;
 see `docs/AI_CONTRACT.md` for headless/AI-agent use
 (`python -m atlas.cli create figure.png`, `models`, `learn`).
 
-No API key? The app, tests, and fixture demo all run offline; live Muse/SAM
-calls refuse without a key instead of faking results.
+No API key? The app, tests, and fixture demo all run offline; dropping any
+file with no key builds an honest offline-extractive model (keyword frequency,
+labelled `offline: true`) that drives graph, flashcards, study pack, and quality.
+Live Muse/SAM calls refuse without a key instead of faking results.
 
 ```bash
 python -m pytest tests -q

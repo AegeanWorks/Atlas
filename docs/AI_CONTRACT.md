@@ -20,7 +20,9 @@ pip install -r requirements.txt
 MODEL_API_KEY=... python -m atlas.app --port 8765   # or: ./start.ps1
 ```
 
-Reading models never needs a key. Creating/segmenting does.
+Reading models never needs a key. Live creating/segmenting does; without a key,
+`auto-create` builds an honest offline-extractive model (`offline: true`,
+keyword frequency with quoted evidence) that drives the same endpoints.
 
 ## Autonomous loop
 

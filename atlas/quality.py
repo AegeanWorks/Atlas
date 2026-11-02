@@ -329,6 +329,137 @@ def _mp4_duration(path: str) -> float | None:
         return None
 
 
+def tour_quality(tour: dict, analysis: dict) -> dict:
+    """Ordered 3D-layer walkthrough: every stop names a known entity."""
+    checks, issues = [], []
+    ids = {e["id"] for e in analysis.get("entities", [])}
+    stops = tour.get("stops", [])
+    located = [e["id"] for e in analysis.get("entities", []) if e.get("bbox")]
+    if not analysis.get("entities"):
+        return _result(0, [_check("has-stops", False, "model has no entities")],
+                       ["nothing to tour"])
+    if not stops and not located:
+        return _result(100, [
+            _check("tour-honest-empty", True, "text-only model: no 3D stops, expected"),
+            _check("stops-reference-entities", True, "no stops to misreference"),
+        ], [])
+    bad = [s.get("entity_id", "?") for s in stops if s.get("entity_id") not in ids]
+    checks.append(_check("stops-reference-entities", not bad,
+                         f"{len(stops)} stops on known entities" if not bad else f"unknown: {bad[:3]}"))
+    if bad:
+        issues.append(f"tour references unknown entities: {bad[:3]}")
+    thin = [s.get("entity_id", "?") for s in stops if not s.get("observe")]
+    checks.append(_check("stops-have-guidance", not thin,
+                         "every stop tells the learner what to observe" if not thin else f"empty: {thin[:3]}"))
+    if thin:
+        issues.append(f"{len(thin)} stops lack observation guidance")
+    if located:
+        covered = {s.get("entity_id") for s in stops}
+        missing = [i for i in located if i not in covered]
+        checks.append(_check("located-stops-covered", not missing,
+                             f"{len(covered & set(located))}/{len(located)} located entities toured"
+                             if not missing else f"untoured: {missing[:3]}"))
+        if missing:
+            issues.append(f"untoured located entities: {missing[:3]}")
+    else:
+        checks.append(_check("located-stops-covered", True, "text-only model: no located stops expected"))
+    score = 100 - 25 * sum(1 for c in checks if not c["ok"])
+    return _result(score, checks, issues)
+
+
+def questions_quality(bank: dict, analysis: dict) -> dict:
+    """Question bank: every entity and relationship gets asked, with answers."""
+    checks, issues = [], []
+    questions = bank.get("questions", [])
+    by_kind: dict[str, int] = {}
+    for q in questions:
+        by_kind[q.get("kind", "?")] = by_kind.get(q.get("kind", "?"), 0) + 1
+    eids = [e["id"] for e in analysis.get("entities", [])]
+    qtext = " ".join(q.get("question", "") for q in questions)
+    missing_e = [e["id"] for e in analysis.get("entities", [])
+                 if e.get("name", e["id"]) not in qtext and e["id"] not in qtext]
+    checks.append(_check("entity-coverage", not missing_e,
+                         f"{len(eids) - len(missing_e)}/{len(eids)} entities asked"
+                         if eids else "no entities to ask"))
+    if missing_e:
+        issues.append(f"unasked entities: {missing_e[:3]}")
+    rels = list(analysis.get("relationships", []))
+    missing_r = [f"{r['source_id']}-{r['target_id']}" for r in rels
+                 if not any(r["source_id"] in q.get("question", "") or
+                            r["target_id"] in q.get("id", "") or
+                            r["target_id"] in q.get("question", "") for q in questions)]
+    checks.append(_check("relation-coverage", not missing_r or not rels,
+                         f"{len(rels) - len(missing_r)}/{len(rels)} relationships asked"
+                         if rels else "no relationships to ask"))
+    if missing_r and rels:
+        issues.append(f"unasked relationships: {missing_r[:3]}")
+    no_answer = [q.get("id", "?") for q in questions if not q.get("answer")]
+    checks.append(_check("answers-present", not no_answer,
+                         "every question has an answer" if not no_answer else f"missing: {no_answer[:3]}"))
+    if no_answer:
+        issues.append(f"{len(no_answer)} questions lack answers")
+    score = 100 - 25 * sum(1 for c in checks if not c["ok"])
+    return _result(max(0, score), checks, issues)
+
+
+def summary_quality(brief: dict, analysis: dict) -> dict:
+    """Extractive study brief: counts match the model, pathways traced."""
+    checks, issues = [], []
+    stats = brief.get("stats", {})
+    checks.append(_check("entity-count-matches",
+                         stats.get("entities", -1) == len(analysis.get("entities", [])),
+                         f"brief counts {stats.get('entities', '?')} entities"))
+    if stats.get("entities", -1) != len(analysis.get("entities", [])):
+        issues.append("brief entity count disagrees with the model")
+    checks.append(_check("relation-count-matches",
+                         stats.get("relationships", -1) == len(analysis.get("relationships", [])),
+                         f"brief counts {stats.get('relationships', '?')} relationships"))
+    if stats.get("relationships", -1) != len(analysis.get("relationships", [])):
+        issues.append("brief relationship count disagrees with the model")
+    rels = analysis.get("relationships", [])
+    paths = brief.get("pathways", [])
+    checks.append(_check("pathways-traced", bool(paths) or not rels,
+                         f"{len(paths)} pathway(s)" if paths else "single-structure study"))
+    if rels and not paths:
+        issues.append("relationships exist but no pathway was traced")
+    checks.append(_check("overview-present", bool(brief.get("overview")),
+                         "overview sentence present" if brief.get("overview") else "overview missing"))
+    if not brief.get("overview"):
+        issues.append("brief has no overview")
+    score = 100 - 25 * sum(1 for c in checks if not c["ok"])
+    return _result(score, checks, issues)
+
+
+def learn_quality(analysis: dict) -> dict:
+    """All four learn modes build and grade correctly on this model."""
+    from . import learning as learn
+    checks, issues = [], []
+    modes = ["spatial-recall", "pathway-tracing",
+             "visual-identification", "relationship-recall"]
+    builders = {"spatial-recall": learn.spatial_recall_challenge,
+                "pathway-tracing": learn.pathway_tracing_challenge,
+                "visual-identification": learn.visual_identification_challenge,
+                "relationship-recall": learn.relationship_recall_challenge}
+    for mode in modes:
+        try:
+            challenge = builders[mode](analysis, seed=0)
+            key = {"spatial-recall": "answer_id",
+                   "visual-identification": "answer_id",
+                   "pathway-tracing": "answer",
+                   "relationship-recall": "answer_rel_type"}[mode]
+            graded = learn.grade(challenge, challenge.get(key))
+            ok = bool(graded.get("correct"))
+            checks.append(_check(f"learn-{mode}", ok,
+                                 f"{mode} builds and grades" if ok else f"{mode} misgrades"))
+            if not ok:
+                issues.append(f"{mode} challenge does not grade its own answer")
+        except Exception as exc:
+            checks.append(_check(f"learn-{mode}", False, f"{type(exc).__name__}: {exc}"))
+            issues.append(f"{mode} cannot build: {exc}")
+    score = 100 - 25 * sum(1 for c in checks if not c["ok"])
+    return _result(max(0, score), checks, issues)
+
+
 def quality_report(analysis: dict, artifacts: dict) -> dict:
     """Score the requested artifacts; overall = mean of what was assessed."""
     from . import flashcards as fc
@@ -349,6 +480,14 @@ def quality_report(analysis: dict, artifacts: dict) -> dict:
         report["model3d"] = model3d_quality(artifacts["obj"], analysis)
     if "video_mp4" in artifacts:
         report["video"] = video_quality_mp4(artifacts["video_mp4"])
+    if "tour" in artifacts:
+        report["tour"] = tour_quality(artifacts["tour"], analysis)
+    if "questions" in artifacts:
+        report["questions"] = questions_quality(artifacts["questions"], analysis)
+    if "summary" in artifacts:
+        report["summary"] = summary_quality(artifacts["summary"], analysis)
+    if artifacts.get("include_learn"):
+        report["learn"] = learn_quality(analysis)
     scores = [r["score"] for r in report.values()]
     report["overall"] = round(sum(scores) / len(scores), 1) if scores else 0.0
     return report
