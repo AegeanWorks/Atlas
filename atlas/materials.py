@@ -27,6 +27,27 @@ def _names(analysis: dict) -> dict:
     return {e["id"]: e.get("name", e["id"]) for e in analysis.get("entities", [])}
 
 
+def _font(size: int):
+    """Turkish-capable truetype font: Pillow's bundled fonts miss Latin
+    Extended (ğşçıİ renders as tofu boxes, caught by eye on real output).
+    Prefers system Arial/DejaVu, falls back to bundled with a clear note."""
+    from PIL import ImageFont
+    candidates = [
+        r"C:\Windows\Fonts\arial.ttf",
+        r"C:\Windows\Fonts\DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/dejavu/DejaVuSans.ttf",
+        "/System/Library/Fonts/Supplemental/Arial.ttf",
+    ]
+    for path in candidates:
+        if os.path.isfile(path):
+            try:
+                return ImageFont.truetype(path, size), path
+            except OSError:
+                continue
+    return ImageFont.load_default(size=size), "bundled-fallback"
+
+
 def _layout(analysis: dict) -> dict:
     """Entity id → canvas rect (uses the figure box, else a grid fallback)."""
     entities = list(analysis.get("entities", []))
@@ -133,10 +154,12 @@ def diagram_png(analysis: dict) -> bytes:
     from PIL import Image, ImageDraw
     names = _names(analysis)
     rects = _layout(analysis)
+    title_font, _ = _font(22)
+    label_font, _ = _font(14)
     img = Image.new("RGB", (W, H), (11, 21, 48))
     draw = ImageDraw.Draw(img)
     draw.text((W // 2 - 120, 12), str(analysis.get("figure_id", "Atlas"))[:40],
-              fill=(219, 231, 255))
+              font=title_font, fill=(219, 231, 255))
     for r in analysis.get("relationships", []):
         a, b = rects.get(r["source_id"]), rects.get(r["target_id"])
         if not a or not b:
@@ -149,7 +172,8 @@ def diagram_png(analysis: dict) -> bytes:
             continue
         x, y, w, h = r
         draw.rectangle([x, y, x + w, y + h], outline=(139, 92, 246), width=2)
-        draw.text((x + 8, y + h / 2 - 7), names[e["id"]][:24], fill=(219, 231, 255))
+        draw.text((x + 8, y + h / 2 - 7), names[e["id"]][:24],
+                  font=label_font, fill=(219, 231, 255))
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     return buf.getvalue()
@@ -258,24 +282,29 @@ def video_slideshow(analysis: dict, outdir: str, fps: int = 30,
     real H.264 — no system ffmpeg, no key, fully offline after pip install.
     """
     import subprocess
-    from PIL import Image, ImageDraw
+    from PIL import Image, ImageDraw, ImageFont
     names = _names(analysis)
     entities = list(analysis.get("entities", []))[:8]  # keep study videos tight
     if not entities:
         raise ValueError("no entities: nothing to film")
     names_subset = names
     os.makedirs(outdir, exist_ok=True)
+    title_font, _ = _font(30)
+    body_font, _ = _font(16)
 
     def card(title: str, lines: list[str], highlight: str | None = None) -> "Image.Image":
         img = Image.new("RGB", (W, H), (11, 21, 48))
         draw = ImageDraw.Draw(img)
-        draw.text((MARGIN, 40), title[:60], fill=(125, 211, 252))
+        shown = title[:60]
+        draw.text((MARGIN, 40), shown, font=title_font, fill=(125, 211, 252))
         y = 120
         for line in lines[:8]:
-            draw.text((MARGIN, y), line[:100], fill=(219, 231, 255))
+            draw.text((MARGIN, y), line[:100], font=body_font, fill=(219, 231, 255))
             y += 34
         if highlight:
-            draw.rectangle([MARGIN - 8, 108, W - MARGIN + 8, 108 + 8], fill=(34, 211, 238))
+            # Underline the title itself, not the whole frame width.
+            bar_w = max(60, min(draw.textlength(shown, font=title_font) + 16, W - 2 * MARGIN))
+            draw.rectangle([MARGIN - 8, 108, MARGIN - 8 + bar_w, 108 + 8], fill=(34, 211, 238))
         return img
 
     scenes: list[tuple["Image.Image", str]] = [

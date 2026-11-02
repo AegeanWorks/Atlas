@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.24.0 — Turkish glyphs render (2026-11-01)
+
+- Video frames and diagram PNGs used Pillow's bundled fonts, which lack
+  Latin Extended: ğşçıİ came out as tofu boxes on real Turkish material.
+  Rendering now prefers system Arial/DejaVu with a bundled fallback, and
+  the video title underline fits the title instead of the frame.
+
 ## 0.23.0 — Posters that don't overlap (2026-11-01)
 
 - The derived study diagram now declutters overlapping boxes (deterministic

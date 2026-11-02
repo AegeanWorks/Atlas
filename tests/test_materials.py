@@ -38,6 +38,24 @@ def test_declutter_spreads_overlaps_deterministically():
     assert mat._declutter(solo) == solo
 
 
+def test_font_prefers_turkish_capable_truetype(tmp_path):
+    from atlas import materials as mat
+    font, src = mat._font(20)
+    assert hasattr(font, "getmask")
+    if any(p for p in [r"C:\Windows\Fonts\arial.ttf",
+                       "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+                       "/usr/share/fonts/dejavu/DejaVuSans.ttf",
+                       "/System/Library/Fonts/Supplemental/Arial.ttf"]
+           if __import__("os").path.isfile(p)):
+        assert src != "bundled-fallback", src
+    # Turkish renders without raising anywhere text is drawn.
+    img = mat.diagram_png({"figure_id": "Başarı ÇĞŞİÖÜ",
+                           "entities": [{"id": "e", "name": "Başarı ÇĞŞ",
+                                         "category": "other"}],
+                           "relationships": []})
+    assert img[:8] == b"\x89PNG\r\n\x1a\n"
+
+
 def test_diagram_png_opens():
     from PIL import Image
     import io
