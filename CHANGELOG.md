@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.30.0 — Podcasts with chapters, videos with billing (2026-11-01)
+
+- Every podcast segment carries a [MM:SS] start stamp (monotonic, from 00:00)
+  in JSON and markdown, so TTS pipelines and show notes can jump to segments.
+- Study videos bill their cast on the title card ("Featuring: …").
+
 ## 0.29.0 — First-run friendly (2026-11-01)
 
 - The import panel now leads with drop / link / demo and tucks server paths

@@ -113,6 +113,18 @@ def test_video_frames_carry_scene_counter_and_progress():
     assert teal > strip.width * 0.5  # final scene: progress bar (nearly) full
 
 
+def test_podcast_segments_carry_monotonic_timestamps():
+    from atlas import materials as mat
+    from atlas.schema import VisualAnalysis
+    from demo.basal_ganglia_fixture import FIXTURE_ANALYSIS
+    script = mat.podcast_script(VisualAnalysis.from_dict(FIXTURE_ANALYSIS).to_dict())
+    assert script["segments"][0]["starts_at"] == "00:00"
+    times = [s["starts_at"] for s in script["segments"]]
+    assert times == sorted(times) and len(set(times)) > 1
+    md = mat.podcast_markdown(script)
+    assert "[00:00]" in md
+
+
 def test_diagram_png_opens():
     from PIL import Image
     import io

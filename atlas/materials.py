@@ -270,6 +270,12 @@ def podcast_script(analysis: dict, max_segments: int = 24) -> dict:
     segments.append({"speaker": "GUIDE", "cue": "recap + quiz teasers",
                      "text": "Recap in one breath: " + "; ".join(chains[:5]) +
                              ". Test yourself: " + " ".join(teasers)})
+    # Chapter timestamps: cumulative spoken time so TTS pipelines and show
+    # notes can jump straight to a segment.
+    elapsed = 0.0
+    for s in segments:
+        s["starts_at"] = _mmss(elapsed)
+        elapsed += len(s["text"].split()) / 150 * 60
     words = sum(len(s["text"].split()) for s in segments)
     return {"title": f"Atlas audio walkthrough: {analysis.get('figure_id', 'model')}",
             "segments": segments,
@@ -278,12 +284,18 @@ def podcast_script(analysis: dict, max_segments: int = 24) -> dict:
             "trimmed_from": len(analysis.get("entities", []))}
 
 
+def _mmss(total_seconds: float) -> str:
+    total_seconds = max(0, int(round(total_seconds)))
+    return f"{total_seconds // 60:02d}:{total_seconds % 60:02d}"
+
+
 def podcast_markdown(script: dict) -> str:
     lines = [f"# {script['title']}", "",
              f"*~{script['estimated_minutes']} min spoken · generated from the validated model*",
              ""]
     for s in script["segments"]:
-        lines += [f"## {s['speaker']} — {s['cue']}", "", s["text"], ""]
+        stamp = f" [{s['starts_at']}]" if s.get("starts_at") else ""
+        lines += [f"## {s['speaker']} — {s['cue']}{stamp}", "", s["text"], ""]
     return "\n".join(lines)
 
 
@@ -338,9 +350,11 @@ def video_slideshow(analysis: dict, outdir: str, fps: int = 30,
         return img
 
     total_scenes = len(entities) + 2
+    lineup = [names.get(e["id"], e["id"]) for e in entities[:3]]
     scenes: list[tuple["Image.Image", str]] = [
         (card(str(analysis.get("figure_id", "Atlas study film")),
-              [f"{len(entities)} structures", f"{len(analysis.get('relationships', []))} connections"],
+              [f"{len(entities)} structures", f"{len(analysis.get('relationships', []))} connections"]
+              + (["Featuring: " + ", ".join(lineup)] if lineup else []),
               scene=(1, total_scenes)),
          "title")]
     for k, e in enumerate(entities, start=2):
