@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.23.0 — Posters that don't overlap (2026-11-01)
+
+- The derived study diagram now declutters overlapping boxes (deterministic
+  repulsion, evidence boxes untouched): all live and manual diagrams score
+  100 on the overlap check; committed posters refreshed.
+
 ## 0.22.0 — Text models can be quizzed (2026-11-01)
 
 - The quiz button no longer refuses books and transcripts: without located

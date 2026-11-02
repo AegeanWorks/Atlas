@@ -42,3 +42,12 @@ deck=41 questions=41
 
 ## live video retry (grounding retry on): 32/32 entities grounded, no warning, quality 91.7
 first pass boxless as before; explicit retry grounds all 4 frames; merge preserves boxes (0.16.0 fix verified live)
+
+## 0.23.0 re-score (decluttered posters)
+methionine_cycle_live.json: overall=100.0 {'flashcards': 100, 'podcast': 100, 'infographic': 100, 'model3d': 100}
+methionine_cycle_manual.json: overall=100.0 {'flashcards': 100, 'podcast': 100, 'infographic': 100, 'model3d': 100}
+mito_video_retry_live.json: overall=93.8 {'flashcards': 100, 'podcast': 100, 'infographic': 75, 'model3d': 100}
+mitochondrion_live.json: overall=100.0 {'flashcards': 100, 'podcast': 100, 'infographic': 100, 'model3d': 100}
+mitochondrion_manual.json: overall=100.0 {'flashcards': 100, 'podcast': 100, 'infographic': 100, 'model3d': 100}
+petechial_rash_live.json: overall=100.0 {'flashcards': 100, 'podcast': 100, 'infographic': 100, 'model3d': 100}
+petechial_rash_manual.json: overall=100.0 {'flashcards': 100, 'podcast': 100, 'infographic': 100, 'model3d': 100}

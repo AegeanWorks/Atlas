@@ -2,90 +2,90 @@
 <rect width="960" height="640" fill="#0b1530"/>
 <text x="480" y="36" text-anchor="middle" fill="#dbe7ff" font-size="24" font-family="sans-serif">methionine-live</text>
 <defs><marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9" fill="none" stroke="#22d3ee" stroke-width="1.6"/></marker></defs>
-<line x1="466" y1="161" x2="668" y2="332" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="567" y="241" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
-<line x1="574" y1="244" x2="668" y2="332" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="621" y="282" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">activates</text>
-<line x1="668" y1="332" x2="468" y2="457" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="568" y="388" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
-<line x1="628" y1="385" x2="468" y2="457" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="548" y="415" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">regulates</text>
-<line x1="468" y1="457" x2="378" y2="330" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="423" y="387" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
-<line x1="468" y1="457" x2="312" y2="475" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="390" y="460" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
-<line x1="390" y1="400" x2="378" y2="330" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="384" y="359" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">activates</text>
-<line x1="378" y1="330" x2="466" y2="161" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="422" y="239" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
-<line x1="390" y1="248" x2="466" y2="161" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="428" y="199" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">activates</text>
-<line x1="472" y1="286" x2="466" y2="161" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="469" y="217" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">activates</text>
-<line x1="447" y1="358" x2="552" y2="330" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="499" y="338" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
-<line x1="378" y1="330" x2="123" y2="332" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="250" y="325" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
-<line x1="668" y1="332" x2="677" y2="444" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="673" y="382" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
-<line x1="677" y1="444" x2="771" y2="479" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<line x1="482" y1="197" x2="668" y2="327" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="575" y="256" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="580" y1="244" x2="668" y2="327" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="624" y="280" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">activates</text>
+<line x1="668" y1="327" x2="423" y2="243" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="546" y="279" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="604" y1="376" x2="423" y2="243" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="513" y="303" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">regulates</text>
+<line x1="423" y1="243" x2="356" y2="198" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="389" y="214" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="423" y1="243" x2="312" y2="471" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="367" y="351" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="409" y1="332" x2="356" y2="198" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="383" y="259" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">activates</text>
+<line x1="356" y1="198" x2="482" y2="197" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="419" y="192" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="419" y1="422" x2="482" y2="197" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="450" y="304" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">activates</text>
+<line x1="441" y1="376" x2="482" y2="197" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="462" y="281" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">activates</text>
+<line x1="419" y1="150" x2="552" y2="328" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="485" y="233" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="356" y1="198" x2="123" y2="332" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="240" y="259" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="668" y1="327" x2="674" y2="444" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="671" y="380" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">produces</text>
+<line x1="674" y1="444" x2="774" y2="479" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
 <text x="724" y="456" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">participates-in</text>
-<line x1="668" y1="332" x2="833" y2="288" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="751" y="304" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">participates-in</text>
-<line x1="668" y1="332" x2="630" y2="180" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="649" y="250" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">participates-in</text>
+<line x1="668" y1="327" x2="833" y2="288" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="751" y="302" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">participates-in</text>
+<line x1="668" y1="327" x2="630" y2="180" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="649" y="248" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">participates-in</text>
 <line x1="630" y1="180" x2="804" y2="116" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
 <text x="717" y="142" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">participates-in</text>
-<line x1="523" y1="391" x2="466" y2="161" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="494" y="270" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">contains</text>
-<line x1="523" y1="391" x2="668" y2="332" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="596" y="356" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">contains</text>
-<line x1="378" y1="330" x2="238" y2="303" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
-<text x="308" y="310" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">participates-in</text>
-<rect x="414" y="138" width="103" height="46" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="466" y="166" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Methionine</text>
-<rect x="624" y="308" width="90" height="48" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="668" y="337" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">SAM</text>
-<rect x="423" y="435" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="468" y="462" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">SAH</text>
-<rect x="304" y="308" width="148" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="378" y="335" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Homocysteine</text>
+<line x1="560" y1="420" x2="482" y2="197" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="521" y="303" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">contains</text>
+<line x1="560" y1="420" x2="668" y2="327" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="614" y="368" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">contains</text>
+<line x1="356" y1="198" x2="238" y2="303" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>
+<text x="297" y="244" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="sans-serif">participates-in</text>
+<rect x="430" y="174" width="103" height="46" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="482" y="202" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Methionine</text>
+<rect x="624" y="303" width="90" height="48" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="668" y="332" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">SAM</text>
+<rect x="378" y="221" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="423" y="248" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">SAH</text>
+<rect x="282" y="176" width="148" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="356" y="203" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Homocysteine</text>
 <rect x="74" y="310" width="98" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
 <text x="123" y="337" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Cysteine</text>
-<rect x="402" y="336" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="447" y="363" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Betaine</text>
-<rect x="496" y="308" width="111" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="552" y="335" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Dimethylglycine</text>
-<rect x="263" y="453" width="98" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="312" y="480" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Adenosine</text>
-<rect x="312" y="134" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="357" y="161" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">THF</text>
-<rect x="283" y="213" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="328" y="240" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">5 MTHF</text>
-<rect x="632" y="422" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="677" y="449" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">CH3</text>
-<rect x="529" y="222" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="574" y="249" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">MAT2A</text>
-<rect x="582" y="363" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="628" y="390" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">MT</text>
-<rect x="345" y="378" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="390" y="405" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">AHCY</text>
-<rect x="345" y="226" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="390" y="253" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">MS</text>
-<rect x="427" y="264" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="472" y="291" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">BHMT</text>
+<rect x="374" y="128" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="419" y="155" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Betaine</text>
+<rect x="496" y="306" width="111" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="552" y="333" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Dimethylglycine</text>
+<rect x="263" y="449" width="98" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="312" y="476" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Adenosine</text>
+<rect x="318" y="265" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="363" y="292" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">THF</text>
+<rect x="268" y="130" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="313" y="157" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">5 MTHF</text>
+<rect x="629" y="422" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="674" y="449" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">CH3</text>
+<rect x="535" y="222" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="580" y="249" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">MAT2A</text>
+<rect x="559" y="354" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="604" y="381" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">MT</text>
+<rect x="364" y="310" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="409" y="337" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">AHCY</text>
+<rect x="374" y="400" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="419" y="427" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">MS</text>
+<rect x="396" y="354" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="441" y="381" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">BHMT</text>
 <rect x="119" y="114" width="148" height="57" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
 <text x="193" y="148" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Purine and pyrimidine…</text>
 <rect x="751" y="94" width="107" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
 <text x="804" y="121" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Purine synthesis</text>
 <rect x="783" y="266" width="98" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
 <text x="833" y="293" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Polyamine synthesis</text>
-<rect x="718" y="457" width="107" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="771" y="484" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Methylations</text>
-<rect x="316" y="180" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="361" y="207" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Folate cycle</text>
-<rect x="476" y="369" width="94" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
-<text x="523" y="396" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Methionine cycle</text>
+<rect x="721" y="457" width="107" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="774" y="484" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Methylations</text>
+<rect x="366" y="445" width="90" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="411" y="472" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Folate cycle</text>
+<rect x="513" y="398" width="94" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
+<text x="560" y="425" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Methionine cycle</text>
 <rect x="566" y="158" width="127" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>
 <text x="630" y="185" text-anchor="middle" fill="#dbe7ff" font-size="14" font-family="sans-serif">Methionine salvage cy…</text>
 <rect x="181" y="281" width="115" height="44" rx="10" fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>

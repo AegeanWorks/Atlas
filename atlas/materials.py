@@ -45,6 +45,44 @@ def _layout(analysis: dict) -> dict:
         w = max((bbox["x_max"] - bbox["x_min"]) * (W - 2 * MARGIN), 90)
         h = max((bbox["y_max"] - bbox["y_min"]) * (H - 2 * MARGIN - 60), 44)
         rects[e["id"]] = (x, y, w, h)
+    return _declutter(rects)
+
+
+def _overlaps(a: tuple, b: tuple) -> bool:
+    return (a[0] < b[0] + b[2] and b[0] < a[0] + a[2]
+            and a[1] < b[1] + b[3] and b[1] < a[1] + a[3])
+
+
+def _declutter(rects: dict, max_passes: int = 60) -> dict:
+    """Spread overlapping poster boxes apart (the poster is a derivation;
+    evidence boxes on the canvas are untouched). Deterministic: sorted ids,
+    push along the smaller-overlap axis, clamped to the frame."""
+    ids = sorted(rects)
+    rects = dict(rects)
+    for _ in range(max_passes):
+        moved = False
+        for n, i in enumerate(ids):
+            for j in ids[n + 1:]:
+                a, b = rects[i], rects[j]
+                if not _overlaps(a, b):
+                    continue
+                ox = min(a[0] + a[2], b[0] + b[2]) - max(a[0], b[0])
+                oy = min(a[1] + a[3], b[1] + b[3]) - max(a[1], b[1])
+                if ox <= 0 or oy <= 0:
+                    continue
+                if ox < oy:
+                    shift = ox / 2 + 1
+                    na = (max(4, a[0] - shift), a[1], a[2], a[3])
+                    nb = (min(W - b[2] - 4, b[0] + shift), b[1], b[2], b[3])
+                else:
+                    shift = oy / 2 + 1
+                    na = (a[0], max(60, a[1] - shift), a[2], a[3])
+                    nb = (b[0], min(H - b[3] - 4, b[1] + shift), b[2], b[3])
+                if (na, nb) != (a, b):
+                    rects[i], rects[j] = na, nb
+                    moved = True
+        if not moved:
+            break
     return rects
 
 

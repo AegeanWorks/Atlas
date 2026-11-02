@@ -23,6 +23,21 @@ def test_diagram_svg_valid_and_complete():
         assert name in svg
 
 
+def test_declutter_spreads_overlaps_deterministically():
+    from atlas import materials as mat
+    rects = {"a": (100.0, 100.0, 120.0, 60.0), "b": (150.0, 120.0, 120.0, 60.0),
+             "c": (500.0, 400.0, 100.0, 50.0)}
+    once = mat._declutter(rects)
+    twice = mat._declutter(mat._declutter(rects))
+    assert once == twice  # fixed point: deterministic and stable
+    assert not mat._overlaps(once["a"], once["b"])
+    for x, y, w, h in once.values():
+        assert 0 <= x and 0 <= y and x + w <= mat.W and y + h <= mat.H
+    # untouched when nothing overlaps
+    solo = {"a": (100.0, 100.0, 50.0, 50.0)}
+    assert mat._declutter(solo) == solo
+
+
 def test_diagram_png_opens():
     from PIL import Image
     import io
