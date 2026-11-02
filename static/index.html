@@ -5,10 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Atlas — Visual Knowledge Workspace</title>
 <link rel="stylesheet" href="/static/styles.css">
+<link rel="icon" type="image/svg+xml" href="/static/logo.svg">
+<meta name="description" content="Atlas: turn scientific figures into explorable visual knowledge.">
+<meta name="theme-color" content="#0b1220">
 </head>
 <body>
 <header>
-  <div class="brand">ATLAS</div>
+  <div class="brand"><img src="/static/logo.svg" alt="Atlas mark">ATLAS</div>
   <div class="sub">An interactive visual knowledge platform for scientific figures</div>
   <div class="status" id="status">connecting…</div>
 </header>
@@ -31,7 +34,7 @@
     </label>
     <div class="row">
       <button id="btn-figure">Select figure</button>
-      <button id="btn-analyze">Analyze with Muse</button>
+      <button id="btn-analyze" class="primary">Analyze with Muse</button>
     </div>
     <label>Context note (accompanying text, optional)
       <textarea id="note" rows="2" placeholder="Paste the figure caption or paragraph here"></textarea>
@@ -44,7 +47,7 @@
     </div>
   </section>
 
-  <section class="panel wide">
+  <section class="panel wide" id="explore-panel">
     <h2>2 · Explore — canvas &amp; knowledge graph share one model</h2>
     <div class="canvas-wrap">
         <div class="canvas-toolbar">
@@ -54,7 +57,7 @@
           <button id="toggle-3d">3D</button>
           <label id="layer-wrap" style="display:none">Layer <input id="layer" type="range" min="0" max="8" value="8"></label>
           <a id="download-obj" href="#">OBJ ↓</a>
-          <button id="btn-quiz">Quiz on figure</button>
+          <button id="btn-quiz" class="primary">Quiz on figure</button>
           <label><input type="checkbox" id="toggle-labels" checked> Labels</label>
           <label><input type="checkbox" id="toggle-masks" checked> Masks/boxes</label>
         </div>
@@ -84,10 +87,11 @@
     <div id="quiz-box" class="mono"></div>
   </section>
 
+  <div class="learn-row">
   <section class="panel">
     <h2>3 · Study pack — every format from one model</h2>
     <div class="row">
-      <button id="btn-summary">Summary</button>
+      <button id="btn-summary" class="primary">Study pack</button>
       <button id="btn-tour">3D tour</button>
       <button id="btn-quality">Check quality</button>
       <a id="link-video" href="#">Study video ↓</a>
@@ -104,7 +108,7 @@
   <section class="panel">
     <h2>4 · Learn — flashcards</h2>
     <div class="row">
-      <button id="btn-deck">Build deck</button>
+      <button id="btn-deck" class="primary">Build deck</button>
       <a id="anki-link" href="#">Anki TSV ↓</a>
     </div>
     <div id="card">
@@ -132,6 +136,7 @@
     </div>
     <div id="challenge"></div>
   </section>
+  </div>
 </main>
 <footer>Atlas workspace · original figure stays the centerpiece · evidence preserved per entity</footer>
 <script src="/static/app.js"></script>

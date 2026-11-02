@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.25.0 — Workspace visage + sleek posters (2026-11-01)
+
+- Workspace restyle: two-column zodiac with full-width learn row, sticky
+  blurred header with Atlas mark, primary/secondary button hierarchy,
+  hover and focus states, responsive single-column collapse.
+- New Atlas logo mark (`static/logo.svg`, also the favicon).
+- Study posters restyled: header band, legend line, provenance footer,
+  dotted backdrop, and knowledge-layer box shading.
+- New wiring test pins every DOM id the JS touches, so UI refactors
+  cannot silently break handlers. AI-reviewed before push.
+
 ## 0.24.0 — Turkish glyphs render (2026-11-01)
 
 - Video frames and diagram PNGs used Pillow's bundled fonts, which lack

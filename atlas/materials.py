@@ -111,13 +111,30 @@ def diagram_svg(analysis: dict) -> str:
     """Study diagram as SVG: labeled boxes + directional arrows."""
     names = _names(analysis)
     rects = _layout(analysis)
+    layers = [layer_of(e.get("category", "other")) for e in analysis.get("entities", [])]
+    top_layer = max(layers) if layers else 0
+
+    def layer_stroke(layer: int) -> str:
+        t = (layer / top_layer) if top_layer else 0.0
+        r = round(0x22 + (0x8B - 0x22) * t)
+        g = round(0xD3 + (0x5C - 0xD3) * t)
+        b = round(0xEE + (0xF6 - 0xEE) * t)
+        return f"#{r:02x}{g:02x}{b:02x}"
+
     parts = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">',
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img">',
         f'<rect width="{W}" height="{H}" fill="#0b1530"/>',
-        f'<text x="{W // 2}" y="36" text-anchor="middle" fill="#dbe7ff" font-size="24" '
-        f'font-family="sans-serif">{_html.escape(str(analysis.get("figure_id", "Atlas study diagram")))}</text>',
-        '<defs><marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" '
+        '<defs><pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse">'
+        '<circle cx="2" cy="2" r="1.2" fill="#1b2b52"/></pattern>'
+        '<marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" '
         'orient="auto"><path d="M0,0 L8,4.5 L0,9" fill="none" stroke="#22d3ee" stroke-width="1.6"/></marker></defs>',
+        f'<rect width="{W}" height="{H}" fill="url(#dots)" opacity="0.55"/>',
+        f'<rect x="0" y="0" width="{W}" height="64" fill="#0e1830"/>',
+        f'<rect x="0" y="64" width="{W}" height="3" fill="#22d3ee" opacity="0.8"/>',
+        f'<text x="{MARGIN}" y="28" fill="#dbe7ff" font-size="22" font-weight="bold" '
+        f'font-family="sans-serif">{_html.escape(str(analysis.get("figure_id", "Atlas study diagram")))}</text>',
+        f'<text x="{MARGIN}" y="50" fill="#8fa3c8" font-size="12" '
+        f'font-family="sans-serif">Boxes mark figure locations · arrows carry the relationship type</text>',
     ]
     for r in analysis.get("relationships", []):
         a, b = rects.get(r["source_id"]), rects.get(r["target_id"])
@@ -139,12 +156,16 @@ def diagram_svg(analysis: dict) -> str:
         x, y, w, h = r
         label = names[e["id"]]
         short = label if len(label) <= 22 else label[:21] + "…"
+        stroke = layer_stroke(layer_of(e.get("category", "other")))
         parts.append(
             f'<rect x="{x:.0f}" y="{y:.0f}" width="{w:.0f}" height="{h:.0f}" rx="10" '
-            f'fill="#1b2b52" stroke="#8b5cf6" stroke-width="1.5"/>')
+            f'fill="#1b2b52" stroke="{stroke}" stroke-width="2"/>')
         parts.append(
             f'<text x="{x + w / 2:.0f}" y="{y + h / 2 + 5:.0f}" text-anchor="middle" '
             f'fill="#dbe7ff" font-size="14" font-family="sans-serif">{_html.escape(short)}</text>')
+    parts.append(
+        f'<text x="{MARGIN}" y="{H - 14}" fill="#5b6b8c" font-size="11" font-family="sans-serif">'
+        f'Atlas study diagram · generated from the validated analysis · positions approximate · {_html.escape(str(analysis.get("document_ref", "")))}</text>')
     parts.append("</svg>")
     return "\n".join(parts)
 

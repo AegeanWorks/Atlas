@@ -56,6 +56,34 @@ def test_font_prefers_turkish_capable_truetype(tmp_path):
     assert img[:8] == b"\x89PNG\r\n\x1a\n"
 
 
+def _two_layer_analysis():
+    from atlas.schema import VisualAnalysis
+    return VisualAnalysis.from_dict({
+        "figure_id": "layers", "entities": [
+            {"id": "m", "name": "Molecule", "category": "molecule",
+             "bbox": {"x_min": 0.05, "y_min": 0.05, "x_max": 0.4, "y_max": 0.3},
+             "confidence": 0.9},
+            {"id": "p", "name": "Pathway", "category": "pathway",
+             "bbox": {"x_min": 0.55, "y_min": 0.55, "x_max": 0.95, "y_max": 0.9},
+             "confidence": 0.9}],
+        "relationships": []}).to_dict()
+
+
+def test_diagram_poster_has_header_legend_footer():
+    from atlas import materials as mat
+    from atlas.schema import VisualAnalysis
+    from demo.basal_ganglia_fixture import FIXTURE_ANALYSIS
+    a = VisualAnalysis.from_dict(FIXTURE_ANALYSIS).to_dict()
+    svg = mat.diagram_svg(a)
+    assert "Boxes mark figure locations" in svg
+    assert "generated from the validated analysis" in svg
+    assert 'id="dots"' in svg  # dotted backdrop, not flat void
+    svg2 = mat.diagram_svg(_two_layer_analysis())
+    strokes = {l.split('stroke="')[1].split('"')[0]
+               for l in svg2.splitlines() if 'rx="10"' in l}
+    assert len(strokes) == 2  # boxes shaded by knowledge layer
+
+
 def test_diagram_png_opens():
     from PIL import Image
     import io
