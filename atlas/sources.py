@@ -186,16 +186,25 @@ VIDEO_EXTENSIONS = {".mp4", ".webm", ".mov", ".mkv", ".avi", ".m4v"}
 
 
 def _ffmpeg_exe() -> str:
-    """System ffmpeg, else the bundled imageio-ffmpeg binary (pip installable)."""
+    """System ffmpeg, else the bundled imageio-ffmpeg binary (pip installable).
+
+    Any broken state (missing provider, raising provider, moved/deleted
+    binary) lands on the same designed refusal so callers can name the
+    cause and fix instead of blaming the clip.
+    """
     found = shutil.which("ffmpeg")
-    if found:
+    if found and os.path.isfile(found):
         return found
     try:
         import imageio_ffmpeg
-        return imageio_ffmpeg.get_ffmpeg_exe()
-    except (ImportError, AttributeError, OSError) as exc:
+        exe = imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception as exc:
         raise ValueError("video needs ffmpeg: install it system-wide or "
                          "pip install imageio-ffmpeg (Atlas bundles it as a dependency).") from exc
+    if exe and os.path.isfile(exe):
+        return exe
+    raise ValueError("video needs ffmpeg: install it system-wide or "
+                     "pip install imageio-ffmpeg (Atlas bundles it as a dependency).")
 
 
 def render_pdf_page(path: str, page: int, outdir: str, dpi: int = 150) -> str:

@@ -1,7 +1,10 @@
 """Offline no-key path: every drop becomes a real, honestly-labelled model."""
 import json
 
+import pytest
+
 from atlas import offline as off
+from atlas import sources as src
 from atlas.app import auto_create_model, honest_error
 from atlas.config import AtlasConfig
 from atlas.store import AtlasStore
@@ -76,3 +79,36 @@ def test_extended_quality_covers_new_materials():
         assert key in report, key
         assert 0 <= report[key]["score"] <= 100
     assert 0 <= report["overall"] <= 100
+
+
+def _break_ffmpeg(monkeypatch, mode):
+    """Simulate a machine whose ffmpeg is unusable, three ways."""
+    import imageio_ffmpeg
+    monkeypatch.setattr("shutil.which", lambda *a, **k: None)
+    if mode == "raising-provider":
+        def _boom():
+            raise RuntimeError("bundle exploded")
+        monkeypatch.setattr(imageio_ffmpeg, "get_ffmpeg_exe", _boom)
+    elif mode == "missing-binary":
+        monkeypatch.setattr(imageio_ffmpeg, "get_ffmpeg_exe",
+                            lambda: r"C:\nonexistent-ffmpeg\ffmpeg.exe")
+    elif mode == "no-provider-attr":
+        monkeypatch.delattr(imageio_ffmpeg, "get_ffmpeg_exe")
+
+
+@pytest.mark.parametrize("mode", ["raising-provider", "missing-binary",
+                                  "no-provider-attr"])
+def test_broken_ffmpeg_refuses_with_cause_and_fix(monkeypatch, mode,
+                                                  tmp_path):
+    _break_ffmpeg(monkeypatch, mode)
+    with pytest.raises(ValueError, match="video needs ffmpeg"):
+        src.video_frames(str(tmp_path / "clip.mp4"), str(tmp_path / "fr"))
+    clip = tmp_path / "clip.mp4"
+    clip.write_bytes(b"\x00\x00\x00\x18ftypmp42")
+    store = AtlasStore(str(tmp_path / "data"))
+    config = AtlasConfig(api_key="", data_dir=str(tmp_path / "data"))
+    with pytest.raises(ValueError, match="video needs ffmpeg") as excinfo:
+        auto_create_model(store, config, str(clip))
+    body = honest_error(excinfo.value)
+    assert "video needs ffmpeg" in body["cause"]
+    assert "ffmpeg" in body["fix"]
