@@ -18,8 +18,11 @@ def test_every_js_referenced_id_exists_in_html():
     js_refs = set(re.findall(r'\$\("([\w-]+)"\)', js))
     js_refs |= set(re.findall(r"getElementById\('([\w-]+)'\)", js))
     assert js_refs, "no DOM references found - regex drift?"
-    missing = sorted(i for i in js_refs if i not in html_ids)
+    missing = [i for i in js_refs if i not in html_ids]
     assert not missing, f"JS touches ids missing from HTML: {missing}"
+    all_ids = re.findall(r'id="([\w-]+)"', html)
+    dupes = sorted({i for i in all_ids if all_ids.count(i) > 1})
+    assert not dupes, f"duplicate element ids (getElementById would misbehave): {dupes}"
 
 
 def test_static_assets_referenced_exist():

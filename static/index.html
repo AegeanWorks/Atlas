@@ -18,33 +18,36 @@
 <main>
   <section class="panel" id="import-panel">
     <h2>1 · Upload → Select</h2>
-    <label>Document or image path (server-local, MVP)
-      <input id="doc-path" placeholder="C:\path\to\figure.png or paper.pdf">
-    </label>
-    <div class="row">
-      <button id="btn-import">Import</button>
-      <button id="btn-demo">Load basal-ganglia demo</button>
-    </div>
-    <div class="row">
-      <input id="page" placeholder="PDF page (default 1)" style="max-width:160px">
-      <button id="btn-render">Render page → figure</button>
-    </div>
-    <label>Figure crop (normalized x0,y0,x1,y1)
-      <input id="crop" value="0.05,0.05,0.95,0.95">
-    </label>
-    <div class="row">
-      <button id="btn-figure">Select figure</button>
-      <button id="btn-analyze" class="primary">Analyze with Muse</button>
-    </div>
-    <label>Context note (accompanying text, optional)
-      <textarea id="note" rows="2" placeholder="Paste the figure caption or paragraph here"></textarea>
-    </label>
-    <div id="provenance" class="mono">Drop a file above, paste a link, or press “Load basal-ganglia demo” — no setup needed.</div>
     <div id="dropzone" class="drop">Drop anything here — PDF, video, image, book (EPUB), text — and a model is created. Tip: narration-heavy videos learn best paired with their transcript.</div>
     <div class="row">
       <input id="link-input" placeholder="…or paste an article / YouTube link">
       <button id="btn-link">Create from link</button>
     </div>
+    <div class="row">
+      <button id="btn-demo">Try the basal-ganglia demo</button>
+    </div>
+    <div id="provenance" class="mono">No setup needed — drop a file, paste a link, or try the demo.</div>
+    <details class="advanced">
+      <summary>Advanced: server paths &amp; manual crop</summary>
+      <label>Document or image path (server-local)
+        <input id="doc-path" placeholder="C:\path\to\figure.png or paper.pdf">
+      </label>
+      <div class="row">
+        <button id="btn-import">Import</button>
+        <input id="page" placeholder="PDF page (default 1)" style="max-width:160px">
+        <button id="btn-render">Render page → figure</button>
+      </div>
+      <label>Figure crop (normalized x0,y0,x1,y1)
+        <input id="crop" value="0.05,0.05,0.95,0.95">
+      </label>
+      <div class="row">
+        <button id="btn-figure">Select figure</button>
+        <button id="btn-analyze" class="primary">Analyze with Muse</button>
+      </div>
+      <label>Context note (accompanying text, optional)
+        <textarea id="note" rows="2" placeholder="Paste the figure caption or paragraph here"></textarea>
+      </label>
+    </details>
   </section>
 
   <section class="panel wide" id="explore-panel">

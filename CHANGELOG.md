@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.29.0 — First-run friendly (2026-11-01)
+
+- The import panel now leads with drop / link / demo and tucks server paths
+  plus manual crop into an "Advanced" disclosure — progressive disclosure
+  instead of dev-first complexity.
+- Fixed the empty canvas showing a broken-image icon (the guard targeted
+  `src=""` while the app removes the attribute outright).
+- README hero with the social card; wiring test now also rejects duplicate
+  element ids.
+
 ## 0.28.0 — Fold mark with a seat (2026-11-01)
 
 - The social card's mark now matches the approved fold: inner face shading,

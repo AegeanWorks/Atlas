@@ -1,6 +1,8 @@
-# Atlas 0.28.0
+# Atlas 0.29.0
 
 [![AIKit Integrated](https://img.shields.io/badge/AIKit-integrated-6f42c1)](https://github.com/AegeanWorks/AIKit)
+
+<p align="center"><img src="assets/social-preview.png" alt="Atlas — turn scientific figures into explorable visual knowledge" width="720"></p>
 
 **An interactive visual knowledge platform for scientific figures.**
 

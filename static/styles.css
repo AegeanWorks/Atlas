@@ -40,7 +40,10 @@ button.primary { background:linear-gradient(135deg, #0ea5b7, var(--accent2)); bo
 #viewport { position:relative; overflow:auto; max-height:56vh; min-height:220px; background:radial-gradient(circle at 50% 40%, #0a1430 0%, #050a18 70%); cursor:grab; }
 #viewport:active { cursor:grabbing; }
 #viewport img { display:block; max-width:100%; }
-#viewport img[src=""] { display:none; }
+#viewport img[src=""], #viewport img:not([src]) { display:none; }
+details.advanced { margin-top:8px; border:1px dashed var(--line); border-radius:8px; padding:2px 10px 8px; }
+details.advanced summary { cursor:pointer; color:var(--muted); font-size:13px; padding:6px 0; }
+details.advanced summary:hover { color:var(--accent); }
 #overlay { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
 #overlay .hit { pointer-events:auto; cursor:pointer; }
 #overlay text { pointer-events:auto; cursor:pointer; paint-order:stroke; stroke:#050a18; stroke-width:3px; }
