@@ -23,8 +23,8 @@ def spatial_recall_challenge(analysis: dict, seed: int = 0) -> dict:
     if not ents:
         raise ValueError("analysis has no entities")
     located = [e for e in ents if e.get("bbox")]
-    pool = located or ents  # never ask to point at something with no location
-    target = random.Random(seed).choice(pool)
+    candidates = located or ents  # never ask to point at something with no location
+    target = random.Random(seed).choice(candidates)
     pool = [{"id": e["id"], "name": e["name"]} for e in ents]
     options = random.Random(seed + 1).sample(pool, k=min(4, len(pool)))
     if target["id"] not in {o["id"] for o in options}:

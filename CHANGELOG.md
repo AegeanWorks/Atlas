@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.30.2 — Quiz pool clarity (2026-11-01)
+
+- Unshadowed the target-pool variable in spatial recall (no behavior change).
+
 ## 0.30.1 — Quizzes point at visible things (2026-11-01)
 
 - Spatial-recall draws its target from located entities when any exist, so
