@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.30.4 — Dead alias removal (2026-11-01)
+
+- Removed a pointless `names_subset` alias in the study-video builder
+  (identical dict, two names). No behavior change; caught in review.
+
 ## 0.30.3 — No dangling walks (2026-11-01)
 
 - Podcast scripts for single-structure models no longer trail off into

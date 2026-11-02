@@ -322,7 +322,6 @@ def video_slideshow(analysis: dict, outdir: str, fps: int = 30,
     entities = list(analysis.get("entities", []))[:8]  # keep study videos tight
     if not entities:
         raise ValueError("no entities: nothing to film")
-    names_subset = names
     os.makedirs(outdir, exist_ok=True)
     title_font, _ = _font(30)
     body_font, _ = _font(16)
@@ -364,8 +363,8 @@ def video_slideshow(analysis: dict, outdir: str, fps: int = 30,
         links = [r for r in analysis.get("relationships", [])
                  if r["source_id"] == eid or r["target_id"] == eid][:4]
         lines = ([e.get("description", "")] +
-                 [f"{names_subset.get(r['source_id'], '?')} {r['rel_type']} "
-                  f"{names_subset.get(r['target_id'], '?')}" for r in links])
+                 [f"{names.get(r['source_id'], '?')} {r['rel_type']} "
+                  f"{names.get(r['target_id'], '?')}" for r in links])
         scenes.append((card(names.get(eid, eid), [l for l in lines if l], highlight=eid,
                             scene=(k, total_scenes)), eid))
     scenes.append((card("Recap", [f"{names.get(e['id'], e['id'])}" for e in entities],
