@@ -144,7 +144,7 @@ function renderOverlay() {
       g.appendChild(r);
     }
     if (showLabels) {
-      const t = svgEl("text", { x: p.x, y: Math.max(3, p.y - 1), "font-size": 3.4, fill: "#dbe7ff" });
+      const t = svgEl("text", { x: p.x, y: Math.max(2, p.y - 0.8), "font-size": 2.3, fill: "#dbe7ff" });
       t.textContent = e.name;
       t.addEventListener("click", () => select(e.id));
       g.appendChild(t);
@@ -240,6 +240,7 @@ function renderList() {
 
 function renderGraph() {
   const svg = $("graph"); svg.innerHTML = "";
+  svg.setAttribute("viewBox", "0 0 100 100");
   if (!state.analysis) return;
   const ents = visibleEntities();
   const ids = new Set(ents.map((e) => e.id));
@@ -317,9 +318,16 @@ $("btn-segment").onclick = () => withBusy($("btn-segment"), "Segmenting…", asy
     renderAll();
   } catch (err) { box.textContent = `Segmentation failed: ${honestMsg(err)}`; }
 });
-$("zoom-in").onclick = () => { state.zoom = Math.min(4, state.zoom + .25); $("figure").style.width = `${state.zoom * 100}%`; renderOverlay(); };
-$("zoom-out").onclick = () => { state.zoom = Math.max(.5, state.zoom - .25); $("figure").style.width = `${state.zoom * 100}%`; renderOverlay(); };
-$("reset-view").onclick = () => { state.zoom = 1; $("figure").style.width = "100%"; renderOverlay(); };
+function applyZoom() {
+  const img = $("figure");
+  img.style.width = `${state.zoom * 100}%`;
+  img.style.maxWidth = state.zoom === 1 ? "" : "none";
+  img.style.maxHeight = state.zoom === 1 ? "" : "none";
+  renderOverlay();
+}
+$("zoom-in").onclick = () => { state.zoom = Math.min(4, state.zoom + .25); applyZoom(); };
+$("zoom-out").onclick = () => { state.zoom = Math.max(.5, state.zoom - .25); applyZoom(); };
+$("reset-view").onclick = () => { state.zoom = 1; applyZoom(); };
 
 $("btn-import").onclick = async () => {
   const path = $("doc-path").value.trim();
@@ -363,9 +371,10 @@ $("btn-demo").onclick = async () => {
 function setFigure(filePath, displayUrl) {
   state.figureFile = filePath;
   state.figureUrl = displayUrl;
+  $("empty-hint").hidden = true;
   const img = $("figure");
   img.src = displayUrl;
-  img.onload = () => { img.style.width = "100%"; renderOverlay(); };
+  img.onload = () => { state.zoom = 1; img.style.width = "100%"; img.style.maxWidth = ""; img.style.maxHeight = ""; renderOverlay(); };
 }
 // Text models (books, articles, transcripts) have no figure: clear the canvas so a
 // stale image can never pose as the current model's evidence.
@@ -594,6 +603,170 @@ $("btn-learn").onclick = async () => {
     b.onclick = () => answer(input.value.trim());
     box.appendChild(input); box.appendChild(b);
   }
+};
+
+/* Showpieces (all offline-safe, no network): cinematic tour, browser voice, AI-vision reveal. */
+const tour = { stops: [], i: 0, playing: false, timer: null };
+function tourStops() {
+  if (!state.analysis) return [];
+  return visibleEntities().filter((e) => e.bbox || e.description);
+}
+function tourCaption(stop, idx, total) {
+  const box = $("tour-caption");
+  box.hidden = false;
+  const conf = typeof stop.confidence === "number" ? ` · ${(stop.confidence * 100).toFixed(0)}%` : "";
+  box.innerHTML = "";
+  const b = document.createElement("b");
+  b.textContent = stop.name || stop.id;
+  box.appendChild(b);
+  const span = document.createElement("span");
+  span.textContent = ` — ${(stop.description || "Locate it on the figure.").slice(0, 220)}${conf}`;
+  box.appendChild(span);
+  const prog = document.createElement("span");
+  prog.className = "tour-prog";
+  prog.textContent = `${idx + 1}/${total} · ‹ › step · Esc stops`;
+  box.appendChild(prog);
+}
+function tourGo(n) {
+  const stops = tourStops();
+  if (!stops.length) { $("tour-status").textContent = "Tour: analyze or load the demo first."; return; }
+  tour.stops = stops;
+  tour.i = ((n % stops.length) + stops.length) % stops.length;
+  const e = stops[tour.i];
+  select(e.id);
+  // Cinematic pan: scroll the bbox center into view inside the viewport.
+  try {
+    if (e.bbox) {
+      const vp = $("viewport"), img = $("figure");
+      const cx = ((e.bbox.x_min + e.bbox.x_max) / 2) * img.clientWidth;
+      const cy = ((e.bbox.y_min + e.bbox.y_max) / 2) * img.clientHeight;
+      vp.scrollTo({ left: Math.max(0, cx - vp.clientWidth / 2), top: Math.max(0, cy - vp.clientHeight / 2), behavior: "smooth" });
+    }
+  } catch (_) { /* smooth scroll is a nicety, never a failure */ }
+  $("viewport").classList.add("touring");
+  tourCaption(e, tour.i, stops.length);
+  $("tour-status").textContent = `Tour: stop ${tour.i + 1}/${stops.length} — ${e.name}`;
+  if ($("narrate-toggle").checked) speak(`${e.name}. ${(e.description || "").slice(0, 260)}`);
+}
+function tourStop() {
+  tour.playing = false;
+  if (tour.timer) { clearInterval(tour.timer); tour.timer = null; }
+  $("btn-tour-play").textContent = "▶ Tour";
+  $("tour-caption").hidden = true;
+  $("viewport").classList.remove("touring");
+  try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (_) {}
+  if (tour.stops.length) $("tour-status").textContent = `Tour: paused at stop ${tour.i + 1}/${tour.stops.length}.`;
+}
+$("btn-tour-play").onclick = () => {
+  if (!state.analysis) { alert("Analyze or load the demo first — the tour runs fully offline on the model."); return; }
+  if (tour.playing) { tourStop(); return; }
+  tour.playing = true;
+  $("btn-tour-play").textContent = "⏸ Pause";
+  tourGo(tour.i || 0);
+  tour.timer = setInterval(() => {
+    if (tour.i + 1 >= tourStops().length) { tourStop(); $("tour-status").textContent = "Tour: finale — every structure visited. Esc to reset."; return; }
+    tourGo(tour.i + 1);
+  }, 3200);
+};
+$("btn-tour-prev").onclick = () => { if (tour.playing) tourStop(); tourGo(tour.i - 1); };
+$("btn-tour-next").onclick = () => { if (tour.playing) tourStop(); tourGo(tour.i + 1); };
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && (tour.playing || !$("tour-caption").hidden)) tourStop(); });
+
+// Browser-voice narration: SpeechSynthesis only (on-device, offline). No fetch, no key.
+function pickVoice() {
+  try {
+    const synth = window.speechSynthesis;
+    if (!synth) return null;
+    const want = $("voice-select").value;
+    const voices = synth.getVoices();
+    if (want) { const v = voices.find((x) => x.name === want); if (v) return v; }
+    return voices.find((x) => x.lang && x.lang.startsWith("en")) || voices[0] || null;
+  } catch (_) { return null; }
+}
+function refreshVoices() {
+  try {
+    const synth = window.speechSynthesis;
+    if (!synth) { $("voice-select").innerHTML = '<option value="">No local voice</option>'; return; }
+    const sel = $("voice-select"), cur = sel.value;
+    sel.innerHTML = '<option value="">Auto voice</option>';
+    for (const v of synth.getVoices()) {
+      const o = document.createElement("option");
+      o.value = v.name; o.textContent = `${v.name} (${v.lang})`;
+      sel.appendChild(o);
+    }
+    sel.value = cur;
+  } catch (_) {}
+}
+function speak(text) {
+  try {
+    const synth = window.speechSynthesis;
+    if (!synth || !text) return;
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance(text.slice(0, 400));
+    const v = pickVoice();
+    if (v) u.voice = v;
+    u.rate = 1.02;
+    synth.speak(u);
+  } catch (_) { /* voice is enhancement-only */ }
+}
+$("btn-narrate").onclick = () => {
+  if (!("speechSynthesis" in window)) { $("tour-status").textContent = "Narration: this browser has no local speech engine."; return; }
+  if (!state.analysis) { alert("Analyze or load the demo first."); return; }
+  const e = state.analysis.entities.find((x) => x.id === state.selected) || visibleEntities()[0];
+  if (!e) return;
+  speak(`${e.name}. ${e.description || ""} ${e.source_evidence ? "Evidence: " + e.source_evidence : ""}`.slice(0, 500));
+  $("tour-status").textContent = `Narrating: ${e.name} (browser voice, offline).`;
+};
+try {
+  refreshVoices();
+  if (window.speechSynthesis) window.speechSynthesis.onvoiceschanged = refreshVoices;
+} catch (_) {}
+
+// AI-vision reveal: staged offline scan — sweep line, then entities pop in
+// one-by-one with confidence, as if the model is seeing the figure live.
+let revealTimers = [];
+$("btn-reveal").onclick = () => {
+  const stops = tourStops();
+  if (!stops.length) { alert("Analyze or load the demo first — reveal replays the loaded model."); return; }
+  if (tour.playing) tourStop();
+  revealTimers.forEach(clearTimeout); revealTimers = [];
+  try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (_) {}
+  const svg = $("overlay");
+  const scan = $("scanline");
+  scan.hidden = false;
+  svg.innerHTML = "";
+  $("tour-caption").hidden = false;
+  $("tour-caption").textContent = "AI vision: scanning figure…";
+  $("tour-status").textContent = `Reveal: scanning, then ${stops.length} structures resolve.`;
+  const ordered = [...stops].sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
+  ordered.forEach((e, k) => {
+    revealTimers.push(setTimeout(() => {
+      if (!e.bbox) return;
+      const p = toPct(e.bbox);
+      const g = svgEl("g", { class: "pop" });
+      const r = svgEl("rect", { x: p.x, y: p.y, width: p.w, height: p.h,
+        fill: "rgba(34,211,238,.28)", stroke: "#22d3ee", "stroke-width": .8 });
+      r.addEventListener("click", () => select(e.id));
+      const t = svgEl("text", { x: p.x, y: Math.max(2, p.y - 0.8), "font-size": 2.3, fill: "#dbe7ff" });
+      t.textContent = `${e.name} ${(typeof e.confidence === "number" ? (e.confidence * 100).toFixed(0) + "%" : "")}`;
+      t.addEventListener("click", () => select(e.id));
+      g.appendChild(r); g.appendChild(t); svg.appendChild(g);
+      $("tour-caption").innerHTML = "";
+      const b = document.createElement("b");
+      b.textContent = e.name;
+      $("tour-caption").appendChild(b);
+      $("tour-caption").appendChild(document.createTextNode(
+        ` resolves (${k + 1}/${ordered.length})${typeof e.confidence === "number" ? ` · ${(e.confidence * 100).toFixed(0)}%` : ""}`));
+      if (k === ordered.length - 1) {
+        revealTimers.push(setTimeout(() => {
+          scan.hidden = true;
+          select(e.id);
+          $("tour-caption").hidden = true;
+          $("tour-status").textContent = `Reveal: complete — ${ordered.length} structures resolved from the local model.`;
+        }, 900));
+      }
+    }, 500 + k * 450));
+  });
 };
 
 window.addEventListener("resize", renderOverlay);

@@ -15,3 +15,7 @@ node_modules/
 .aikit/
 *.bak
 demo/real_analyses/_store/
+# Regenerable study-pack renders (atlas/materials.video_slideshow via /api/video;
+# data_dir/videos is already ignored via data/ above). Fixtures/scripts stay tracked.
+demo/f_*.png
+demo/*.mp4
