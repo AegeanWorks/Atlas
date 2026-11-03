@@ -368,10 +368,28 @@ function select(id) {
   if (!e) return;
   const rels = state.analysis.relationships.filter((r) => r.source_id === id || r.target_id === id);
   const names = Object.fromEntries(state.analysis.entities.map((x) => [x.id, x.name]));
-  $("detail").textContent =
-    `${e.name} [${e.category}] conf=${e.confidence}\n${e.description}\n` +
-    `evidence: ${e.source_evidence || "—"}\nuncertainty: ${e.uncertainty || "—"}\n` +
-    (rels.map((r) => `· ${names[r.source_id]} --${r.rel_type}--> ${names[r.target_id]} (${r.explanation || "no note"})`).join("\n") || "· no relationships");
+  const box = $("detail");
+  box.innerHTML = "";
+  box.appendChild(packEl("div", "pack-title", e.name));
+  const meta = packEl("div", "pack-stats");
+  meta.appendChild(packEl("span", "chip", e.category || "other"));
+  if (typeof e.confidence === "number") meta.appendChild(packEl("span", "chip strong", `${Math.round(e.confidence * 100)}%`));
+  box.appendChild(meta);
+  if (e.description) box.appendChild(packEl("div", "pack-sub", e.description));
+  if (e.source_evidence) box.appendChild(packEl("div", "pack-note", `evidence: ${e.source_evidence}`));
+  if (e.uncertainty && e.uncertainty !== "—") box.appendChild(packEl("div", "pack-note", `uncertainty: ${e.uncertainty}`));
+  const ul = packEl("ul", "pack-list");
+  for (const r of rels) {
+    const li = document.createElement("li");
+    li.textContent = `${names[r.source_id]} --${r.rel_type}--> ${names[r.target_id]}${r.explanation ? ` (${r.explanation})` : ""}`;
+    ul.appendChild(li);
+  }
+  if (!rels.length) {
+    const li = document.createElement("li");
+    li.textContent = "no relationships";
+    ul.appendChild(li);
+  }
+  box.appendChild(ul);
   renderAll();
 }
 
