@@ -59,8 +59,24 @@ def _wrap(draw, text: str, font, max_width: float) -> list[str]:
     words = str(text).split()
     if not words:
         return [""]
-    lines, cur = [], ""
+    # A single token wider than the frame (hashes, long ids) can never wrap
+    # on spaces: hard-split it first so nothing paints past the edge.
+    toks: list[str] = []
     for w in words:
+        while draw.textlength(w, font=font) > max_width and len(w) > 1:
+            lo, hi = 1, len(w)
+            while lo < hi:
+                mid = (lo + hi) // 2
+                if draw.textlength(w[:mid], font=font) <= max_width:
+                    lo = mid + 1
+                else:
+                    hi = mid
+            cut = max(1, lo - 1)
+            toks.append(w[:cut])
+            w = w[cut:]
+        toks.append(w)
+    lines, cur = [], ""
+    for w in toks:
         trial = f"{cur} {w}".strip()
         if draw.textlength(trial, font=font) <= max_width or not cur:
             cur = trial
