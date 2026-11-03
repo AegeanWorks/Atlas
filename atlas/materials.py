@@ -268,6 +268,7 @@ def diagram_png(analysis: dict) -> bytes:
     rects = _layout(analysis)
     title_font, _ = _font(22)
     label_font, _ = _font(14)
+    rel_font, _ = _font(11)
     img = Image.new("RGB", (W, H), (11, 21, 48))
     draw = ImageDraw.Draw(img)
     draw.text((W // 2 - 120, 12), str(analysis.get("figure_id", "Atlas"))[:40],
@@ -278,6 +279,14 @@ def diagram_png(analysis: dict) -> bytes:
             continue
         draw.line([a[0] + a[2] / 2, a[1] + a[3] / 2, b[0] + b[2] / 2, b[1] + b[3] / 2],
                   fill=(34, 211, 238), width=2)
+        # Same midpoint label the SVG carries: dark pill behind cyan text
+        # so it reads over lines and box edges alike.
+        tag = str(r.get("rel_type", ""))
+        if tag:
+            mx, my = (a[0] + a[2] / 2 + b[0] + b[2] / 2) / 2, (a[1] + a[3] / 2 + b[1] + b[3] / 2) / 2 - 8
+            bb = draw.textbbox((mx, my), tag, font=rel_font, anchor="mm")
+            draw.rectangle([bb[0] - 3, bb[1] - 2, bb[2] + 3, bb[3] + 2], fill=(11, 21, 48))
+            draw.text((mx, my), tag, font=rel_font, fill=(125, 211, 252), anchor="mm")
     for e in analysis.get("entities", []):
         r = rects.get(e["id"])
         if not r:
