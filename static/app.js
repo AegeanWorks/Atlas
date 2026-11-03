@@ -582,7 +582,7 @@ function renderQuiz() {
     b.onclick = async () => {
       const g = await api("/api/learn/grade", { challenge: c, answer: o.id });
       quiz.score[1]++; if (g.correct) quiz.score[0]++;
-      const d = document.createElement("div"); d.className = "mono";
+      const d = document.createElement("div"); d.className = "mono " + (g.correct ? "good" : "bad");
       const right = c.options.find((x) => x.id === c.answer_id);
       d.textContent = g.correct ? "correct ✓" : `not quite — answer: ${right ? right.name : c.answer_id}`;
       box.appendChild(d);
@@ -688,13 +688,18 @@ function tourStops() {
 function tourCaption(stop, idx, total) {
   const box = $("tour-caption");
   box.hidden = false;
-  const conf = typeof stop.confidence === "number" ? ` · ${(stop.confidence * 100).toFixed(0)}%` : "";
   box.innerHTML = "";
   const b = document.createElement("b");
   b.textContent = stop.name || stop.id;
   box.appendChild(b);
+  if (typeof stop.confidence === "number") {
+    const conf = document.createElement("span");
+    conf.className = "tour-conf";
+    conf.textContent = `${(stop.confidence * 100).toFixed(0)}%`;
+    box.appendChild(conf);
+  }
   const span = document.createElement("span");
-  span.textContent = ` — ${(stop.description || "Locate it on the figure.").slice(0, 220)}${conf}`;
+  span.textContent = ` — ${(stop.description || "Locate it on the figure.").slice(0, 220)}`;
   box.appendChild(span);
   const prog = document.createElement("span");
   prog.className = "tour-prog";

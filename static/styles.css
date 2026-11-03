@@ -118,8 +118,11 @@ footer { padding:12px 20px 18px; color:var(--muted); font-size:12px; text-align:
 #tour-caption { position:absolute; left:16px; right:16px; bottom:16px; background:rgba(5,10,24,.96);
   border:1px solid var(--accent); border-left:5px solid var(--accent); border-radius:12px; padding:13px 17px; font-size:16px; line-height:1.6; z-index:4;
   box-shadow:0 8px 32px rgba(34,211,238,.38); backdrop-filter:blur(5px); }
-#tour-caption b { color:var(--accent); }
-#tour-caption .tour-prog { color:var(--muted); font-size:12px; margin-left:8px; }
+#tour-caption b { color:var(--accent); font-size:17px; }
+#tour-caption .tour-conf { display:inline-block; margin-left:8px; padding:1px 9px; font-size:12px; font-weight:700;
+  color:var(--accent); border:1px solid var(--accent); border-radius:999px; vertical-align:1px; }
+#tour-caption .tour-prog { color:var(--muted); font-size:12px; margin-left:10px; padding:1px 9px;
+  background:rgba(20,38,74,.7); border-radius:999px; white-space:nowrap; }
 #quiz-box { border-left:3px solid var(--accent); }
 #scanline { position:absolute; left:0; right:0; top:0; height:3px; z-index:3;
   background:linear-gradient(90deg,transparent,var(--accent),transparent);
@@ -139,6 +142,8 @@ footer { padding:12px 20px 18px; color:var(--muted); font-size:12px; text-align:
 @keyframes rise { from { transform:translateY(8px); opacity:0; } to { transform:none; opacity:1; } }
 #quiz-box button.opt { transition:background .12s, transform .08s; }
 #quiz-box button.opt:hover { transform:translateX(2px); }
+#quiz-box .mono.good { color:#6ee7b7; font-weight:700; }
+#quiz-box .mono.bad { color:#fda4af; }
 
 /* Responsive */
 @media (max-width:1200px) {
