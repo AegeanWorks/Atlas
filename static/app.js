@@ -144,6 +144,13 @@ function resetModelView() {
 
 function toPct(b) { return { x: b.x_min * 100, y: b.y_min * 100, w: (b.x_max - b.x_min) * 100, h: (b.y_max - b.y_min) * 100 }; }
 
+// Overlay must sit exactly over the centered image, not the viewport
+// top-left: #viewport is flex-centered so the image has a real offset.
+function alignOverlay(svg, img) {
+  svg.style.width = img.clientWidth + "px"; svg.style.height = img.clientHeight + "px";
+  svg.style.left = img.offsetLeft + "px"; svg.style.top = img.offsetTop + "px";
+}
+
 function renderOverlay() {
   const svg = $("overlay"); svg.innerHTML = "";
   if (state.iso && state.isoData) return renderIso(svg);
@@ -151,7 +158,7 @@ function renderOverlay() {
     // Quiz mode: exactly one highlighted region, no labels, no other boxes.
     svg.setAttribute("viewBox", "0 0 100 100");
     const img = $("figure");
-    svg.style.width = img.clientWidth + "px"; svg.style.height = img.clientHeight + "px";
+    alignOverlay(svg, img);
     const p = toPct(quiz.challenge.highlight_bbox);
     svg.appendChild(svgEl("rect", { x: p.x, y: p.y, width: p.w, height: p.h,
       fill: "rgba(34,211,238,.28)", stroke: "#22d3ee", "stroke-width": .8 }));
@@ -161,7 +168,7 @@ function renderOverlay() {
   if (!state.analysis || !img.naturalWidth) return;
   const showLabels = $("toggle-labels").checked, showBoxes = $("toggle-masks").checked;
   svg.setAttribute("viewBox", `0 0 100 100`);
-  svg.style.width = img.clientWidth + "px"; svg.style.height = img.clientHeight + "px";
+  alignOverlay(svg, img);
   for (const e of visibleEntities()) {
     if (e.mask_ref && typeof e.mask_ref === "string" && e.mask_ref.startsWith("/")) {
       // Full-crop mask overlay (mask assumed to match the analyzed crop's frame).
@@ -193,8 +200,7 @@ function renderOverlay() {
 function renderIso(svg) {
   // 2.5D stacked view: layer order = category depth, top faces face the reader.
   svg.setAttribute("viewBox", "-1 -1.1 2 2.3");
-  svg.style.width = $("figure").clientWidth + "px";
-  svg.style.height = $("figure").clientHeight + "px";
+  alignOverlay(svg, $("figure"));
   $("layer-wrap").style.display = "inline";
   const maxLayer = Number($("layer").value);
   for (const p of state.isoData.polygons) {
