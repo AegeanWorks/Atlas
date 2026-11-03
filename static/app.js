@@ -746,10 +746,12 @@ $("btn-learn").onclick = async () => {
   const c = await api("/api/learn", { analysis: state.analysis,
     mode: $("learn-mode").value, seed: Date.now() % 100000 });
   const box = $("challenge"); box.innerHTML = "";
-  const p = document.createElement("div"); p.textContent = c.prompt; box.appendChild(p);
+  const p = document.createElement("div"); p.className = "challenge-q";
+  const modeLabel = ($("learn-mode").selectedOptions[0] || {}).textContent || c.mode || "Challenge";
+  p.textContent = `${modeLabel} — ${c.prompt}`; box.appendChild(p);
   const answer = async (value) => {
     const g = await api("/api/learn/grade", { challenge: c, answer: value });
-    const d = document.createElement("div"); d.className = "mono";
+    const d = document.createElement("div"); d.className = "mono " + (g.correct ? "good" : "bad");
     d.textContent = g.correct ? "correct ✓" : `not quite — expected ${JSON.stringify(g.expected)}`;
     box.appendChild(d);
   };
