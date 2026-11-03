@@ -119,7 +119,12 @@ details.advanced summary:hover { color:var(--accent); }
 .drop.over { border-color:var(--accent); color:var(--text); background:rgba(34,211,238,.09); box-shadow:0 0 0 2px rgba(34,211,238,.4), 0 10px 32px rgba(34,211,238,.2); }
 .drop:focus-visible { outline:2px solid var(--accent); outline-offset:2px; border-color:var(--accent); color:var(--text); }
 #detail, #provenance, #segment-status, #deck-score, #summary { background:#080f22; border:1px solid var(--line-soft); border-radius:8px; padding:8px 10px; }
-#detail:empty, #segment-status:empty, #deck-score:empty { display:none; }
+#detail:empty, #deck-score:empty { display:none; }
+#segment-status:empty { display:none; }
+#segment-status.seg { font-size:12.5px; line-height:1.55; }
+#segment-status.seg.good { color:#6ee7b7; font-weight:600; }
+#segment-status.seg.bad { color:#fda4af; }
+#segment-status.seg.warn { color:var(--warn); }
 #summary:empty { display:none; }
 #provenance:empty { display:none; }
 #provenance details { font-size:12.5px; }

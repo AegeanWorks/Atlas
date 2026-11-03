@@ -415,10 +415,11 @@ $("category-filter").onchange = (e) => { state.category = e.target.value; render
 
 $("btn-segment").onclick = () => withBusy($("btn-segment"), "Segmenting…", async () => {
   const box = $("segment-status");
-  if (!state.analysis || !state.selected) { box.textContent = "Select a structure first."; return; }
-  if (!state.figureFile) { box.textContent = "Segmentation needs a server-side figure (not the demo SVG). Select a figure, then analyze."; return; }
+  const say = (kind, text) => { box.className = "seg " + kind; box.textContent = text; };
+  if (!state.analysis || !state.selected) { say("info", "Select a structure first."); return; }
+  if (!state.figureFile) { say("warn", "Segmentation needs a server-side figure (not the demo SVG). Select a figure, then analyze."); return; }
   const e = state.analysis.entities.find((x) => x.id === state.selected);
-  box.textContent = `Segmenting "${e.name}" with SAM 3.1…`;
+  say("info", `Segmenting "${e.name}" with SAM 3.1…`);
   try {
     const seg = await api("/api/segment", { image_path: state.figureFile,
       prompt: e.name, entity_id: e.id, bbox: e.bbox || undefined });
@@ -426,11 +427,11 @@ $("btn-segment").onclick = () => withBusy($("btn-segment"), "Segmenting…", asy
       entity_id: e.id, kind: seg.kind, mask_ref: seg.mask_ref || "", bbox: seg.bbox || undefined });
     state.analysis = attached.analysis;
     state.isoData = null; // 3D polygons must rebuild from the new analysis
-    box.textContent = seg.kind === "mask"
+    say(seg.kind === "mask" ? "good" : "info", seg.kind === "mask"
       ? `Mask attached to "${e.name}".`
-      : `SAM returned no decodable mask — honest bbox fallback kept for "${e.name}".`;
+      : `SAM returned no decodable mask — honest bbox fallback kept for "${e.name}".`);
     renderAll();
-  } catch (err) { box.textContent = `Segmentation failed: ${honestMsg(err)}`; }
+  } catch (err) { say("bad", `Segmentation failed: ${honestMsg(err)}`); }
 });
 function applyZoom() {
   const img = $("figure");
