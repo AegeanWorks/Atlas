@@ -66,16 +66,24 @@ def build_deck(analysis: dict, dedupe: bool = True) -> dict:
 
 
 def _cell(text: str) -> str:
-    return str(text or "").replace("\t", " ").replace("\r\n", "<br>").replace("\n", "<br>")
+    return (str(text or "").replace("\t", " ").replace("\r\n", "<br>")
+            .replace("\r", "<br>").replace("\n", "<br>"))
 
 
 def to_anki_tsv(deck: dict) -> str:
-    """Deck → Anki-importable TSV: front, back (+ detail + evidence)."""
+    """Deck → Anki-importable TSV: front, back (+ detail + evidence).
+
+    Highlight cards lose the canvas on export, so the front names the
+    source figure — a bare "which structure is highlighted?" is
+    unanswerable in Anki without it. Row shape is unchanged.
+    """
     if not deck.get("cards"):
         raise ValueError("deck has no cards")
     rows = []
     for c in deck["cards"]:
         front = _cell(c["front"]["text"])
+        if c["kind"] == "identify-highlight" and deck.get("figure_id"):
+            front = f"[{_cell(deck['figure_id'])}] {front}"
         back = " — ".join(part for part in
                           [_cell(c["back"]["text"]), _cell(c["back"].get("detail", "")),
                            _cell(c["back"].get("evidence", ""))] if part)
