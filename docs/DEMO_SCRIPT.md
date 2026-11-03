@@ -50,6 +50,11 @@ score + diagram + podcast + MP4, all from the same model.
 Fallback (no fixture): `python demo/basal_ganglia_demo.py --fixture-only`
 rebuilds `/static/basal_ganglia_sample.json` — same 3 minutes.
 
+Cold boxless drops (offline image/video with no located boxes): the
+on-figure moment becomes a text quiz — `spatial-recall` honestly refuses
+(`use visual-identification`) and the UI routes to description quiz.
+Run the on-figure quiz on the fixture or a located server figure.
+
 Cues: Tour = `▶ Tour` · Reveal = `✦ Reveal` · Narrate = `🔊 Narrate` ·
 stop anything = `Esc`. Reduced-motion users get the same stops with no
 animation (`prefers-reduced-motion` honored).

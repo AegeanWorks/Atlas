@@ -234,7 +234,10 @@ function renderIso(svg) {
       class: "hit" });
     top.addEventListener("click", () => select(p.id));
     const c = p.top.reduce((a, q) => [a[0] + q[0] / 4, a[1] + q[1] / 4], [0, 0]);
-    const t = svgEl("text", { x: c[0], y: c[1], "font-size": .07, fill: "#dbe7ff", "text-anchor": "middle" });
+    // Halo must be data-scale: the 2D 2px halo would be a canvas-sized disc
+    // in the ~1.3-unit iso frame (black-canvas bug). iso-label re-scales it.
+    const t = svgEl("text", { x: c[0], y: c[1], "font-size": .07, fill: "#dbe7ff",
+      "text-anchor": "middle", class: "iso-label" });
     t.textContent = p.name;
     t.addEventListener("click", () => select(p.id));
     svg.appendChild(base); svg.appendChild(top); svg.appendChild(t);

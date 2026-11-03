@@ -77,6 +77,9 @@ details.advanced summary:hover { color:var(--accent); }
 #overlay .hit { pointer-events:auto; cursor:pointer; }
 #overlay rect { transition:fill .15s, stroke .15s; }
 #overlay text { pointer-events:auto; cursor:pointer; paint-order:stroke; stroke:#050a18; stroke-width:2.6px; font-weight:700; }
+/* Iso frame is ~1.3 data units wide: the 2D halo would be a canvas-sized
+   dark disc per label (black-canvas bug). Re-scale it for iso labels. */
+#overlay text.iso-label { stroke-width:.025; }
 #overlay .hit:hover rect { stroke:var(--accent); }
 
 /* Entities + graph */
