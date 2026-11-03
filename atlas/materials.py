@@ -49,6 +49,29 @@ def _font(size: int):
     return ImageFont.load_default(size=size), "bundled-fallback"
 
 
+def _wrap(draw, text: str, font, max_width: float) -> list[str]:
+    """Greedy word-wrap to a pixel width (Pillow has no textbox).
+
+    Long descriptions used to run past the frame edge (hard-truncated at
+    100 chars); wrapping keeps every word inside the storyboard. Returns
+    at least one line so callers never index an empty list.
+    """
+    words = str(text).split()
+    if not words:
+        return [""]
+    lines, cur = [], ""
+    for w in words:
+        trial = f"{cur} {w}".strip()
+        if draw.textlength(trial, font=font) <= max_width or not cur:
+            cur = trial
+        else:
+            lines.append(cur)
+            cur = w
+    if cur:
+        lines.append(cur)
+    return lines or [""]
+
+
 def _layout(analysis: dict) -> dict:
     """Entity id → canvas rect (uses the figure box, else a grid fallback)."""
     entities = list(analysis.get("entities", []))
@@ -436,15 +459,23 @@ def video_slideshow(analysis: dict, outdir: str, fps: int = 30,
              scene: tuple[int, int] | None = None) -> "Image.Image":
         img = Image.new("RGB", (W, H), (11, 21, 48))
         draw = ImageDraw.Draw(img)
-        shown = title[:60]
-        draw.text((MARGIN, 40), shown, font=title_font, fill=(125, 211, 252))
-        y = 120
-        for line in lines[:8]:
-            draw.text((MARGIN, y), line[:100], font=body_font, fill=(219, 231, 255))
-            y += 34
+        shown = _wrap(draw, title[:80], title_font, W - 2 * MARGIN)[:2]
+        draw.text((MARGIN, 40), shown[0], font=title_font, fill=(125, 211, 252))
+        if len(shown) > 1:
+            draw.text((MARGIN, 72), shown[1], font=title_font, fill=(125, 211, 252))
+        y = 128
+        shown_lines: list[str] = []
+        for line in lines:
+            shown_lines.extend(_wrap(draw, line, body_font, W - 2 * MARGIN) or [""])
+        for line in shown_lines[:9]:
+            draw.text((MARGIN, y), line, font=body_font, fill=(219, 231, 255))
+            y += 30
         if highlight:
             # Underline the title itself, not the whole frame width.
-            bar_w = max(60, min(draw.textlength(shown, font=title_font) + 16, W - 2 * MARGIN))
+            bar_w = max(60, min(draw.textlength(shown[0], font=title_font) + 16, W - 2 * MARGIN))
+        if highlight:
+            # Underline the title itself, not the whole frame width.
+            bar_w = max(60, min(draw.textlength(shown[0], font=title_font) + 16, W - 2 * MARGIN))
             draw.rectangle([MARGIN - 8, 108, MARGIN - 8 + bar_w, 108 + 8], fill=(34, 211, 238))
         if scene is not None:
             i, n = scene
