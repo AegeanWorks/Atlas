@@ -287,7 +287,8 @@ def diagram_png(analysis: dict) -> bytes:
     rel_font, _ = _font(11)
     img = Image.new("RGB", (W, H), (11, 21, 48))
     draw = ImageDraw.Draw(img)
-    draw.text((W // 2 - 120, 12), str(analysis.get("figure_id", "Atlas"))[:40],
+    title = str(analysis.get("figure_id", "Atlas"))[:40]
+    draw.text(((W - draw.textlength(title, font=title_font)) / 2, 12), title,
               font=title_font, fill=(219, 231, 255))
     for r in analysis.get("relationships", []):
         a, b = rects.get(r["source_id"]), rects.get(r["target_id"])
