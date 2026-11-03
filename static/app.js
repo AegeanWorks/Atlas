@@ -98,10 +98,16 @@ function renderAll() {
       const v = await api("/api/video", state.analysis
         ? { figure_id: fid, analysis: state.analysis }
         : { figure_id: fid });
-      box.textContent = `Video ready: ${v.scenes} scenes, ${v.duration_s}s, ${v.fps}fps.`;
+      box.innerHTML = "";
+      box.appendChild(packEl("div", "pack-title", "Study video ready"));
+      const stats = packEl("div", "pack-stats");
+      stats.appendChild(packEl("span", "chip", `${v.scenes} scenes`));
+      stats.appendChild(packEl("span", "chip", `${v.duration_s}s`));
+      stats.appendChild(packEl("span", "chip", `${v.fps}fps`));
+      box.appendChild(stats);
       const a = document.createElement("a");
       a.href = v.mp4_url; a.textContent = "Download study MP4 ↓";
-      box.appendChild(document.createElement("br")); box.appendChild(a);
+      box.appendChild(a);
     } catch (err) { box.textContent = `Video failed: ${honestMsg(err)}`; }
   });
 }
