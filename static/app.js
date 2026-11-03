@@ -112,13 +112,8 @@ $("btn-quality").onclick = () => withBusy($("btn-quality"), "Scoring…", async 
     // Inline analysis: scores the model on screen even when it only lives in
     // the browser (demo fixture), not just server-saved figure_ids.
     const q = await api("/api/quality", { analysis: state.analysis });
-    const rows = Object.entries(q).filter(([k]) => k !== "overall" && k !== "weakest" && k !== "floor" && k !== "skipped");
-    rows.sort((a, b) => a[1].score - b[1].score); // worst-first: weak artifacts surface
-    const weak = q.weakest ? ` · weakest: ${q.weakest}` : "";
-    const floor = q.floor === false ? " · FLOOR FAIL (<50)" : "";
-    box.textContent = `Overall quality: ${q.overall}/100${weak}${floor}\n\n` + rows.map(([k, r]) =>
-      `${k}: ${r.score}/100` + (r.issues.length ? `\n  ! ${r.issues[0]}` : "\n  all checks pass")
-    ).join("\n\n") + (q.skipped && q.skipped.length ? `\n\nSkipped: ${q.skipped.join("; ")}` : "\n\nSkipped: none");
+    box.innerHTML = "";
+    renderQualityInto(box, q);
   } catch (err) { box.textContent = `Quality check failed: ${honestMsg(err)}`; }
 });
 
@@ -130,8 +125,8 @@ $("btn-tour").onclick = async () => {
     const t = state.analysis
       ? await api("/api/tour", { analysis: state.analysis })
       : await api(`/api/tour?figure_id=${encodeURIComponent(state.figureId || "workspace-figure")}`);
-    box.textContent = t.stops.map((s) =>
-      `Stop ${s.stop} — ${s.name} (layer ${s.layer}): ${s.observe} | links: ${s.connections.join("; ") || "—"} | ${s.camera}`).join("\n\n");
+    box.innerHTML = "";
+    renderTourInto(box, t);
   } catch (err) { box.textContent = `Tour failed: ${honestMsg(err)}`; }
 };
 
@@ -684,6 +679,56 @@ function packEl(tag, cls, text) {
   if (text != null) d.textContent = text;
   return d;
 }
+function renderQualityInto(box, q) {
+  const rows = Object.entries(q).filter(([k]) => !["overall", "weakest", "floor", "skipped"].includes(k))
+    .sort((a, b) => a[1].score - b[1].score); // worst-first: weak artifacts surface
+  const stats = packEl("div", "pack-stats");
+  stats.appendChild(packEl("span", "chip strong", `Quality overall: ${q.overall}/100`));
+  if (q.weakest) stats.appendChild(packEl("span", "chip weak", `weakest: ${q.weakest}`));
+  if (q.floor === false) stats.appendChild(packEl("span", "chip fail", "FLOOR FAIL (<50)"));
+  box.appendChild(stats);
+  const ul = packEl("ul", "pack-quality");
+  for (const [k, r] of rows) {
+    const li = document.createElement("li");
+    const head = document.createElement("div");
+    head.className = "qrow";
+    const nm = document.createElement("span");
+    nm.textContent = k;
+    const sc = document.createElement("span");
+    sc.className = "qscore";
+    sc.textContent = `${r.score}/100`;
+    head.appendChild(nm); head.appendChild(sc);
+    li.appendChild(head);
+    const bar = document.createElement("div");
+    bar.className = "bar";
+    const fill = document.createElement("i");
+    fill.style.width = `${Math.max(0, Math.min(100, r.score))}%`;
+    bar.appendChild(fill);
+    li.appendChild(bar);
+    if (r.issues && r.issues.length) li.appendChild(packEl("div", "qissue", r.issues[0]));
+    ul.appendChild(li);
+  }
+  box.appendChild(ul);
+  box.appendChild(packEl("div", "pack-note",
+    `Skipped: ${(q.skipped && q.skipped.length ? q.skipped.join("; ") : "none")}`));
+}
+function renderTourInto(box, t) {
+  box.appendChild(packEl("div", "pack-h", `3D tour: ${t.stops.length} stops (bottom layer first)`));
+  const ol = packEl("ol", "pack-list tour-stops");
+  for (const s of t.stops) {
+    const li = document.createElement("li");
+    const nm = document.createElement("span");
+    nm.className = "tour-stop-name";
+    nm.textContent = `${s.name} (layer ${s.layer})`;
+    li.appendChild(nm);
+    const ob = document.createElement("div");
+    ob.className = "tour-stop-observe";
+    ob.textContent = `${s.observe} | links: ${(s.connections || []).join("; ") || "—"} | ${s.camera}`;
+    li.appendChild(ob);
+    ol.appendChild(li);
+  }
+  box.appendChild(ol);
+}
 function renderPackSummary(box, s, note = true) {
   const ex = s.extractive;
   box.innerHTML = "";
@@ -722,7 +767,7 @@ function renderPackSummary(box, s, note = true) {
     s.polished ? `POLISHED SUMMARY: ${s.polished}`
                : "(offline extractive brief — add MODEL_API_KEY for a polished summary)"));
 }
-function renderPackAll(box, s, t, deck, q, rows) {
+function renderPackAll(box, s, t, deck, q) {
   renderPackSummary(box, s, false);
   if (s.polished) box.appendChild(packEl("div", "pack-note", `POLISHED SUMMARY: ${s.polished}`));
   const stats = packEl("div", "pack-stats");
@@ -734,32 +779,7 @@ function renderPackAll(box, s, t, deck, q, rows) {
     if (q.floor === false) stats.appendChild(packEl("span", "chip fail", "FLOOR FAIL (<50)"));
   }
   if (stats.children.length) box.appendChild(stats);
-  if (q) {
-    const ul = packEl("ul", "pack-quality");
-    for (const [k, r] of rows) {
-      const li = document.createElement("li");
-      const head = document.createElement("div");
-      head.className = "qrow";
-      const nm = document.createElement("span");
-      nm.textContent = k;
-      const sc = document.createElement("span");
-      sc.className = "qscore";
-      sc.textContent = `${r.score}/100`;
-      head.appendChild(nm); head.appendChild(sc);
-      li.appendChild(head);
-      const bar = document.createElement("div");
-      bar.className = "bar";
-      const fill = document.createElement("i");
-      fill.style.width = `${Math.max(0, Math.min(100, r.score))}%`;
-      bar.appendChild(fill);
-      li.appendChild(bar);
-      if (r.issues && r.issues.length) li.appendChild(packEl("div", "qissue", r.issues[0]));
-      ul.appendChild(li);
-    }
-    box.appendChild(ul);
-    box.appendChild(packEl("div", "pack-note",
-      `Skipped: ${(q.skipped && q.skipped.length ? q.skipped.join("; ") : "none")}`));
-  }
+  if (q) renderQualityInto(box, q);
   if (state.modelWarning) box.appendChild(packEl("div", "pack-note", `Note: ${state.modelWarning}`));
   if (state.offline) box.appendChild(packEl("div", "pack-note",
     "[offline-extractive model: add MODEL_API_KEY for live Muse vision]"));
@@ -777,9 +797,7 @@ $("btn-study-all").onclick = () => withBusy($("btn-study-all"), "Building…", a
     box.textContent = "Building study pack: quality (4/4)…";
     const q = await api("/api/quality", { analysis: state.analysis }).catch(() => null);
     const ex = s.extractive;
-    const rows = q ? Object.entries(q).filter(([k]) => !["overall", "weakest", "floor", "skipped"].includes(k))
-      .sort((a, b) => a[1].score - b[1].score) : [];
-    renderPackAll(box, s, t, deck, q, rows);
+    renderPackAll(box, s, t, deck, q);
   } catch (err) { box.textContent = `Study pack failed: ${honestMsg(err)}`; }
 });
 
