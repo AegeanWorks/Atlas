@@ -68,6 +68,39 @@ def test_podcast_trims_big_models_with_note():
     assert "top of 40" in script["segments"][0]["text"]
 
 
+def test_podcast_density_survives_many_explained_relations():
+    from atlas import materials as mat
+    from atlas import quality as qa
+    ents = [{"id": "hub", "name": "Hub", "category": "other",
+             "description": "Central structure.", "source_evidence": "panel one",
+             "bbox": None, "confidence": 1.0}]
+    ents += [{"id": f"t{i}", "name": f"Target{i}", "category": "other",
+              "description": f"Target structure {i}.", "source_evidence": "panel two",
+              "bbox": None, "confidence": 1.0} for i in range(6)]
+    rels = [{"source_id": "hub", "target_id": f"t{i}", "rel_type": "activates",
+             "explanation": "The hub sends a strong activating signal onward.",
+             "supporting_evidence": "panel one", "confidence": 1.0,
+             "provenance": "source", "model_inferred": False} for i in range(6)]
+    analysis = {"figure_id": "dense", "entities": ents, "relationships": rels}
+    report = qa.podcast_quality(mat.podcast_script(analysis), analysis)
+    assert report["score"] == 100, report["issues"]
+
+
+def test_question_bank_covers_isolated_undescribed_entities():
+    from atlas import materials as mat
+    from atlas import quality as qa
+    analysis = {"figure_id": "iso", "entities": [
+        {"id": "x", "name": "Xenon", "category": "other",
+         "description": "", "source_evidence": "", "bbox": None, "confidence": 0.5},
+        {"id": "y", "name": "Yara", "category": "person",
+         "description": "", "source_evidence": "Sailed with the fleet.",
+         "bbox": None, "confidence": 0.5}], "relationships": []}
+    bank = mat.question_bank(analysis)
+    report = qa.questions_quality(bank, analysis)
+    assert report["score"] == 100, report["issues"]
+    assert all(q["answer"] for q in bank["questions"])
+
+
 def test_pathways_capped_with_total():
     from atlas import summaries as sm
     ents = [{"id": "root", "name": "R", "category": "other",

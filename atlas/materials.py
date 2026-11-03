@@ -54,10 +54,23 @@ def _layout(analysis: dict) -> dict:
     entities = list(analysis.get("entities", []))
     rects = {}
     homeless = [e for e in entities if not e.get("bbox")]
-    cols = max(1, round(len(homeless) ** 0.5))
-    for i, e in enumerate(homeless):
-        c, r = i % cols, i // cols
-        rects[e["id"]] = (MARGIN + c * 200, H - 160 - r * 110, 180, 80)
+    if homeless:
+        # Text-only models have no figure positions: lay their boxes out as
+        # an index grid that always fits the frame. Small models get roomy
+        # 180x80 boxes; huge ones (a 245-entity book) get compact boxes so
+        # every label still has its own non-overlapping slot.
+        n = len(homeless)
+        usable_w = W - 2 * MARGIN
+        avail_h = (H - 24) - _POSTER_TOP
+        cols = max(1, min(n, math.ceil((n * usable_w / max(avail_h, 1)) ** 0.5)))
+        rows = math.ceil(n / cols)
+        box_w = max(36.0, min(180.0, usable_w / cols - 6))
+        box_h = max(24.0, min(80.0, avail_h / rows - 6))
+        for i, e in enumerate(homeless):
+            c, r = i % cols, i // cols
+            x = MARGIN if cols == 1 else MARGIN + c * (usable_w - box_w) / (cols - 1)
+            y = _POSTER_TOP if rows == 1 else _POSTER_TOP + r * (avail_h - box_h) / (rows - 1)
+            rects[e["id"]] = (x, y, box_w, box_h)
     for e in entities:
         bbox = e.get("bbox")
         if not bbox:
@@ -316,10 +329,10 @@ def podcast_script(analysis: dict, max_segments: int = 24) -> dict:
         ins = [r for r in analysis.get("relationships", []) if r["target_id"] == e["id"]]
         line = f"{e.get('name', e['id'])}. {e.get('description', 'A key structure in this figure.')}"
         if outs:
-            line += " It " + "; ".join(
-                _spoken_out(r, names) for r in outs) + "."
+            line += " " + ". ".join(
+                f"It {_spoken_out(r, names)}" for r in outs) + "."
         if ins:
-            line += " " + "; ".join(
+            line += " " + ". ".join(
                 f"{names.get(r['source_id'], '?')} {_spoken_in(r, names)}" for r in ins) + "."
         if e.get("source_evidence"):
             line += f" On the figure: {e['source_evidence']}."
@@ -332,11 +345,11 @@ def podcast_script(analysis: dict, max_segments: int = 24) -> dict:
         if key not in seen:
             seen.add(key)
             chains.append(_spoken_relation(r, names))
-    walk = ("Now trace it end to end: " + "; ".join(chains[:8]) + "." if chains
+    walk = ("Now trace it end to end. " + ". ".join(chains[:8]) + "." if chains
             else "A single-structure study: hold its definition and evidence in mind.")
     segments.append({"speaker": "HOST", "cue": "pathway walk", "text": walk})
     teasers = [f"What does {e.get('name', e['id'])} connect to?" for e in entities[:3]]
-    recap = ("Recap in one breath: " + "; ".join(chains[:5]) + ". " if chains
+    recap = ("Recap in one breath. " + ". ".join(chains[:5]) + ". " if chains
              else "Recap in one breath: " + (entities[0].get("description", "") if entities else "review the card above") + ". ")
     segments.append({"speaker": "GUIDE", "cue": "recap + quiz teasers",
                      "text": recap + "Test yourself: " + " ".join(teasers)})
@@ -479,6 +492,28 @@ def question_bank(analysis: dict) -> dict:
             "question": (f"How are {names.get(r['source_id'], '?')} and "
                          f"{names.get(r['target_id'], '?')} connected?"),
             "answer": r["rel_type"], "evidence": r.get("supporting_evidence", "")})
+    # Every entity must be askable by name: description questions withhold
+    # the name on purpose (it is the answer) and boxless, isolated entities
+    # otherwise never appear in the bank. Fall back to what the model does
+    # assert — the recorded category (names the entity without giving
+    # anything away), plus a grounded evidence question where evidence
+    # exists (names nothing, recalls the entity from its source).
+    texts = [q["question"] for q in questions]
+    for e in analysis.get("entities", []):
+        if any(e.get("name", e["id"]) in t or e["id"] in t for t in texts):
+            continue
+        questions.append({
+            "id": f"q-kind-{e['id']}", "kind": "identify-category",
+            "question": f"What kind of structure is {names[e['id']]}?",
+            "answer": e.get("category", "other"), "evidence": ""})
+        texts.append(questions[-1]["question"])
+        if e.get("source_evidence"):
+            questions.append({
+                "id": f"q-evidence-{e['id']}", "kind": "identify-description",
+                "question": (f"Which structure is described by this evidence? "
+                             f"{e['source_evidence']}"),
+                "answer": names[e["id"]], "evidence": e.get("source_evidence", "")})
+            texts.append(questions[-1]["question"])
     return {"figure_id": analysis.get("figure_id", ""), "questions": questions}
 
 

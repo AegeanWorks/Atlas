@@ -38,6 +38,17 @@ def test_declutter_spreads_overlaps_deterministically():
     assert mat._declutter(solo) == solo
 
 
+def test_diagram_large_text_only_grid_has_no_overlaps():
+    from atlas import materials as mat
+    from atlas import quality as qa
+    ents = [{"id": f"h{i}", "name": f"Topic {i}", "category": "other",
+             "description": f"About topic {i}.", "source_evidence": f"page {i}",
+             "bbox": None, "confidence": 0.9} for i in range(60)]
+    analysis = {"figure_id": "big-text", "entities": ents, "relationships": []}
+    report = qa.infographic_quality(mat.diagram_svg(analysis), analysis)
+    assert report["score"] == 100, report["issues"]
+
+
 def test_font_prefers_turkish_capable_truetype(tmp_path):
     from atlas import materials as mat
     font, src = mat._font(20)
