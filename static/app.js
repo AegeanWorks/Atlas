@@ -447,7 +447,7 @@ $("btn-import").onclick = async () => {
   const path = $("doc-path").value.trim();
   if (!path) return alert("Enter a server-local document/image path.");
   const r = await api("/api/import", { path }).catch((e) => alert(e.message));
-  if (r) { $("provenance").textContent = JSON.stringify(r, null, 2); state.figure = r; }
+  if (r) { $("provenance").innerHTML = ""; provenanceDetails(`Imported ${path} — click for full provenance`, r); state.figure = r; }
 };
 $("btn-render").onclick = async () => {
   const src = $("doc-path").value.trim();
@@ -463,7 +463,7 @@ $("btn-figure").onclick = async () => {
   const src = $("doc-path").value.trim();
   const crop = $("crop").value.split(",").map(Number);
   const r = await api("/api/figure/select", { image_path: src, crop }).catch((e) => alert(e.message));
-  if (r) { setFigure(r.image_path, r.figure_url); $("provenance").textContent = JSON.stringify(r, null, 2); }
+  if (r) { setFigure(r.image_path, r.figure_url); $("provenance").innerHTML = ""; provenanceDetails(`Figure crop ${crop} — click for full provenance`, r); }
 };
 $("btn-analyze").onclick = () => withBusy($("btn-analyze"), "Analyzing…", async () => {
   const src = state.figureFile || $("doc-path").value.trim();
@@ -515,6 +515,21 @@ function showModel(auto, stagedPath) {
   renderAll();
 }
 
+// Provenance stays audit-complete but stops shouting: one human summary
+// line, full JSON one click away (was a raw JSON wall on every upload).
+function provenanceDetails(summary, obj) {
+  const box = $("provenance");
+  box.innerHTML = "";
+  const d = document.createElement("details");
+  const s = document.createElement("summary");
+  s.textContent = summary;
+  const pre = document.createElement("pre");
+  pre.className = "mono";
+  pre.textContent = JSON.stringify(obj, null, 2);
+  d.appendChild(s); d.appendChild(pre);
+  box.appendChild(d);
+}
+
 // One drop -> one model: upload the file, then auto-create (images fully automatic).
 const dz = $("dropzone");
 function honestMsg(err) {
@@ -538,7 +553,8 @@ dz.addEventListener("drop", async (e) => {
       const err = new Error(up.error); err.cause = up.cause; err.fix = up.fix;
       throw err;
     }
-    $("provenance").textContent = JSON.stringify(up, null, 2);
+    $("provenance").innerHTML = "";
+    provenanceDetails(`Uploaded ${file.name}${typeof up.size === "number" ? ` (${up.size} bytes)` : ""} — click for full provenance`, up);
     dz.textContent = `Reading ${file.name}… (2/3)`;
     await new Promise((r) => setTimeout(r, 30));
     dz.textContent = `Building learning model… (3/3)`;

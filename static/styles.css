@@ -121,6 +121,10 @@ details.advanced summary:hover { color:var(--accent); }
 #detail, #provenance, #segment-status, #deck-score, #summary { background:#080f22; border:1px solid var(--line-soft); border-radius:8px; padding:8px 10px; }
 #detail:empty, #segment-status:empty, #deck-score:empty { display:none; }
 #summary:empty { display:none; }
+#provenance:empty { display:none; }
+#provenance details { font-size:12.5px; }
+#provenance summary { cursor:pointer; color:var(--accent); }
+#provenance pre { margin:6px 0 0; max-height:220px; overflow:auto; }
 #detail .pack-title, #summary .pack-title { font-size:17px; font-weight:800; color:var(--text); margin:2px 0 6px; }
 #detail .pack-sub, #summary .pack-sub { font-size:14px; line-height:1.6; color:#c9d6f2; margin-bottom:8px; }
 #detail .pack-h, #summary .pack-h { font-size:13px; font-weight:700; color:var(--accent); margin:10px 0 4px; }
