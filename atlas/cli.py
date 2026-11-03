@@ -229,6 +229,7 @@ def cmd_quality(args) -> int:
 
 
 def cmd_video(args) -> int:
+    import tempfile
     from . import materials as mat
     data = AtlasStore(args.data).load_analysis(args.figure_id)
     if data is None:

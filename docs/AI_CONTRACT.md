@@ -43,6 +43,8 @@ keyword frequency with quoted evidence) that drives the same endpoints.
 8. 3D + flashcards: `GET /api/model3d?figure_id=<id>&format=obj` (printable OBJ),
    `POST /api/flashcards` (deck), `GET /api/flashcards/export?figure_id=<id>`
    (Anki TSV). CLI: `deck <id> [--anki out.tsv]`, `obj <id> [--out out.obj]`.
+   Poster/podcast/questions/model3d/Anki also accept `POST {figure_id|analysis}`
+   so the browser-only demo fixture downloads without a server-side model.
 
 ## Rules agents must obey
 

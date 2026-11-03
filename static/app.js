@@ -36,6 +36,30 @@ async function api(path, body) {
   return data;
 }
 
+// Demo-proof download: the browser-only demo fixture has no server-side
+// figure_id, so its artifact links POST the loaded model inline and save the
+// returned bytes. Server-saved models keep their plain GET hrefs.
+async function demoDownload(url, format) {
+  const box = $("summary");
+  try {
+    const r = await fetch(url, { method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ analysis: state.analysis, format }) });
+    if (!r.ok) {
+      const data = await r.json().catch(() => ({}));
+      throw new Error(data.error || r.statusText);
+    }
+    const blob = await r.blob();
+    const disp = r.headers.get("Content-Disposition") || "";
+    const name = (/filename="([^"]+)"/.exec(disp) || [])[1]
+      || url.split("?")[0].split("/").pop() || "atlas-download";
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  } catch (err) { box.textContent = `Download failed: ${honestMsg(err)}`; }
+}
+
 async function refreshHealth() {
   try {
     const h = await api("/api/health");
@@ -59,11 +83,21 @@ function renderAll() {
   $("link-diagram-png").href = `/api/diagram?figure_id=${encodeURIComponent(fid)}&format=png`;
   $("link-podcast").href = `/api/podcast?figure_id=${encodeURIComponent(fid)}&format=md`;
   $("link-questions").href = `/api/questions?figure_id=${encodeURIComponent(fid)}&format=md`;
+  // Browser-only demo fixture ("demo") has no server-side figure_id, so plain
+  // GET downloads would 404: POST the loaded model inline and save the blob.
+  const demoOnly = state.analysis && state.figureId === "demo";
+  for (const [id, fmt] of [["download-obj", "obj"], ["anki-link", "tsv"],
+      ["link-diagram-svg", "svg"], ["link-diagram-png", "png"],
+      ["link-podcast", "md"], ["link-questions", "md"]]) {
+    $(id).onclick = demoOnly ? (e) => { e.preventDefault(); demoDownload($(id).href, fmt); } : null;
+  }
   $("link-video").onclick = (e) => withBusy($("link-video"), "Rendering…", async () => {
     e.preventDefault();
     const box = $("summary"); box.textContent = "Rendering study video (title, spotlights, recap)…";
     try {
-      const v = await api("/api/video", { figure_id: fid });
+      const v = await api("/api/video", state.analysis
+        ? { figure_id: fid, analysis: state.analysis }
+        : { figure_id: fid });
       box.textContent = `Video ready: ${v.scenes} scenes, ${v.duration_s}s, ${v.fps}fps.`;
       const a = document.createElement("a");
       a.href = v.mp4_url; a.textContent = "Download study MP4 ↓";

@@ -381,13 +381,18 @@ def api_contract() -> dict:
             "POST /api/analysis/attach-mask": "attach a mask to an entity",
             "GET /api/analysis?figure_id=": "read one model",
             "GET /api/model3d?figure_id=&format=json|obj": "isometric view or OBJ 3D export",
+            "POST /api/model3d {figure_id|analysis, format?}": "isometric view or OBJ (inline analysis supported)",
             "POST /api/flashcards {analysis}": "flashcard deck",
             "GET /api/flashcards/export?figure_id=": "Anki TSV download",
+            "POST /api/flashcards/export {figure_id|analysis}": "Anki TSV download (inline analysis supported)",
             "GET /api/diagram?figure_id=&format=svg|png": "printable study poster",
+            "POST /api/diagram {figure_id|analysis, format?}": "printable study poster (inline analysis supported)",
             "GET /api/tour?figure_id=": "ordered 3D-layer walkthrough",
             "POST /api/tour {figure_id|analysis}": "ordered 3D-layer walkthrough (inline analysis supported)",
             "GET /api/podcast?figure_id=&format=md|json": "two-host audio script",
+            "POST /api/podcast {figure_id|analysis, format?}": "two-host audio script (inline analysis supported)",
             "GET /api/questions?figure_id=&format=json|md": "question bank + worksheet",
+            "POST /api/questions {figure_id|analysis, format?}": "question bank + worksheet (inline analysis supported)",
             "POST /api/video {figure_id|analysis}": "render the H.264 study MP4",
             "POST /api/quality {figure_id|analysis, include_video?}": "score every artifact 0-100",
             "POST /api/learn {analysis, mode, seed}": "challenge",
@@ -625,6 +630,26 @@ class Handler(BaseHTTPRequestHandler):
             body = {}
         route = urllib.parse.urlparse(self.path).path
         store = self.get_store()
+
+        def _resolve_inline(body, store):
+            """figure_id or validated inline analysis (browser-only demo fixture)."""
+            if body.get("analysis"):
+                return VisualAnalysis.from_dict(body["analysis"]).to_dict()
+            saved = store.load_analysis(body.get("figure_id", ""))
+            if saved is None:
+                raise ValueError(
+                    f"unknown figure_id {body.get('figure_id')!r}: the demo fixture "
+                    "lives in the browser only — drop the file to create a "
+                    "server-side model, or send inline analysis")
+            return saved
+
+        def _send_blob(blob: bytes, ctype: str, fname: str):
+            self.send_response(200)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Disposition", f'attachment; filename="{fname}"')
+            self.send_header("Content-Length", str(len(blob)))
+            self.end_headers()
+            self.wfile.write(blob)
         try:
             if route == "/api/import":
                 if not body.get("path"):
@@ -755,6 +780,52 @@ class Handler(BaseHTTPRequestHandler):
                         "lives in the browser only — drop the file to create a "
                         "server-side model, or send inline analysis")
                 return _json(self, _mat.tour_3d(saved))
+            if route == "/api/diagram":
+                from . import materials as mat
+                saved = _resolve_inline(body, store)
+                fid = body.get("figure_id", "") or saved.get("figure_id", "model")
+                if body.get("format", "svg") == "png":
+                    _send_blob(mat.diagram_png(saved), "image/png", f"{fid}.png")
+                else:
+                    _send_blob(mat.diagram_svg(saved).encode(),
+                               "image/svg+xml", f"{fid}.svg")
+                return
+            if route == "/api/podcast":
+                from . import materials as mat
+                saved = _resolve_inline(body, store)
+                fid = body.get("figure_id", "") or saved.get("figure_id", "model")
+                script = mat.podcast_script(saved)
+                if body.get("format", "md") == "json":
+                    return _json(self, script)
+                _send_blob(mat.podcast_markdown(script).encode("utf-8"),
+                           "text/markdown", f"{fid}-podcast.md")
+                return
+            if route == "/api/questions":
+                from . import materials as mat
+                saved = _resolve_inline(body, store)
+                fid = body.get("figure_id", "") or saved.get("figure_id", "model")
+                bank = mat.question_bank(saved)
+                if body.get("format", "json") == "md":
+                    _send_blob(mat.questions_markdown(bank).encode("utf-8"),
+                               "text/markdown", f"{fid}-questions.md")
+                    return
+                return _json(self, bank)
+            if route == "/api/model3d":
+                from . import models3d as m3d
+                saved = _resolve_inline(body, store)
+                fid = body.get("figure_id", "") or saved.get("figure_id", "model")
+                if body.get("format", "json") == "obj":
+                    _send_blob(m3d.export_obj(saved).encode(),
+                               "text/plain", f"{fid}.obj")
+                    return
+                return _json(self, m3d.iso_view(saved))
+            if route == "/api/flashcards/export":
+                from . import flashcards as fc
+                saved = _resolve_inline(body, store)
+                fid = body.get("figure_id", "") or saved.get("figure_id", "model")
+                _send_blob(fc.to_anki_tsv(fc.build_deck(saved)).encode("utf-8"),
+                           "text/tab-separated-values", f"{fid}.tsv")
+                return
             if route == "/api/video":
                 from . import materials as mat
                 saved = None
