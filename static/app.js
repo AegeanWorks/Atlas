@@ -720,6 +720,11 @@ function renderQualityInto(box, q) {
 }
 function renderTourInto(box, t) {
   box.appendChild(packEl("div", "pack-h", `3D tour: ${t.stops.length} stops (bottom layer first)`));
+  if (!t.stops.length) {
+    box.appendChild(packEl("div", "pack-note",
+      "No located structures to tour — analyze a figure (or load the demo) for the 3D walkthrough."));
+    return;
+  }
   const ol = packEl("ol", "pack-list tour-stops");
   for (const s of t.stops) {
     const li = document.createElement("li");
