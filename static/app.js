@@ -86,10 +86,13 @@ $("btn-quality").onclick = () => withBusy($("btn-quality"), "Scoring…", async 
 });
 
 $("btn-tour").onclick = async () => {
-  const fid = state.figureId || "workspace-figure";
   const box = $("summary"); box.textContent = "Planning 3D tour…";
   try {
-    const t = await api(`/api/tour?figure_id=${encodeURIComponent(fid)}`);
+    // Browser-only demo fixture has no server-side figure_id: send the loaded
+    // model inline so the tour never 404s on the demo (study-all parity).
+    const t = state.analysis
+      ? await api("/api/tour", { analysis: state.analysis })
+      : await api(`/api/tour?figure_id=${encodeURIComponent(state.figureId || "workspace-figure")}`);
     box.textContent = t.stops.map((s) =>
       `Stop ${s.stop} — ${s.name} (layer ${s.layer}): ${s.observe} | links: ${s.connections.join("; ") || "—"} | ${s.camera}`).join("\n\n");
   } catch (err) { box.textContent = `Tour failed: ${honestMsg(err)}`; }
@@ -558,14 +561,16 @@ $("btn-study-all").onclick = () => withBusy($("btn-study-all"), "Building…", a
     box.textContent = "Building study pack: quality (4/4)…";
     const q = await api("/api/quality", { analysis: state.analysis }).catch(() => null);
     const ex = s.extractive;
+    const rows = q ? Object.entries(q).filter(([k]) => !["overall", "skipped"].includes(k))
+      .sort((a, b) => a[1].score - b[1].score) : [];
     box.textContent =
       ex.title + "\n" + ex.overview + "\n\n" +
       (t && t.stops ? `3D tour: ${t.stops.length} stops.\n` : "") +
       (deck ? `Flashcards: ${deck.cards.length} cards.\n` : "") +
-      (q ? `Quality overall: ${q.overall}/100` +
-        Object.entries(q).filter(([k]) => !["overall", "skipped"].includes(k))
-          .map(([k, r]) => `\n  ${k}: ${r.score}/100`).join("") +
-        (q.skipped ? `\nSkipped: ${q.skipped.join("; ")}` : "") : "") +
+      (q ? `Quality overall: ${q.overall}/100 (worst first)` +
+        rows.map(([k, r]) => `\n  ${k}: ${r.score}/100` +
+          (r.issues && r.issues.length ? ` — ${r.issues[0]}` : "")).join("") +
+        `\nSkipped: ${(q.skipped && q.skipped.length ? q.skipped.join("; ") : "none")}` : "") +
       (state.modelWarning ? `\n\nNote: ${state.modelWarning}` : "") +
       (state.offline ? "\n[offline-extractive model: add MODEL_API_KEY for live Muse vision]" : "");
   } catch (err) { box.textContent = `Study pack failed: ${honestMsg(err)}`; }
@@ -645,7 +650,7 @@ function tourGo(n) {
   } catch (_) { /* smooth scroll is a nicety, never a failure */ }
   $("viewport").classList.add("touring");
   tourCaption(e, tour.i, stops.length);
-  $("tour-status").textContent = `Tour: stop ${tour.i + 1}/${stops.length} — ${e.name}`;
+  $("tour-status").textContent = `Tour (offline replay): stop ${tour.i + 1}/${stops.length} — ${e.name}`;
   if ($("narrate-toggle").checked) speak(`${e.name}. ${(e.description || "").slice(0, 260)}`);
 }
 function tourStop() {
@@ -722,8 +727,8 @@ try {
   if (window.speechSynthesis) window.speechSynthesis.onvoiceschanged = refreshVoices;
 } catch (_) {}
 
-// AI-vision reveal: staged offline scan — sweep line, then entities pop in
-// one-by-one with confidence, as if the model is seeing the figure live.
+// AI-vision reveal (offline replay): sweep line, then the LOADED model pops in
+// one-by-one with confidence — a replay of the stored analysis, not live vision.
 let revealTimers = [];
 $("btn-reveal").onclick = () => {
   const stops = tourStops();
@@ -736,8 +741,8 @@ $("btn-reveal").onclick = () => {
   scan.hidden = false;
   svg.innerHTML = "";
   $("tour-caption").hidden = false;
-  $("tour-caption").textContent = "AI vision: scanning figure…";
-  $("tour-status").textContent = `Reveal: scanning, then ${stops.length} structures resolve.`;
+  $("tour-caption").textContent = "AI-vision replay: scanning loaded model…";
+  $("tour-status").textContent = `Reveal (offline replay): scanning, then ${stops.length} structures replay.`;
   const ordered = [...stops].sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
   ordered.forEach((e, k) => {
     revealTimers.push(setTimeout(() => {
@@ -762,7 +767,7 @@ $("btn-reveal").onclick = () => {
           scan.hidden = true;
           select(e.id);
           $("tour-caption").hidden = true;
-          $("tour-status").textContent = `Reveal: complete — ${ordered.length} structures resolved from the local model.`;
+          $("tour-status").textContent = `Reveal: complete — ${ordered.length} structures replayed from the loaded model (offline replay, not live vision).`;
         }, 900));
       }
     }, 500 + k * 450));
