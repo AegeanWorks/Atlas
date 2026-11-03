@@ -223,7 +223,7 @@ def video_quality_mp4(path: str) -> dict:
 
 
 def _luminance(path: str):
-    with Image.open(path) as img:
+    with Image.open(path) as img:  # hygiene: allow binary image open needs no text encoding
         return img.convert("L").resize((64, 64))
 
 
@@ -244,7 +244,7 @@ def _hamming(a: int, b: int) -> int:
 
 def frame_sharpness(path: str) -> float:
     """Laplacian variance: motion blur and flat cards score near zero."""
-    with Image.open(path) as img:
+    with Image.open(path) as img:  # hygiene: allow binary image open needs no text encoding
         gray = img.convert("L").resize((320, 320))
         edges = gray.filter(ImageFilter.Kernel(
             (3, 3), (-1, -1, -1, -1, 8, -1, -1, -1, -1), scale=1))

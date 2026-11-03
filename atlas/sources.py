@@ -214,14 +214,14 @@ def render_pdf_page(path: str, page: int, outdir: str, dpi: int = 150) -> str:
     figure selection and visual analysis. Page numbers are 1-based for people.
     """
     try:
-        import fitz  # type: ignore  # optional: rasterizes without system tools
+        import fitz  # type: ignore[import-not-found]  # optional: rasterizes without system tools
     except ImportError as exc:
         raise ImportError("PDF page rendering needs PyMuPDF (pip install PyMuPDF); "
                           "the PDF text path works without it.") from exc
     if not os.path.isfile(path):
         raise FileNotFoundError(path)
     os.makedirs(outdir, exist_ok=True)
-    with fitz.open(path) as doc:
+    with fitz.open(path) as doc:  # hygiene: allow binary PDF open needs no text encoding
         if not 1 <= page <= doc.page_count:
             raise ValueError(f"page {page} out of range (1..{doc.page_count})")
         pix = doc[page - 1].get_pixmap(dpi=dpi)

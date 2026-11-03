@@ -32,7 +32,7 @@ def _atomic_write_json(path: str, obj) -> None:
         if os.path.exists(tmp):
             try:
                 os.remove(tmp)
-            except OSError:
+            except OSError:  # hygiene: allow best-effort temp cleanup after atomic replace
                 pass
 
 

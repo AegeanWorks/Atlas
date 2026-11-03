@@ -3,14 +3,16 @@
 [![AIKit Integrated](https://img.shields.io/badge/AIKit-integrated-6f42c1)](https://github.com/AegeanWorks/AIKit)
 
 <!-- aegean:media:start -->
-<p align="center"><img src="assets/social-preview.png" alt="Atlas — turn scientific figures into explorable visual knowledge" width="720"></p>
+<p align="center"><img src="assets/social-preview.png" alt="Atlas — turn any learning material into explorable visual knowledge" width="720"></p>
 <!-- aegean:media:end -->
 
-**An interactive visual knowledge platform for scientific figures.**
+**An interactive visual knowledge platform for learning material — easy drag-and-drop.**
 
-Upload a scientific figure. Let multimodal AI understand it. Select an individual
-structure. Explore its relationships directly on the original image. Learn by
-interacting with the actual scientific material.
+Drop any learning material — PDF, video, image, book (EPUB), text, or link.
+Let multimodal AI understand it. Select an individual structure. Explore its
+relationships directly on the original material. Learn by interacting with the
+actual material. Figures are one format among many; everything provided becomes
+learning material.
 
 Atlas is fully standalone — no other project required. Visual AI: Meta Muse
 Spark / Wonder + SAM 3.1 via Meta Model API.
@@ -48,9 +50,26 @@ labelled `offline: true`) that drives graph, flashcards, study pack, and quality
 Live Muse/SAM calls refuse without a key instead of faking results.
 
 ```bash
-python -m pytest tests -q
+python -m pytest tests -q -p no:cacheprovider
 python demo/basal_ganglia_demo.py --fixture-only
 ```
+
+## ⚡ 30-Second Cold-Start Quick Reference
+
+- **Runtime Prerequisites**: Python 3.10+, `pip install -r requirements.txt`; optional system `ffmpeg` for video, `pip install PyMuPDF` for PDF rendering
+- **Canonical Regression Shield Gate**:
+  ```bash
+  python -m pytest tests -q -p no:cacheprovider
+  ```
+
+### AIKit Commands (run from the AIKit workspace root)
+
+| Role | Command |
+|---|---|
+| Status, task and gates | `python aikit.py status Atlas` |
+| Delivery check (clean tree + map) | `python aikit.py check Atlas --strict` |
+| Repair memory and map, then check | `python aikit.py fix Atlas` |
+| Resume an interrupted task | `python aikit.py resume Atlas` |
 
 ## Upload → Select → Analyze → Explore → Learn
 
@@ -87,16 +106,31 @@ appear in logs — `AtlasConfig.redacted()` proves it.
 Only the selected figure crop (+ optional caption note) is sent to Meta; never
 the full document. See `docs/PRIVACY.md`.
 
-## Layout
+## 📦 What's Inside
 
-```
+```text
 Atlas/
-├── atlas/          config, schema, text backend, ingestion, providers, store, learning, app
-├── static/         workspace UI (canvas + graph + learning)
-├── tests/          offline-safe suite (mocked transports)
-├── demo/           basal-ganglia fixture + honest fixture/live demo runner
-├── docs/           ARCHITECTURE, PRIVACY, META_VERIFICATION, DEMO_SCRIPT
-├── README.md / CHANGELOG.md
+├── README.md
+├── CHANGELOG.md
+├── LICENSE
+├── REUSE.toml
+├── requirements.txt
+├── pytest.ini
+├── config.example.json
+├── .gitignore
+├── install.ps1
+├── install.sh
+├── install.bat
+├── start.ps1
+├── start.sh
+├── start.bat
+├── atlas/
+├── static/
+├── tests/
+├── demo/
+├── docs/
+├── scripts/
+└── assets/
 ```
 
 ## License

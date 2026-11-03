@@ -76,8 +76,8 @@ def main() -> str:
     d.line([(78, 270), (690, 270)], fill=(125, 211, 252), width=3)
     d.text((78, 292), "AEGEANWORKS  ·  KNOWLEDGE PLATFORM", font=f_kick, fill=(125, 211, 252))
     d.text((80, 352), "An interactive visual knowledge platform for", font=f_tag, fill=(248, 250, 252, 189))
-    d.text((80, 392), "scientific figures.", font=f_tag, fill=(248, 250, 252, 189))
-    for i, label in enumerate(["figures", "entities", "pathways"]):
+    d.text((80, 392), "learning material.", font=f_tag, fill=(248, 250, 252, 189))
+    for i, label in enumerate(["learning", "entities", "pathways"]):
         x0 = 80 + i * 170
         d.rounded_rectangle([x0, 500, x0 + 150, 538], radius=19, fill=(11, 18, 32, 140),
                             outline=(148, 163, 184, 90), width=1)

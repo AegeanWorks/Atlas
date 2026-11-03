@@ -106,7 +106,9 @@ def test_video_frames_roundtrip_with_bundled_ffmpeg(tmp_path):
                    check=True, timeout=120)  # noqa: S603
     frames = src.video_frames(clip, str(tmp_path / "frames"), max_frames=3)
     assert len(frames) == 3  # fps=1 filter yields t=0,1,2 from a 3s clip
-    assert all(Image.open(f).size == (640, 480) for f in frames)  # normalized width
+    for f in frames:
+        with Image.open(f) as im:  # hygiene: allow binary image open needs no text encoding
+            assert im.size == (640, 480)  # normalized width
 
 
 def test_trim_text_marks_truncation():
@@ -223,7 +225,8 @@ def test_pdf_render_needs_fitz_or_renders(tmp_path, monkeypatch):
     pdf.write_bytes(b"%PDF-1.4 fake")
     out = src.render_pdf_page(str(pdf), 2, str(tmp_path / "figs"))
     assert out.endswith("page_002_150dpi.png")
-    assert Image.open(out).size == (60, 80)
+    with Image.open(out) as rendered:  # hygiene: allow binary image open needs no text encoding
+        assert rendered.size == (60, 80)
     with pytest.raises(ValueError, match="out of range"):
         src.render_pdf_page(str(pdf), 9, str(tmp_path / "figs"))
 

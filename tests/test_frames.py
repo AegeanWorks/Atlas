@@ -62,7 +62,7 @@ def test_sharpness_orders_detail(tmp_path):
 
 def test_real_mp4_frames_analyzed():
     mp4s = sorted(__import__("glob").glob(
-        "C:/Users/Yunus-Emre/Desktop/Materials/*.mp4"))
+        "C:/Users/Yunus-Emre/Desktop/Materials/*.mp4"))  # hygiene: allow opt-in local videos, skips when absent
     pytest.importorskip("imageio_ffmpeg")
     if not mp4s:
         pytest.skip("no real videos present")

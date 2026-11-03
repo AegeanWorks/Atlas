@@ -409,7 +409,8 @@ class Handler(BaseHTTPRequestHandler):
         return cls.store
 
     def log_message(self, fmt, *args):  # quieter; no secrets ever logged
-        pass
+        _ = (fmt, args)
+        return None
 
     # -- GET ------------------------------------------------------------
     def do_GET(self):
@@ -893,7 +894,7 @@ def main(argv=None) -> int:
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        pass
+        return 0
     return 0
 
 

@@ -37,7 +37,7 @@ def _extract_text_from_pdf_reader(reader, log_callback=None) -> str:
     if reader.is_encrypted:
         try:
             reader.decrypt("")
-        except Exception:
+        except Exception:  # hygiene: allow empty-password probe may fail on real passwords
             pass
     if not reader.pages:
         raise Exception("PDF appears to be empty or corrupted (0 pages found).")

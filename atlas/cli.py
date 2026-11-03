@@ -220,7 +220,7 @@ def cmd_quality(args) -> int:
     try:
         artifacts["obj"] = m3d.export_obj(data)
     except ValueError:
-        pass
+        artifacts.pop("obj", None)  # OBJ is optional: skip it when geometry is degenerate
     if args.video:
         vdir = tempfile.mkdtemp(prefix="atlas-vid-")
         artifacts["video_mp4"] = mat.video_slideshow(data, vdir)["mp4"]

@@ -94,7 +94,7 @@ def test_brand_assets_name_the_right_project():
     assert "Atlas" in social
     png = assets / "social-preview.png"  # GitHub can't display SVG cards
     assert png.is_file()
-    with Image.open(png) as im:
+    with Image.open(png) as im:  # hygiene: allow binary image open needs no text encoding
         assert im.size == (1280, 640)
 
 
@@ -108,9 +108,10 @@ def test_video_frames_carry_scene_counter_and_progress():
     info = mat.video_slideshow(a, tempfile.mkdtemp(), fps=2, seconds_per_scene=0.5)
     assert info["scenes"] == len(a["entities"]) + 2
     last = sorted(__import__("glob").glob(info["mp4"].replace("study.mp4", "f_*.png")))[-1]
-    strip = Image.open(last).convert("RGB").crop((70, mat.H - 26, mat.W - 70, mat.H - 20))
-    teal = sum(1 for px in strip.getdata() if px[0] < 80 and px[1] > 150 and px[2] > 150)
-    assert teal > strip.width * 0.5  # final scene: progress bar (nearly) full
+    with Image.open(last) as frame:  # hygiene: allow binary image open needs no text encoding
+        strip = frame.convert("RGB").crop((70, mat.H - 26, mat.W - 70, mat.H - 20))
+        teal = sum(1 for px in strip.getdata() if px[0] < 80 and px[1] > 150 and px[2] > 150)
+        assert teal > strip.width * 0.5  # final scene: progress bar (nearly) full
 
 
 def test_podcast_segments_carry_monotonic_timestamps():
@@ -128,8 +129,8 @@ def test_podcast_segments_carry_monotonic_timestamps():
 def test_diagram_png_opens():
     from PIL import Image
     import io
-    img = Image.open(io.BytesIO(mat.diagram_png(_analysis())))
-    assert img.size == (960, 640) and img.mode == "RGB"
+    with Image.open(io.BytesIO(mat.diagram_png(_analysis()))) as img:  # hygiene: allow binary image open needs no text encoding
+        assert img.size == (960, 640) and img.mode == "RGB"
 
 
 def test_tour_orders_layers():

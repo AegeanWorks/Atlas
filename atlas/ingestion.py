@@ -101,7 +101,7 @@ def select_figure(image_path: str, crop_rel: tuple[float, float, float, float],
             f"figure selection needs a rendered image, got {image_path!r}. "
             "For PDFs: render the page first (POST /api/pdf/render), then select.")
     crop = _validate_crop(crop_rel)
-    with Image.open(image_path) as im:
+    with Image.open(image_path) as im:  # hygiene: allow binary image open needs no text encoding
         im = im.convert("RGB")
         w, h = im.size
         px = (int(crop[0] * w), int(crop[1] * h), int(crop[2] * w), int(crop[3] * h))
@@ -118,4 +118,5 @@ def select_figure(image_path: str, crop_rel: tuple[float, float, float, float],
 
 def detect_figures(_image_path: str) -> list[dict]:
     """P1 hook: automatic figure detection. MVP raises explicitly instead of guessing."""
+    _ = _image_path  # explicitly unused: manual select_figure() is the MVP path
     raise NotImplementedError("automatic figure detection is P1; use select_figure()")

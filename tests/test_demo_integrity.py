@@ -35,7 +35,8 @@ def test_all_committed_analyses_validate():
 
 def test_tsvs_are_anki_shaped():
     for path in sorted(glob.glob(os.path.join(DEMO, "*.tsv"))):
-        rows = open(path, encoding="utf-8").read().strip().split("\n")
+        with open(path, encoding="utf-8") as fh:
+            rows = fh.read().strip().split("\n")
         assert rows, path
         assert all(r.count("\t") == 1 for r in rows), path
 
@@ -44,7 +45,8 @@ def test_svgs_parse_and_objs_hold_cuboid_invariant():
     for path in sorted(glob.glob(os.path.join(DEMO, "*.svg"))):
         ET.parse(path)
     for path in sorted(glob.glob(os.path.join(DEMO, "*.obj"))):
-        lines = open(path, encoding="utf-8").read().splitlines()
+        with open(path, encoding="utf-8") as fh:
+            lines = fh.read().splitlines()
         v = sum(1 for l in lines if l.startswith("v "))
         f = sum(1 for l in lines if l.startswith("f "))
         g = sum(1 for l in lines if l.startswith("g "))
@@ -52,7 +54,8 @@ def test_svgs_parse_and_objs_hold_cuboid_invariant():
 
 
 def test_report_covers_every_committed_analysis():
-    report = open(os.path.join(DEMO, "REPORT.md"), encoding="utf-8").read()
+    with open(os.path.join(DEMO, "REPORT.md"), encoding="utf-8") as fh:
+        report = fh.read()
     for name in ["mito-frame-manual", "methionine-cycle-manual",
                  "petechial-rash-manual", "richest-babylon-book"]:
         assert name in report, name

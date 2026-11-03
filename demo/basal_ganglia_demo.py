@@ -38,7 +38,7 @@ def run_fixture(data_dir: str) -> dict:
             payload["_demo_image"] = "/static/basal_ganglia_demo.svg"
             with open(static_json, "w", encoding="utf-8") as fh:
                 json.dump(payload, fh, indent=2)
-    except OSError:
+    except OSError:  # hygiene: allow demo refresh is best-effort when static dir is read-only
         pass
     challenge = learn.spatial_recall_challenge(analysis.to_dict(), seed=7)
     assert challenge["target_id"] in {e.id for e in analysis.entities}
