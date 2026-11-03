@@ -756,7 +756,7 @@ class Handler(BaseHTTPRequestHandler):
                 return _json(self, {"corrections": items})
             if route == "/api/learn":
                 mode = body.get("mode", "spatial-recall")
-                analysis = body["analysis"]
+                analysis = VisualAnalysis.from_dict(body["analysis"]).to_dict()
                 seed = int(body.get("seed", 0))
                 fn = {"spatial-recall": learn.spatial_recall_challenge,
                       "pathway-tracing": learn.pathway_tracing_challenge,
@@ -767,7 +767,8 @@ class Handler(BaseHTTPRequestHandler):
                 return _json(self, learn.grade(body["challenge"], body["answer"]))
             if route == "/api/flashcards":
                 from . import flashcards as fc
-                return _json(self, fc.build_deck(body["analysis"]))
+                data = VisualAnalysis.from_dict(body["analysis"]).to_dict()
+                return _json(self, fc.build_deck(data))
             if route == "/api/tour":
                 from . import materials as _mat
                 if body.get("analysis"):
@@ -891,7 +892,7 @@ class Handler(BaseHTTPRequestHandler):
                 saved = store.load_analysis(body.get("figure_id", ""))
                 if saved is None and not body.get("analysis"):
                     raise ValueError("summary needs figure_id or inline analysis")
-                data = body.get("analysis") or saved
+                data = VisualAnalysis.from_dict(body["analysis"]).to_dict() if body.get("analysis") else saved
                 brief = sm.extractive_summary(data)
                 polished = None
                 if self.config.has_api_key:

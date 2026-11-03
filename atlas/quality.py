@@ -456,12 +456,46 @@ def learn_quality(analysis: dict) -> dict:
         except Exception as exc:
             checks.append(_check(f"learn-{mode}", False, f"{type(exc).__name__}: {exc}"))
             issues.append(f"{mode} cannot build: {exc}")
+    # Degeneracy guards: a self-grading tautology must still ask a real question.
+    try:
+        ents = list(analysis.get("entities", []))
+        rels = list(analysis.get("relationships", []))
+        spatial = builders["spatial-recall"](analysis, seed=0)
+        opts = spatial.get("options", [])
+        opt_ids = [o.get("id") for o in opts]
+        diverse = len(opt_ids) == len(set(opt_ids)) and len(opt_ids) >= min(4, len(ents)) and len(opt_ids) > 1
+        checks.append(_check("learn-spatial-options-diverse", diverse,
+                             f"{len(opt_ids)} distinct options" if diverse else "spatial options degenerate"))
+        if not diverse:
+            issues.append("spatial-recall offers fewer than 2 distinct options")
+        if len(rels) >= 2:
+            chain = builders["pathway-tracing"](analysis, seed=0).get("chain", [])
+            nontrivial = len(chain) >= 2
+            checks.append(_check("learn-pathway-nontrivial", nontrivial,
+                                 f"chain length {len(chain)}" if nontrivial else "pathway chain trivial"))
+            if not nontrivial:
+                issues.append("pathway-tracing chain trivial despite 2+ relationships")
+        visual = builders["visual-identification"](analysis, seed=0)
+        vopts = visual.get("options", [])
+        vdiverse = len({o.get("id") for o in vopts}) > 1
+        checks.append(_check("learn-visual-options-diverse", vdiverse,
+                             "visual options distinct" if vdiverse else "visual options degenerate"))
+        if not vdiverse:
+            issues.append("visual-identification offers no distinct choice")
+    except Exception as exc:
+        checks.append(_check("learn-degeneracy-probe", False, f"{type(exc).__name__}: {exc}"))
+        issues.append(f"degeneracy probe cannot build: {exc}")
     score = 100 - 25 * sum(1 for c in checks if not c["ok"])
     return _result(max(0, score), checks, issues)
 
 
 def quality_report(analysis: dict, artifacts: dict) -> dict:
-    """Score the requested artifacts; overall = mean of what was assessed."""
+    """Score the requested artifacts; overall = mean of what was assessed.
+
+    Also reports weakest (lowest-scoring artifact) and floor (False when any
+    assessed artifact scores below 50). The pack still builds — the floor is
+    a red badge, not a block — so headless flows never stall on a weak model.
+    """
     from . import flashcards as fc
     from . import materials as mat
     report: dict[str, dict] = {}
@@ -479,7 +513,28 @@ def quality_report(analysis: dict, artifacts: dict) -> dict:
     if "obj" in artifacts:
         report["model3d"] = model3d_quality(artifacts["obj"], analysis)
     if "video_mp4" in artifacts:
-        report["video"] = video_quality_mp4(artifacts["video_mp4"])
+        vrep = video_quality_mp4(artifacts["video_mp4"])
+        if artifacts.get("video_frames"):
+            try:
+                frep = frames_quality(list(artifacts["video_frames"]))
+                # Fold frame diversity into the video verdict: blank/duplicate
+                # slideshows cannot score 100 on container math alone.
+                vrep["checks"].append(_check(
+                    "frames-analyzable", bool(frep.get("kept")),
+                    f"{len(frep.get('kept', []))}/{len(frep.get('frames', []))} frames kept"))
+                vrep["checks"].append(_check(
+                    "frame-diversity", frep["score"] >= 50,
+                    f"frames {frep['score']}/100"))
+                for issue in frep.get("issues", []):
+                    vrep["issues"].append(f"frames: {issue}")
+                if frep["score"] < 50:
+                    vrep["score"] = min(vrep["score"], 50)
+                vrep["score"] = max(0, min(100, vrep["score"]))
+            except Exception as exc:
+                vrep["checks"].append(_check("frames-analyzable", False, f"{type(exc).__name__}"))
+                vrep["issues"].append(f"frames probe failed: {exc}")
+                vrep["score"] = min(vrep["score"], 75)
+        report["video"] = vrep
     if "tour" in artifacts:
         report["tour"] = tour_quality(artifacts["tour"], analysis)
     if "questions" in artifacts:
@@ -488,6 +543,14 @@ def quality_report(analysis: dict, artifacts: dict) -> dict:
         report["summary"] = summary_quality(artifacts["summary"], analysis)
     if artifacts.get("include_learn"):
         report["learn"] = learn_quality(analysis)
-    scores = [r["score"] for r in report.values()]
+    scored = {k: v for k, v in report.items() if isinstance(v, dict) and "score" in v}
+    scores = [r["score"] for r in scored.values()]
     report["overall"] = round(sum(scores) / len(scores), 1) if scores else 0.0
+    if scored:
+        weakest = min(scored.items(), key=lambda kv: kv[1]["score"])
+        report["weakest"] = weakest[0]
+        report["floor"] = all(r["score"] >= 50 for r in scored.values())
+    else:
+        report["weakest"] = ""
+        report["floor"] = True
     return report

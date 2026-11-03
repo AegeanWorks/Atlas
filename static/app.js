@@ -112,10 +112,13 @@ $("btn-quality").onclick = () => withBusy($("btn-quality"), "Scoring…", async 
     // Inline analysis: scores the model on screen even when it only lives in
     // the browser (demo fixture), not just server-saved figure_ids.
     const q = await api("/api/quality", { analysis: state.analysis });
-    const rows = Object.entries(q).filter(([k]) => k !== "overall" && k !== "skipped");
-    box.textContent = `Overall quality: ${q.overall}/100\n\n` + rows.map(([k, r]) =>
-      `${k}: ${r.score}/100` + (r.issues.length ? `\n  ! ${r.issues.join("\n  ! ")}` : "\n  all checks pass")
-    ).join("\n\n") + (q.skipped ? `\n\nSkipped: ${q.skipped.join("; ")}` : "");
+    const rows = Object.entries(q).filter(([k]) => k !== "overall" && k !== "weakest" && k !== "floor" && k !== "skipped");
+    rows.sort((a, b) => a[1].score - b[1].score); // worst-first: weak artifacts surface
+    const weak = q.weakest ? ` · weakest: ${q.weakest}` : "";
+    const floor = q.floor === false ? " · FLOOR FAIL (<50)" : "";
+    box.textContent = `Overall quality: ${q.overall}/100${weak}${floor}\n\n` + rows.map(([k, r]) =>
+      `${k}: ${r.score}/100` + (r.issues.length ? `\n  ! ${r.issues[0]}` : "\n  all checks pass")
+    ).join("\n\n") + (q.skipped && q.skipped.length ? `\n\nSkipped: ${q.skipped.join("; ")}` : "\n\nSkipped: none");
   } catch (err) { box.textContent = `Quality check failed: ${honestMsg(err)}`; }
 });
 
@@ -188,7 +191,7 @@ function renderOverlay() {
       g.appendChild(r);
     }
     if (showLabels) {
-      const t = svgEl("text", { x: p.x, y: Math.max(2, p.y - 0.8), "font-size": 2.3, fill: "#dbe7ff" });
+      const t = svgEl("text", { x: p.x, y: Math.max(2, p.y - 0.8), "font-size": 2.6, fill: "#eaf2ff" });
       t.textContent = e.name;
       t.addEventListener("click", () => select(e.id));
       g.appendChild(t);
@@ -226,8 +229,13 @@ $("toggle-3d").onclick = async () => {
   $("toggle-3d").textContent = state.iso ? "2D" : "3D";
   $("layer-wrap").style.display = state.iso ? "inline" : "none";
   if (state.iso && state.analysis && !state.isoData) {
-    const fid = state.figureId || "workspace-figure";
-    try { state.isoData = await api(`/api/model3d?figure_id=${encodeURIComponent(fid)}`); }
+    try {
+      // Single-source: POST inline analysis so the browser-only demo fixture
+      // never 404s (tour/download parity). GET fallback only when no model.
+      state.isoData = state.analysis
+        ? await api("/api/model3d", { analysis: state.analysis })
+        : await api(`/api/model3d?figure_id=${encodeURIComponent(state.figureId || "workspace-figure")}`);
+    }
     catch (e) { state.isoData = null; state.iso = false; $("toggle-3d").textContent = "3D"; }
   }
   renderAll();
@@ -355,6 +363,7 @@ $("btn-segment").onclick = () => withBusy($("btn-segment"), "Segmenting…", asy
     const attached = await api("/api/analysis/attach-mask", { figure_id: state.figureId || "workspace-figure",
       entity_id: e.id, kind: seg.kind, mask_ref: seg.mask_ref || "", bbox: seg.bbox || undefined });
     state.analysis = attached.analysis;
+    state.isoData = null; // 3D polygons must rebuild from the new analysis
     box.textContent = seg.kind === "mask"
       ? `Mask attached to "${e.name}".`
       : `SAM returned no decodable mask — honest bbox fallback kept for "${e.name}".`;
@@ -601,7 +610,7 @@ $("btn-study-all").onclick = () => withBusy($("btn-study-all"), "Building…", a
     box.textContent = "Building study pack: quality (4/4)…";
     const q = await api("/api/quality", { analysis: state.analysis }).catch(() => null);
     const ex = s.extractive;
-    const rows = q ? Object.entries(q).filter(([k]) => !["overall", "skipped"].includes(k))
+    const rows = q ? Object.entries(q).filter(([k]) => !["overall", "weakest", "floor", "skipped"].includes(k))
       .sort((a, b) => a[1].score - b[1].score) : [];
     box.textContent =
       ex.title + "\n" + ex.overview + "\n\n" +
