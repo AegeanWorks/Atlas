@@ -169,8 +169,10 @@ footer { padding:12px 20px 18px; color:var(--muted); font-size:12px; text-align:
 @keyframes rise { from { transform:translateY(8px); opacity:0; } to { transform:none; opacity:1; } }
 #quiz-box button.opt { transition:background .12s, transform .08s; }
 #quiz-box button.opt:hover { transform:translateX(2px); }
-#quiz-box .mono.good, #challenge .mono.good { color:#6ee7b7; font-weight:700; }
-#quiz-box .mono.bad, #challenge .mono.bad { color:#fda4af; }
+#challenge .mono.good, #quiz-box .mono.good { color:#6ee7b7; font-weight:700; }
+#challenge .mono.bad, #quiz-box .mono.bad { color:#fda4af; }
+#challenge ol.pathway-stops { margin:8px 0 4px 20px; padding:0; font-size:14px; line-height:1.7; color:#c9d6f2; }
+#challenge ol.pathway-stops li::marker { color:var(--accent); font-weight:700; }
 #challenge .challenge-q { font-size:15px; font-weight:600; line-height:1.5; margin-bottom:2px; }
 #deck-score { display:inline-block; margin-top:8px; padding:2px 12px; font-size:12.5px;
   background:rgba(20,38,74,.7); border:1px solid var(--line-soft); border-radius:999px; }

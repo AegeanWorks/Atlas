@@ -772,6 +772,16 @@ $("btn-learn").onclick = async () => {
     const d = document.createElement("div"); d.className = "mono " + (g.correct ? "good" : "bad");
     d.textContent = g.correct ? "correct ✓" : `not quite — expected ${JSON.stringify(g.expected)}`;
     box.appendChild(d);
+    if (c.chain_names && c.chain_names.length) {
+      const ol = document.createElement("ol");
+      ol.className = "pack-list pathway-stops";
+      for (const nm of c.chain_names) {
+        const li = document.createElement("li");
+        li.textContent = nm;
+        ol.appendChild(li);
+      }
+      box.appendChild(ol);
+    }
   };
   if (c.options) {
     for (const o of c.options) {
