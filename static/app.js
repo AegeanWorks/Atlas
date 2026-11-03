@@ -202,7 +202,24 @@ function renderOverlay() {
 
 function renderIso(svg) {
   // 2.5D stacked view: layer order = category depth, top faces face the reader.
-  svg.setAttribute("viewBox", "-1 -1.1 2 2.3");
+  // Auto-fit: static frames clip dense stacks (Thalamus-only shot), so fit the
+  // data bounding box with padding instead of a fixed frame.
+  let vb = "-1 -1.1 2 2.3";
+  try {
+    const pts = [];
+    for (const p of (state.isoData.polygons || [])) {
+      if (state.category && p.category !== state.category) continue;
+      if (p.layer > Number($("layer").value)) continue;
+      for (const q of (p.top || []).concat(p.base || [])) pts.push(q);
+    }
+    if (pts.length) {
+      const xs = pts.map((q) => q[0]), ys = pts.map((q) => q[1]);
+      const x0 = Math.min(...xs) - .12, x1 = Math.max(...xs) + .12;
+      const y0 = Math.min(...ys) - .14, y1 = Math.max(...ys) + .14;
+      vb = `${x0} ${y0} ${Math.max(x1 - x0, .2)} ${Math.max(y1 - y0, .2)}`;
+    }
+  } catch (e) { /* keep static frame */ }
+  svg.setAttribute("viewBox", vb);
   alignOverlay(svg, $("figure"));
   $("layer-wrap").style.display = "inline";
   const maxLayer = Number($("layer").value);

@@ -68,7 +68,11 @@ def cmd_learn(args) -> int:
           "pathway-tracing": learn.pathway_tracing_challenge,
           "visual-identification": learn.visual_identification_challenge,
           "relationship-recall": learn.relationship_recall_challenge}[args.mode]
-    challenge = fn(data, args.seed)
+    try:
+        challenge = fn(data, args.seed)
+    except ValueError as exc:
+        print(json.dumps({"ok": False, "error": str(exc)}))
+        return 1
     if args.answer is None:
         print(json.dumps(challenge, indent=2))
         return 0
