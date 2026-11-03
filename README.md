@@ -2,7 +2,9 @@
 
 [![AIKit Integrated](https://img.shields.io/badge/AIKit-integrated-6f42c1)](https://github.com/AegeanWorks/AIKit)
 
+<!-- aegean:media:start -->
 <p align="center"><img src="assets/social-preview.png" alt="Atlas — turn scientific figures into explorable visual knowledge" width="720"></p>
+<!-- aegean:media:end -->
 
 **An interactive visual knowledge platform for scientific figures.**
 
@@ -101,3 +103,13 @@ Atlas/
 
 Free for personal use under the Aegean License 1.1 (AL-1.1); commercial use
 requires the Aegean Commercial License (ACL-1.0). See LICENSE.
+
+<!-- aegean:screenshots:start -->
+## Screenshots
+
+<a href="https://github.com/AegeanWorks/Atlas/commit/548eedc"><img src="assets/screenshots/2026-11-03-workspace.png" alt="Atlas workspace at 2026-11-03"></a>
+
+<a href="https://github.com/AegeanWorks/Atlas/commit/548eedc"><img src="assets/screenshots/2026-11-03-figure.png" alt="Atlas basal-ganglia figure at 2026-11-03"></a>
+
+*commit `548eedc` · 2026-11-03 · viewport 1440x900 · empty workspace plus fixture figure (ADR-004)*
+<!-- aegean:screenshots:end -->
