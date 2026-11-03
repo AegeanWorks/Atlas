@@ -1,5 +1,33 @@
 # Changelog
 
+## Unreleased — Interface polish + honest quality gates
+
+- 3D view now works on the browser-only demo fixture (posts the loaded
+  model instead of 404ing and silently reverting); iso labels rescaled
+  for the small frame, lifted above their cuboids, and the view auto-fits
+  dense stacks instead of clipping to one structure.
+- Knowledge-graph labels ride radially outward from the ring (no more
+  center pile-up or clipped edge names); fixed a CSS-vs-SVG unit mismatch
+  that rendered every label ~3x too wide.
+- Study pack, tour, quality, entity detail, flashcards, challenge,
+  pathway reveal, provenance, segment/tour status, video result, and the
+  learn fallback all moved from mono text walls to structured sections
+  (stat chips, worst-first quality rows with score bars, ordered stops).
+  One shared renderer serves the tour and quality views everywhere.
+- Quality now flags what it used to rubber-stamp: overlong auto-play
+  tours, unreviewably large flashcard decks, and frame-diversity in
+  videos all fold into scores with named issues. Spatial recall honestly
+  refuses boxless models (the UI routes those to a text quiz); learn
+  self-grading guards against degenerate option pools and trivial chains.
+- Mobile: the canvas toolbar is one swipeable row instead of a 200px
+  stack; the structured views were re-verified at 390px with no overflow.
+- Study materials: the poster centers content vertically, the PNG gained
+  the SVG's relationship labels plus a truly centered title; storyboard
+  frames word-wrap (including unbreakable tokens); the question worksheet
+  groups by kind; Anki fronts name their figure.
+- Cold judge loop (no key): drop → quiz → study pack in seconds,
+  offline; tour auto-play verified end to end through the finale.
+
 ## 0.30.4 — Dead alias removal (2026-11-01)
 
 - Removed a pointless `names_subset` alias in the study-video builder
