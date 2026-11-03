@@ -61,6 +61,14 @@ def flashcard_quality(deck: dict, analysis: dict) -> dict:
     checks.append(_check("no-duplicates", dupes == 0, "unique Q/A pairs" if not dupes else f"{dupes} duplicates"))
     if dupes:
         issues.append(f"{dupes} duplicate cards")
+    # A mega-model deck (hundreds of cards) is complete but unreviewable in
+    # one sitting — same flag-not-block philosophy as the tour duration cap.
+    bounded = len(cards) <= 300
+    checks.append(_check("deck-size-sane", bounded,
+                         f"{len(cards)} cards" if bounded
+                         else f"{len(cards)} cards exceed a single review session"))
+    if not bounded:
+        issues.append(f"deck too large to review at once: {len(cards)} cards")
     score = 100 - 25 * sum(1 for c in checks if not c["ok"])
     return _result(score, checks, issues)
 
