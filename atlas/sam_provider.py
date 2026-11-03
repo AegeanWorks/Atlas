@@ -115,6 +115,10 @@ class SamProvider:
             return Segmentation(entity_id, "mask", bbox, mask_ref, "sam-3.1 mask")
         return Segmentation(entity_id, "bbox-fallback", bbox, "", note or "bbox fallback; no mask decoded")
 
+    def disclosure(self) -> str:
+        return ("Transmits ONLY the selected figure crop + a short noun phrase to Meta "
+                f"Model API SAM 3.1 ({self.config.base_url}/responses); never the full document.")
+
 
 def _scan_box(raw: str) -> list | None:
     """Best-effort: first [x1,y1,x2,y2] int quad inside the 0..1000 grid."""
@@ -134,7 +138,3 @@ def _scan_file_id(raw: str) -> str:
         return ""
     match = re.search(r"file[-_ ]?(?:id)?['\"]?\s*[:=]\s*['\"]?([A-Za-z0-9_-]{8,})", raw)
     return match.group(1) if match else ""
-
-    def disclosure(self) -> str:
-        return ("Transmits ONLY the selected figure crop + a short noun phrase to Meta "
-                f"Model API SAM 3.1 ({self.config.base_url}/responses); never the full document.")

@@ -270,7 +270,7 @@ def chunk_text(text: str, limit: int = MAX_TEXT_CHARS) -> list[str]:
 def trim_text(text: str, limit: int = MAX_TEXT_CHARS) -> str:
     if len(text) <= limit:
         return text
-    return text[:limit] + "\n\n[truncated: first 12000 chars of the source]"
+    return text[:limit] + f"\n\n[truncated: first {limit} chars of the source]"
 
 
 def ingest_any(source: str) -> dict:

@@ -84,7 +84,8 @@ class AtlasStore:
     def cache_key(*parts: str) -> str:
         h = hashlib.sha256()
         for p in parts:
-            h.update(str(p).encode())
+            b = str(p).encode()
+            h.update(len(b).to_bytes(8, "big") + b"\0" + b)
         return h.hexdigest()[:32]
 
     def cache_get(self, key: str):

@@ -40,7 +40,7 @@ def build_deck(analysis: dict, dedupe: bool = True) -> dict:
             })
         for r in rels_by_target.get(eid, []):
             cards.append({
-                "id": f"rel-{r['source_id']}-{r['target_id']}", "entity_id": eid,
+                "id": f"rel-{r['source_id']}-{r.get('rel_type', '?')}-{r['target_id']}", "entity_id": eid,
                 "kind": "relation",
                 "front": {"text": f"{names.get(r['source_id'], '?')} → ? "
                                   f"({r.get('rel_type', '?')})",

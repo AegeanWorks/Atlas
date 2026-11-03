@@ -21,6 +21,7 @@ except ImportError:  # pragma: no cover
 SUPPORTED_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg", ".jfif", ".gif",
                             ".webp", ".bmp",
                             ".epub", ".txt", ".md",
+                            ".docx", ".pptx", ".vtt", ".srt", ".json",
                             ".mp4", ".webm", ".mov", ".mkv", ".avi", ".m4v"}
 
 

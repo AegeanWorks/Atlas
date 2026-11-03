@@ -158,8 +158,9 @@ def model3d_quality(obj_text: str, analysis: dict) -> dict:
     checks, issues = [], []
     groups = [l[2:].strip() for l in lines if l.startswith("g ")]
     located = [e["id"] for e in analysis.get("entities", []) if e.get("bbox")]
-    missing = [i for i in located
-               if not any(g == i or g.startswith(i + "_") or i.startswith(g) for g in groups)]
+    sanitized = {"".join(c if c.isalnum() or c in "-_" else "_" for c in str(i)): i
+                 for i in located}
+    missing = [sanitized[g] for g in sanitized if g not in groups]
     checks.append(_check("every-located-entity-meshed", not missing,
                          f"{len(groups)} groups" if not missing else f"missing: {missing[:3]}"))
     if missing:

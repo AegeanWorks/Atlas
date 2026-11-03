@@ -57,7 +57,7 @@ def test_sharpness_orders_detail(tmp_path):
     flat = _img(str(tmp_path / "flat.png"), (100, 100, 100))
     busy = _img(str(tmp_path / "busy.png"), (100, 100, 100), noise=True)
     assert qa.frame_sharpness(str(busy)) > qa.frame_sharpness(str(flat))
-    assert qa.ahash(str(busy)) != 0 or True  # hash validity, not value
+    assert isinstance(qa.ahash(str(busy)), int) and qa.ahash(str(busy)) != 0
 
 
 def test_real_mp4_frames_analyzed():
