@@ -583,12 +583,27 @@ def question_bank(analysis: dict) -> dict:
 
 
 def questions_markdown(bank: dict) -> str:
+    order = ["identify-description", "spatial-recall", "relationship-recall",
+             "identify-category"]
+    groups: dict[str, list] = {}
+    for q in bank["questions"]:
+        groups.setdefault(q["kind"], []).append(q)
+    kinds = [k for k in order if k in groups] + [k for k in groups if k not in order]
+    titles = {"identify-description": "Name it from the description",
+              "spatial-recall": "Point to it on the figure",
+              "relationship-recall": "How are they connected",
+              "identify-category": "What kind of structure"}
     lines = [f"# Question bank: {bank.get('figure_id', 'model')}",
              f"*{len(bank['questions'])} questions, answers at the end*", ""]
-    for i, q in enumerate(bank["questions"], 1):
-        lines.append(f"{i}. [{q['kind']}] {q['question']}")
-    lines += ["", "## Answers", ""]
-    for i, q in enumerate(bank["questions"], 1):
+    numbered = []
+    for kind in kinds:
+        lines += [f"## {titles.get(kind, kind)}", ""]
+        for q in groups[kind]:
+            numbered.append(q)
+            lines.append(f"{len(numbered)}. [{q['kind']}] {q['question']}")
+        lines.append("")
+    lines += ["## Answers", ""]
+    for i, q in enumerate(numbered, 1):
         ev = f" _(evidence: {q['evidence']})_" if q.get("evidence") else ""
         lines.append(f"{i}. {q['answer']}{ev}")
     return "\n".join(lines) + "\n"
