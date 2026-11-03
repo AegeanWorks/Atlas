@@ -335,8 +335,10 @@ function renderGraph() {
   const n = Math.max(ents.length, 1);
   const pos = {};
   ents.forEach((e, i) => {
+    // Radius 30 (was 38): labels need the outer 20 units, or edge names
+    // ("Cortex") clip and neighbours ("SNr"/"Thalamus") collide.
     const a = (2 * Math.PI * i) / n;
-    pos[e.id] = { x: 50 + 38 * Math.cos(a), y: 50 + 38 * Math.sin(a) };
+    pos[e.id] = { x: 50 + 30 * Math.cos(a), y: 50 + 30 * Math.sin(a), a };
   });
   for (const r of state.analysis.relationships) {
     if (!ids.has(r.source_id) || !ids.has(r.target_id)) continue;
@@ -344,11 +346,16 @@ function renderGraph() {
     if (!a || !b) continue; // same-model invariant: skip dangling instead of inventing
     svg.appendChild(svgEl("line", { x1: a.x, y1: a.y, x2: b.x, y2: b.y }));
   }
-  for (const e of ents) {
+  for (const [i, e] of ents.entries()) {
     const c = svgEl("circle", { cx: pos[e.id].x, cy: pos[e.id].y, r: e.id === state.selected ? 7 : 5,
       class: e.id === state.selected ? "active" : "" });
     c.addEventListener("click", () => select(e.id));
-    const t = svgEl("text", { x: pos[e.id].x, y: pos[e.id].y + 12, "font-size": 5, fill: "#dbe7ff", "text-anchor": "middle" });
+    // Labels ride radially outward from the ring (not alternating sides, which
+    // piles them in the middle): each sits past its own node, away from centre.
+    // Radius 37 keeps even the widest name inside the 0..100 frame.
+    const a = pos[e.id].a ?? 0;
+    const t = svgEl("text", { x: 50 + 37 * Math.cos(a), y: 50 + 37 * Math.sin(a),
+      "font-size": 4, fill: "#dbe7ff", "text-anchor": "middle" });
     t.textContent = e.name;
     svg.appendChild(c); svg.appendChild(t);
   }

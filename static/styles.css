@@ -94,7 +94,10 @@ details.advanced summary:hover { color:var(--accent); }
 #graph circle:hover { fill:#35509b; }
 #graph circle.active { fill:var(--accent); stroke:var(--accent); }
 #graph line { stroke:#4a6aa8; stroke-width:.8; }
-#graph text { fill:#c4d4f5; font-size:12px; }
+/* Unit warning: CSS px are user units in SVG, so this must match the
+   radial layout (labels at radius 37 in a 0..100 frame). 12px here made
+   every name ~3x too wide and clipped "Cortex" off the frame. */
+#graph text { fill:#c4d4f5; font-size:4px; }
 
 /* Quiz / challenge options */
 #challenge button.opt, #quiz-box button.opt { display:block; width:100%; margin:5px 0; background:#1b2b52; text-align:left; }
