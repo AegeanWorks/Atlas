@@ -266,9 +266,26 @@ function showCard() {
   const f = $("card-front"), b = $("card-back");
   if (!deck.cards.length) { f.textContent = "Build a deck first."; b.classList.add("hidden"); return; }
   const c = deck.cards[deck.i % deck.cards.length];
-  f.textContent = `[${c.kind}] ${c.front.text}`;
+  f.innerHTML = "";
+  const kind = document.createElement("span");
+  kind.className = "card-kind";
+  kind.textContent = c.kind;
+  f.appendChild(kind);
+  const q = document.createElement("span");
+  q.className = "card-q";
+  q.textContent = c.front.text;
+  f.appendChild(q);
   b.innerHTML = "";
-  b.textContent = c.back.text + (c.back.detail ? ` — ${c.back.detail}` : "");
+  const ans = document.createElement("span");
+  ans.className = "card-a";
+  ans.textContent = c.back.text;
+  b.appendChild(ans);
+  if (c.back.detail) {
+    const det = document.createElement("span");
+    det.className = "card-d";
+    det.textContent = ` — ${c.back.detail}`;
+    b.appendChild(det);
+  }
   b.classList.add("hidden");
   $("deck-score").textContent = `card ${deck.i % deck.cards.length + 1}/${deck.cards.length} · known ${deck.know}/${deck.seen}`;
 }
