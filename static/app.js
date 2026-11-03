@@ -809,9 +809,19 @@ $("btn-study-all").onclick = () => withBusy($("btn-study-all"), "Building…", a
 
 $("btn-learn").onclick = async () => {
   if (!state.analysis) return alert("Analyze a figure first.");
-  const c = await api("/api/learn", { analysis: state.analysis,
-    mode: $("learn-mode").value, seed: Date.now() % 100000 });
   const box = $("challenge"); box.innerHTML = "";
+  // Boxless models honestly refuse spatial recall (and friends): surface the
+  // refusal with a way forward instead of dying silently on a rejection.
+  let c;
+  try {
+    c = await api("/api/learn", { analysis: state.analysis,
+      mode: $("learn-mode").value, seed: Date.now() % 100000 });
+  } catch (err) {
+    box.appendChild(packEl("div", "challenge-q", "No challenge for this mode yet"));
+    const why = honestMsg(err).replace(/^\w*(Error|error):\s*/, "");
+    box.appendChild(packEl("div", "pack-note", `${why} — try Visual identification instead.`));
+    return;
+  }
   const p = document.createElement("div"); p.className = "challenge-q";
   const modeLabel = ($("learn-mode").selectedOptions[0] || {}).textContent || c.mode || "Challenge";
   p.textContent = `${modeLabel} — ${c.prompt}`; box.appendChild(p);
