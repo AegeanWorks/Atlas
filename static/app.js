@@ -631,16 +631,97 @@ $("btn-summary").onclick = () => withBusy($("btn-summary"), "Generating…", asy
   const box = $("summary"); box.textContent = "Generating study pack…";
   try {
     const s = await api("/api/summary", { analysis: state.analysis });
-    const ex = s.extractive;
-    box.textContent =
-      ex.title + "\n" + ex.overview + "\n\n" +
-      ex.entities.map((e) => "· " + e).join("\n") + "\n\n" +
-      (ex.pathways.length ? "Pathways:\n" + ex.pathways.map((p) => "→ " + p).join("\n") +
-        (ex.pathways_truncated ? `\n… and ${ex.pathways_total - ex.pathways.length} more distinct routes` : "") + "\n\n" : "") +
-      (s.polished ? "POLISHED SUMMARY:\n" + s.polished
-                  : "(offline extractive brief — add MODEL_API_KEY for a polished summary)");
+    renderPackSummary(box, s);
   } catch (err) { box.textContent = `Summary failed: ${honestMsg(err)}`; }
 });
+
+// Structured study-pack render (same words as the old mono wall, real hierarchy).
+function packEl(tag, cls, text) {
+  const d = document.createElement(tag);
+  if (cls) d.className = cls;
+  if (text != null) d.textContent = text;
+  return d;
+}
+function renderPackSummary(box, s, note = true) {
+  const ex = s.extractive;
+  box.innerHTML = "";
+  box.appendChild(packEl("div", "pack-title", ex.title));
+  box.appendChild(packEl("div", "pack-sub", ex.overview));
+  if (ex.entities.length) {
+    const ul = packEl("ul", "pack-list");
+    for (const e of ex.entities.slice(0, 12)) {
+      const li = document.createElement("li");
+      li.textContent = e;
+      ul.appendChild(li);
+    }
+    if (ex.entities.length > 12) {
+      const li = document.createElement("li");
+      li.textContent = `… and ${ex.entities.length - 12} more`;
+      ul.appendChild(li);
+    }
+    box.appendChild(ul);
+  }
+  if (ex.pathways.length) {
+    box.appendChild(packEl("div", "pack-h", `Pathways (${ex.pathways_total || ex.pathways.length} distinct routes)`));
+    const ul = packEl("ul", "pack-list");
+    for (const p of ex.pathways) {
+      const li = document.createElement("li");
+      li.textContent = `→ ${p}`;
+      ul.appendChild(li);
+    }
+    if (ex.pathways_truncated) {
+      const li = document.createElement("li");
+      li.textContent = `… and ${ex.pathways_total - ex.pathways.length} more distinct routes`;
+      ul.appendChild(li);
+    }
+    box.appendChild(ul);
+  }
+  if (note) box.appendChild(packEl("div", "pack-note",
+    s.polished ? `POLISHED SUMMARY: ${s.polished}`
+               : "(offline extractive brief — add MODEL_API_KEY for a polished summary)"));
+}
+function renderPackAll(box, s, t, deck, q, rows) {
+  renderPackSummary(box, s, false);
+  if (s.polished) box.appendChild(packEl("div", "pack-note", `POLISHED SUMMARY: ${s.polished}`));
+  const stats = packEl("div", "pack-stats");
+  if (t && t.stops) stats.appendChild(packEl("span", "chip", `3D tour: ${t.stops.length} stops`));
+  if (deck) stats.appendChild(packEl("span", "chip", `Flashcards: ${deck.cards.length} cards`));
+  if (q) {
+    stats.appendChild(packEl("span", "chip strong", `Quality overall: ${q.overall}/100`));
+    if (q.weakest) stats.appendChild(packEl("span", "chip weak", `weakest: ${q.weakest}`));
+    if (q.floor === false) stats.appendChild(packEl("span", "chip fail", "FLOOR FAIL (<50)"));
+  }
+  if (stats.children.length) box.appendChild(stats);
+  if (q) {
+    const ul = packEl("ul", "pack-quality");
+    for (const [k, r] of rows) {
+      const li = document.createElement("li");
+      const head = document.createElement("div");
+      head.className = "qrow";
+      const nm = document.createElement("span");
+      nm.textContent = k;
+      const sc = document.createElement("span");
+      sc.className = "qscore";
+      sc.textContent = `${r.score}/100`;
+      head.appendChild(nm); head.appendChild(sc);
+      li.appendChild(head);
+      const bar = document.createElement("div");
+      bar.className = "bar";
+      const fill = document.createElement("i");
+      fill.style.width = `${Math.max(0, Math.min(100, r.score))}%`;
+      bar.appendChild(fill);
+      li.appendChild(bar);
+      if (r.issues && r.issues.length) li.appendChild(packEl("div", "qissue", r.issues[0]));
+      ul.appendChild(li);
+    }
+    box.appendChild(ul);
+    box.appendChild(packEl("div", "pack-note",
+      `Skipped: ${(q.skipped && q.skipped.length ? q.skipped.join("; ") : "none")}`));
+  }
+  if (state.modelWarning) box.appendChild(packEl("div", "pack-note", `Note: ${state.modelWarning}`));
+  if (state.offline) box.appendChild(packEl("div", "pack-note",
+    "[offline-extractive model: add MODEL_API_KEY for live Muse vision]"));
+}
 
 $("btn-study-all").onclick = () => withBusy($("btn-study-all"), "Building…", async () => {
   if (!state.analysis) { alert("Analyze or load a model first."); return; }
@@ -656,16 +737,7 @@ $("btn-study-all").onclick = () => withBusy($("btn-study-all"), "Building…", a
     const ex = s.extractive;
     const rows = q ? Object.entries(q).filter(([k]) => !["overall", "weakest", "floor", "skipped"].includes(k))
       .sort((a, b) => a[1].score - b[1].score) : [];
-    box.textContent =
-      ex.title + "\n" + ex.overview + "\n\n" +
-      (t && t.stops ? `3D tour: ${t.stops.length} stops.\n` : "") +
-      (deck ? `Flashcards: ${deck.cards.length} cards.\n` : "") +
-      (q ? `Quality overall: ${q.overall}/100 (worst first)` +
-        rows.map(([k, r]) => `\n  ${k}: ${r.score}/100` +
-          (r.issues && r.issues.length ? ` — ${r.issues[0]}` : "")).join("") +
-        `\nSkipped: ${(q.skipped && q.skipped.length ? q.skipped.join("; ") : "none")}` : "") +
-      (state.modelWarning ? `\n\nNote: ${state.modelWarning}` : "") +
-      (state.offline ? "\n[offline-extractive model: add MODEL_API_KEY for live Muse vision]" : "");
+    renderPackAll(box, s, t, deck, q, rows);
   } catch (err) { box.textContent = `Study pack failed: ${honestMsg(err)}`; }
 });
 
