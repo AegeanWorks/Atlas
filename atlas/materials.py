@@ -83,7 +83,31 @@ def _layout(analysis: dict) -> dict:
         w = min(max((bbox["x_max"] - bbox["x_min"]) * (W - 2 * MARGIN), 90), 240)
         h = min(max((bbox["y_max"] - bbox["y_min"]) * (H - 2 * MARGIN - 60), 44), 130)
         rects[e["id"]] = (x, y, w, h)
-    return _declutter(rects)
+    placed = _declutter(rects)
+    return _fit_frame(placed)
+
+
+def _fit_frame(rects: dict) -> dict:
+    """Vertically center poster content in the usable frame.
+
+    Figure boxes map from figure space, so top-heavy models leave the
+    poster's bottom half empty. This translates (never reorders/resizes)
+    so content sits centered between the header rule and the footer line.
+    No-op on empty input; clamped so nothing leaves the frame.
+    """
+    if not rects:
+        return rects
+    top, bottom = float(_POSTER_TOP), float(H - 34)
+    min_y = min(r[1] for r in rects.values())
+    max_y = max(r[1] + r[3] for r in rects.values())
+    shift = round((top + bottom - (min_y + max_y)) / 2)
+    if not shift:
+        return rects
+    out = {}
+    for k, (x, y, w, h) in rects.items():
+        ny = min(max(y + shift, top), bottom - h)
+        out[k] = (x, ny, w, h)
+    return out
 
 
 def _overlaps(a: tuple, b: tuple) -> bool:
@@ -190,7 +214,8 @@ def diagram_svg(analysis: dict) -> str:
             f'stroke="#22d3ee" stroke-width="1.6" marker-end="url(#arr)" opacity="0.85"/>')
         parts.append(
             f'<text x="{(x1 + x2) / 2:.0f}" y="{(y1 + y2) / 2 - 6:.0f}" text-anchor="middle" '
-            f'fill="#7dd3fc" font-size="11" font-family="sans-serif">'
+            f'fill="#7dd3fc" font-size="11" font-family="sans-serif" '
+            f'stroke="#0b1530" stroke-width="3" paint-order="stroke">'
             f'{_html.escape(str(r.get("rel_type", "")))}</text>')
     for e in analysis.get("entities", []):
         r = rects.get(e["id"])
