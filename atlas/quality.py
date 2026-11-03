@@ -364,6 +364,15 @@ def tour_quality(tour: dict, analysis: dict) -> dict:
             issues.append(f"untoured located entities: {missing[:3]}")
     else:
         checks.append(_check("located-stops-covered", True, "text-only model: no located stops expected"))
+    # Auto-play runs 3.2s per stop: a mega-model tour can outgrow the same
+    # 30-minute study window the podcast honors. Flag, don't block.
+    est_min = len(stops) * 3.2 / 60
+    bounded = est_min <= 30
+    checks.append(_check("tour-duration-sane", bounded,
+                         f"~{est_min:.1f} min auto-play" if bounded
+                         else f"~{est_min:.0f} min auto-play exceeds the 30 min study window"))
+    if not bounded:
+        issues.append(f"tour too long for one sitting: {len(stops)} stops (~{est_min:.0f} min)")
     score = 100 - 25 * sum(1 for c in checks if not c["ok"])
     return _result(score, checks, issues)
 
