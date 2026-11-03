@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import html as _html
 import io
+import math
 import os
 
 from .models3d import iso_view, layer_of
@@ -63,8 +64,11 @@ def _layout(analysis: dict) -> dict:
             continue
         x = MARGIN + bbox["x_min"] * (W - 2 * MARGIN)
         y = MARGIN + bbox["y_min"] * (H - 2 * MARGIN - 60)
-        w = max((bbox["x_max"] - bbox["x_min"]) * (W - 2 * MARGIN), 90)
-        h = max((bbox["y_max"] - bbox["y_min"]) * (H - 2 * MARGIN - 60), 44)
+        # Poster boxes are approximate (footer says so): floor tiny slivers
+        # so labels have a box to sit in, cap giants so one frame-filling
+        # entity cannot swallow the poster on merged multi-frame models.
+        w = min(max((bbox["x_max"] - bbox["x_min"]) * (W - 2 * MARGIN), 90), 240)
+        h = min(max((bbox["y_max"] - bbox["y_min"]) * (H - 2 * MARGIN - 60), 44), 130)
         rects[e["id"]] = (x, y, w, h)
     return _declutter(rects)
 
@@ -74,37 +78,63 @@ def _overlaps(a: tuple, b: tuple) -> bool:
             and a[1] < b[1] + b[3] and b[1] < a[1] + a[3])
 
 
-def _declutter(rects: dict, max_passes: int = 60) -> dict:
+# Poster furniture: title bar (64) + rule (3) + padding. The quality scorer
+# counts every SVG rect, header included, so boxes must start below it.
+_POSTER_TOP = 72
+_POSTER_PAD = 4
+_GAP = 2
+
+
+def _clamp_box(x: float, y: float, w: float, h: float) -> tuple:
+    return (min(max(x, _POSTER_PAD), W - w - _POSTER_PAD),
+            min(max(y, _POSTER_TOP), H - h - _POSTER_PAD), w, h)
+
+
+def _declutter(rects: dict, max_passes: int = 200) -> dict:
     """Spread overlapping poster boxes apart (the poster is a derivation;
     evidence boxes on the canvas are untouched). Deterministic: sorted ids,
-    push along the smaller-overlap axis, clamped to the frame."""
+    each box keeps its figure position when free, else the nearest free
+    spot on a spiral, else the first free slot of a coarse top-down grid.
+    Fixed point when clean. (max_passes is kept for caller compatibility.)"""
     ids = sorted(rects)
-    rects = dict(rects)
-    for _ in range(max_passes):
-        moved = False
-        for n, i in enumerate(ids):
-            for j in ids[n + 1:]:
-                a, b = rects[i], rects[j]
-                if not _overlaps(a, b):
-                    continue
-                ox = min(a[0] + a[2], b[0] + b[2]) - max(a[0], b[0])
-                oy = min(a[1] + a[3], b[1] + b[3]) - max(a[1], b[1])
-                if ox <= 0 or oy <= 0:
-                    continue
-                if ox < oy:
-                    shift = ox / 2 + 1
-                    na = (max(4, a[0] - shift), a[1], a[2], a[3])
-                    nb = (min(W - b[2] - 4, b[0] + shift), b[1], b[2], b[3])
-                else:
-                    shift = oy / 2 + 1
-                    na = (a[0], max(60, a[1] - shift), a[2], a[3])
-                    nb = (b[0], min(H - b[3] - 4, b[1] + shift), b[2], b[3])
-                if (na, nb) != (a, b):
-                    rects[i], rects[j] = na, nb
-                    moved = True
-        if not moved:
-            break
-    return rects
+    placed: dict[str, tuple] = {}
+    order: list[str] = []
+    for i in ids:
+        box = _clamp_box(*rects[i])
+        if not any(_overlaps(box, placed[j]) for j in order):
+            placed[i] = box
+            order.append(i)
+            continue
+        found = None
+        radius = 4
+        while radius <= 160 and found is None:
+            for k in range(8):
+                ang = k * math.pi / 4
+                cand = _clamp_box(box[0] + radius * math.cos(ang),
+                                  box[1] + radius * math.sin(ang) * 0.75,
+                                  box[2], box[3])
+                if not any(_overlaps(cand, placed[j]) for j in order):
+                    found = cand
+                    break
+            radius += 4
+        if found is None:
+            # Dense poster: scan a coarse grid top-down for any free slot.
+            # Deterministic; if none exists the box keeps its (honest,
+            # scorer-flagged) figure position.
+            w, h = box[2], box[3]
+            gy = _POSTER_TOP
+            while gy <= H - h - _POSTER_PAD and found is None:
+                gx = float(_POSTER_PAD)
+                while gx <= W - w - _POSTER_PAD and found is None:
+                    if not any(_overlaps((gx, gy, w, h), placed[j]) for j in order):
+                        found = (gx, gy, w, h)
+                    gx += 12
+                gy += 12
+        if found is None:
+            found = box
+        placed[i] = found
+        order.append(i)
+    return placed
 
 
 def diagram_svg(analysis: dict) -> str:
@@ -224,6 +254,40 @@ def tour_3d(analysis: dict) -> dict:
     return {"figure_id": analysis.get("figure_id", ""), "stops": stops}
 
 
+def _spoken_relation(r: dict, names: dict) -> str:
+    """Audible relationship: type + target + the model's own explanation.
+
+    The explanation is already-grounded study content (it ships in the
+    validated model) that the old script left unsaid; speaking it is what
+    lifts thin episodes without filler. Single sentence per relation so
+    spoken-density stays flat.
+    """
+    base = (f"{names.get(r['source_id'], '?')} {r.get('rel_type', '?')} "
+            f"{names.get(r['target_id'], '?')}")
+    expl = (r.get("explanation") or "").strip().rstrip(".")
+    if expl and expl.lower() not in (base.lower(), r.get("rel_type", "").lower()):
+        return f"{base} — {expl}"
+    return base
+
+
+def _spoken_out(r: dict, names: dict) -> str:
+    """Entity-segment form: relation + target + explanation (no repeated source)."""
+    base = f"{r.get('rel_type', '?')} {names.get(r['target_id'], '?')}"
+    expl = (r.get("explanation") or "").strip().rstrip(".")
+    if expl and expl.lower() not in (base.lower(), r.get("rel_type", "").lower()):
+        return f"{base} — {expl}"
+    return base
+
+
+def _spoken_in(r: dict, names: dict) -> str:
+    """Incoming-relation form: rel_type + this entity + explanation."""
+    base = f"{r.get('rel_type', '?')} {names.get(r['target_id'], '?')}"
+    expl = (r.get("explanation") or "").strip().rstrip(".")
+    if expl and expl.lower() not in (base.lower(), r.get("rel_type", "").lower()):
+        return f"{base} — {expl}"
+    return base
+
+
 def podcast_script(analysis: dict, max_segments: int = 24) -> dict:
     """Two-host conversational walkthrough, TTS-ready segments + duration.
 
@@ -249,10 +313,14 @@ def podcast_script(analysis: dict, max_segments: int = 24) -> dict:
     }]
     for e in entities:
         outs = [r for r in analysis.get("relationships", []) if r["source_id"] == e["id"]]
+        ins = [r for r in analysis.get("relationships", []) if r["target_id"] == e["id"]]
         line = f"{e.get('name', e['id'])}. {e.get('description', 'A key structure in this figure.')}"
         if outs:
             line += " It " + "; ".join(
-                f"{r['rel_type']} {names.get(r['target_id'], '?')}" for r in outs) + "."
+                _spoken_out(r, names) for r in outs) + "."
+        if ins:
+            line += " " + "; ".join(
+                f"{names.get(r['source_id'], '?')} {_spoken_in(r, names)}" for r in ins) + "."
         if e.get("source_evidence"):
             line += f" On the figure: {e['source_evidence']}."
         segments.append({"speaker": "GUIDE", "cue": f"segment: {e.get('name', e['id'])}",
@@ -263,7 +331,7 @@ def podcast_script(analysis: dict, max_segments: int = 24) -> dict:
         key = f"{r['source_id']} {r['rel_type']} {r['target_id']}"
         if key not in seen:
             seen.add(key)
-            chains.append(f"{names.get(r['source_id'], '?')} {r['rel_type']} {names.get(r['target_id'], '?')}")
+            chains.append(_spoken_relation(r, names))
     walk = ("Now trace it end to end: " + "; ".join(chains[:8]) + "." if chains
             else "A single-structure study: hold its definition and evidence in mind.")
     segments.append({"speaker": "HOST", "cue": "pathway walk", "text": walk})
