@@ -540,6 +540,13 @@ function honestMsg(err) {
   if (err && err.fix) parts.push(`Fix: ${err.fix}`);
   return parts.join(" ");
 }
+// Tour/reveal/narration status in the same tone vocabulary as quiz grades
+// (info / warn / good) instead of one flat mono line.
+function tourStatus(kind, text) {
+  const box = $("tour-status");
+  box.className = "tstat " + kind;
+  box.textContent = text;
+}
 ["dragover", "dragenter"].forEach((ev) => dz.addEventListener(ev, (e) => { e.preventDefault(); dz.classList.add("over"); }));
 ["dragleave", "drop"].forEach((ev) => dz.addEventListener(ev, (e) => { e.preventDefault(); dz.classList.remove("over"); }));
 dz.addEventListener("drop", async (e) => {
@@ -851,7 +858,7 @@ function tourCaption(stop, idx, total) {
 }
 function tourGo(n) {
   const stops = tourStops();
-  if (!stops.length) { $("tour-status").textContent = "Tour: analyze or load the demo first."; return; }
+  if (!stops.length) { tourStatus("warn", "Tour: analyze or load the demo first."); return; }
   tour.stops = stops;
   tour.i = ((n % stops.length) + stops.length) % stops.length;
   const e = stops[tour.i];
@@ -867,7 +874,7 @@ function tourGo(n) {
   } catch (_) { /* smooth scroll is a nicety, never a failure */ }
   $("viewport").classList.add("touring");
   tourCaption(e, tour.i, stops.length);
-  $("tour-status").textContent = `Tour (offline replay): stop ${tour.i + 1}/${stops.length} — ${e.name}`;
+  tourStatus("info", `Tour (offline replay): stop ${tour.i + 1}/${stops.length} — ${e.name}`);
   if ($("narrate-toggle").checked) speak(`${e.name}. ${(e.description || "").slice(0, 260)}`);
 }
 function tourStop() {
@@ -877,7 +884,7 @@ function tourStop() {
   $("tour-caption").hidden = true;
   $("viewport").classList.remove("touring");
   try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (_) {}
-  if (tour.stops.length) $("tour-status").textContent = `Tour: paused at stop ${tour.i + 1}/${tour.stops.length}.`;
+  if (tour.stops.length) tourStatus("info", `Tour: paused at stop ${tour.i + 1}/${tour.stops.length}.`);
 }
 $("btn-tour-play").onclick = () => {
   if (!state.analysis) { alert("Analyze or load the demo first — the tour runs fully offline on the model."); return; }
@@ -886,7 +893,7 @@ $("btn-tour-play").onclick = () => {
   $("btn-tour-play").textContent = "⏸ Pause";
   tourGo(tour.i || 0);
   tour.timer = setInterval(() => {
-    if (tour.i + 1 >= tourStops().length) { tourStop(); $("tour-status").textContent = "Tour: finale — every structure visited. Esc to reset."; return; }
+    if (tour.i + 1 >= tourStops().length) { tourStop(); tourStatus("good", "Tour: finale — every structure visited. Esc to reset."); return; }
     tourGo(tour.i + 1);
   }, 3200);
 };
@@ -932,12 +939,12 @@ function speak(text) {
   } catch (_) { /* voice is enhancement-only */ }
 }
 $("btn-narrate").onclick = () => {
-  if (!("speechSynthesis" in window)) { $("tour-status").textContent = "Narration: this browser has no local speech engine."; return; }
+  if (!("speechSynthesis" in window)) { tourStatus("warn", "Narration: this browser has no local speech engine."); return; }
   if (!state.analysis) { alert("Analyze or load the demo first."); return; }
   const e = state.analysis.entities.find((x) => x.id === state.selected) || visibleEntities()[0];
   if (!e) return;
   speak(`${e.name}. ${e.description || ""} ${e.source_evidence ? "Evidence: " + e.source_evidence : ""}`.slice(0, 500));
-  $("tour-status").textContent = `Narrating: ${e.name} (browser voice, offline).`;
+  tourStatus("info", `Narrating: ${e.name} (browser voice, offline).`);
 };
 try {
   refreshVoices();
@@ -959,7 +966,7 @@ $("btn-reveal").onclick = () => {
   svg.innerHTML = "";
   $("tour-caption").hidden = false;
   $("tour-caption").textContent = "AI-vision replay: scanning loaded model…";
-  $("tour-status").textContent = `Reveal (offline replay): scanning, then ${stops.length} structures replay.`;
+  tourStatus("info", `Reveal (offline replay): scanning, then ${stops.length} structures replay.`);
   const ordered = [...stops].sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
   ordered.forEach((e, k) => {
     revealTimers.push(setTimeout(() => {
@@ -984,7 +991,7 @@ $("btn-reveal").onclick = () => {
           scan.hidden = true;
           select(e.id);
           $("tour-caption").hidden = true;
-          $("tour-status").textContent = `Reveal: complete — ${ordered.length} structures replayed from the loaded model (offline replay, not live vision).`;
+          tourStatus("good", `Reveal: complete — ${ordered.length} structures replayed from the loaded model (offline replay, not live vision).`);
         }, 900));
       }
     }, 500 + k * 450));
