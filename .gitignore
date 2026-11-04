@@ -19,3 +19,5 @@ demo/real_analyses/_store/
 # data_dir/videos is already ignored via data/ above). Fixtures/scripts stay tracked.
 demo/f_*.png
 demo/*.mp4
+# AIKit transient state
+.aikit/*.log
