@@ -543,10 +543,18 @@ def quality_report(analysis: dict, artifacts: dict) -> dict:
                 script = _json.loads(script)
             except (ValueError, TypeError):
                 script = None
+            if not isinstance(script, dict):
+                script = None
                 report["podcast"] = _result(
                     0, [_check("podcast-parseable", False,
                                "podcast payload is not JSON")],
                     ["podcast payload is not JSON and cannot be scored"])
+        if script is not None and not isinstance(script, dict):
+            script = None
+            report["podcast"] = _result(
+                0, [_check("podcast-parseable", False,
+                           "podcast payload is not JSON")],
+                ["podcast payload is not JSON and cannot be scored"])
         if script is not None:
             report["podcast"] = podcast_quality(script, analysis)
     if "diagram_svg" in artifacts:

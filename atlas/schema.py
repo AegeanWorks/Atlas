@@ -170,7 +170,9 @@ class VisualAnalysis:
     def from_dict(cls, raw: dict) -> "VisualAnalysis":
         entities = []
         for e in raw.get("entities", []):
-            ctx = f"entity {e.get('id', '?') if isinstance(e, dict) else '?'}"
+            if not isinstance(e, dict):
+                raise ValueError(f"entity: expected object, got {e!r}")
+            ctx = f"entity {e.get('id', '?')}"
             bbox = None
             if e.get("bbox"):
                 b = e["bbox"]
@@ -342,10 +344,12 @@ def coerce_muse_payload(payload: dict[str, Any], document_ref: str = "",
     """Validate raw Muse JSON (0..1000 boxes) into a versioned VisualAnalysis."""
     entities: list[VisualEntity] = []
     for e in payload.get("entities", []):
+        if not isinstance(e, dict):
+            raise ValueError(f"muse entity: expected object, got {e!r}")
         bbox = None
         if e.get("box"):
             bbox = BoundingBox.from_grid1000([float(v) for v in e["box"]])
-        ctx = f"muse entity {e.get('id', '?') if isinstance(e, dict) else '?'}"
+        ctx = f"muse entity {e.get('id', '?')}"
         entities.append(VisualEntity(
             id=str(_req(e, "id", "muse entity")),
             name=str(_req(e, "name", ctx)),
