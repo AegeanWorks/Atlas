@@ -123,7 +123,6 @@ details.advanced summary:hover { color:var(--accent); }
 #tour-status.tstat { font-size:12.5px; }
 #tour-status.tstat.good { color:#6ee7b7; font-weight:600; }
 #tour-status.tstat.warn { color:var(--warn); }
-#segment-status:empty { display:none; }
 #segment-status.seg { font-size:12.5px; line-height:1.55; }
 #segment-status.seg.good { color:#6ee7b7; font-weight:600; }
 #segment-status.seg.bad { color:#fda4af; }
