@@ -671,13 +671,17 @@ function renderQuiz() {
   if (!quiz || !quiz.challenge) return;
   const c = quiz.challenge;
   const p = document.createElement("div");
-  p.textContent = `${quiz.visual === false ? "Text quiz" : "On-figure quiz"} — ${c.prompt} (score ${quiz.score[0]}/${quiz.score[1]})`;
+  p.className = "quiz-head";
+  const headText = () => `${quiz.visual === false ? "Text quiz" : "On-figure quiz"} — ${c.prompt} (score ${quiz.score[0]}/${quiz.score[1]})`;
+  p.textContent = headText();
   box.appendChild(p);
   for (const o of c.options) {
     const b = document.createElement("button"); b.className = "opt"; b.textContent = o.name;
     b.onclick = async () => {
       const g = await api("/api/learn/grade", { challenge: c, answer: o.id });
       quiz.score[1]++; if (g.correct) quiz.score[0]++;
+      const head = box.querySelector(".quiz-head");
+      if (head) head.textContent = headText();
       const d = document.createElement("div"); d.className = "mono " + (g.correct ? "good" : "bad");
       const right = c.options.find((x) => x.id === c.answer_id);
       d.textContent = g.correct ? "correct ✓" : `not quite — answer: ${right ? right.name : c.answer_id}`;
