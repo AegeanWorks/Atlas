@@ -196,8 +196,8 @@ function renderOverlay() {
     const g = svgEl("g", { class: "hit" });
     if (showBoxes) {
       const r = svgEl("rect", { x: p.x, y: p.y, width: p.w, height: p.h,
-        fill: e.id === state.selected ? "rgba(34,211,238,.28)" : "rgba(139,92,246,.22)",
-        stroke: e.id === state.selected ? "#22d3ee" : "#8b5cf6", "stroke-width": e.id === state.selected ? .8 : .5,
+        fill: e.id === state.selected ? "rgba(34,211,238,.28)" : "rgba(139,92,246,.28)",
+        stroke: e.id === state.selected ? "#22d3ee" : "#a78bfa", "stroke-width": e.id === state.selected ? .8 : .9,
         class: e.id === state.selected ? "active" : "" });
       r.addEventListener("click", () => select(e.id));
       g.appendChild(r);

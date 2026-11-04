@@ -119,8 +119,8 @@ def _layout(analysis: dict) -> dict:
         # Poster boxes are approximate (footer says so): floor tiny slivers
         # so labels have a box to sit in, cap giants so one frame-filling
         # entity cannot swallow the poster on merged multi-frame models.
-        w = min(max((bbox["x_max"] - bbox["x_min"]) * (W - 2 * MARGIN), 90), 240)
-        h = min(max((bbox["y_max"] - bbox["y_min"]) * (H - 2 * MARGIN - 60), 44), 130)
+        w = min(max((bbox["x_max"] - bbox["x_min"]) * (W - 2 * MARGIN), 90), 180 if len(entities) > 20 else 240)
+        h = min(max((bbox["y_max"] - bbox["y_min"]) * (H - 2 * MARGIN - 60), 44), 100 if len(entities) > 20 else 130)
         rects[e["id"]] = (x, y, w, h)
     placed = _declutter(rects)
     return _fit_frame(placed)
@@ -183,7 +183,7 @@ def _declutter(rects: dict, max_passes: int = 200) -> dict:
             continue
         found = None
         radius = 4
-        while radius <= 160 and found is None:
+        while radius <= 260 and found is None:
             for k in range(8):
                 ang = k * math.pi / 4
                 cand = _clamp_box(box[0] + radius * math.cos(ang),
@@ -204,8 +204,8 @@ def _declutter(rects: dict, max_passes: int = 200) -> dict:
                 while gx <= W - w - _POSTER_PAD and found is None:
                     if not any(_overlaps((gx, gy, w, h), placed[j]) for j in order):
                         found = (gx, gy, w, h)
-                    gx += 12
-                gy += 12
+                    gx += 8
+                gy += 8
         if found is None:
             found = box
         placed[i] = found

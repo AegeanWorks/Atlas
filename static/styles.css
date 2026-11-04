@@ -59,11 +59,12 @@ button.primary { background:linear-gradient(135deg,#0ea5b7,var(--accent2)); bord
 .canvas-toolbar button, .canvas-toolbar a { font-size:13.5px; padding:7px 13px; }
 .canvas-toolbar button.primary { box-shadow:0 2px 16px rgba(34,211,238,.45); }
 #toggle-3d { border-color:var(--accent); }
+html { scroll-padding-top:76px; }
 #viewport { position:relative; overflow:auto; height:68vh; min-height:520px; max-height:720px;
-  display:flex; align-items:center; justify-content:center;
+  display:flex; align-items:flex-start; justify-content:flex-start;
   background:radial-gradient(circle at 50% 38%, #10224d 0%, #0a1430 45%, #050a18 75%); cursor:grab; }
 #viewport:active { cursor:grabbing; }
-#viewport img { display:block; max-width:96%; max-height:96%; width:auto; object-fit:contain; }
+#viewport img { display:block; max-width:96%; max-height:96%; width:auto; object-fit:contain; margin:auto; scroll-margin-top:12px; }
 #viewport img[src=""], #viewport img:not([src]) { display:none; }
 #empty-hint { position:absolute; inset:0; display:flex; flex-direction:column; gap:8px; align-items:center; justify-content:center;
   text-align:center; padding:0 40px; color:var(--muted); pointer-events:none; }
@@ -133,9 +134,9 @@ details.advanced summary:hover { color:var(--accent); }
 #provenance summary { cursor:pointer; color:var(--accent); }
 #provenance pre { margin:6px 0 0; max-height:220px; overflow:auto; }
 #detail .pack-title, #summary .pack-title { font-size:17px; font-weight:800; color:var(--text); margin:2px 0 6px; }
-#detail .pack-sub, #summary .pack-sub { font-size:14px; line-height:1.6; color:#c9d6f2; margin-bottom:8px; }
+#detail .pack-sub, #summary .pack-sub { font-size:14px; line-height:1.6; color:#d7e4ff; margin-bottom:8px; }
 #detail .pack-h, #summary .pack-h { font-size:13px; font-weight:700; color:var(--accent); margin:10px 0 4px; }
-#detail ul.pack-list, #summary ul.pack-list, #summary ol.pack-list { margin:4px 0 6px 18px; padding:0; font-size:13.5px; line-height:1.6; color:#b9c9ec; }
+#detail ul.pack-list, #summary ul.pack-list, #summary ol.pack-list { margin:4px 0 6px 18px; padding:0; font-size:14px; line-height:1.65; color:#cddbf7; }
 #summary ol.tour-stops li { margin:7px 0; }
 #summary .tour-stop-name { font-weight:700; color:var(--text); }
 #summary .tour-stop-observe { font-size:12.5px; color:var(--muted); margin-top:2px; line-height:1.55; }
@@ -209,4 +210,17 @@ footer { padding:12px 20px 18px; color:var(--muted); font-size:12px; text-align:
   .tb-group.prefs { margin-left:0; }
   #viewport { min-height:320px; }
   #tour-caption { left:10px; right:10px; bottom:10px; }
+}
+
+/* Print: study pack as a clean handout (light, no ink-heavy dark panels). */
+@media print {
+  body { background:#fff; color:#111; }
+  header, .canvas-toolbar, #tour-caption, #scanline, footer { display:none !important; }
+  main { max-width:none; padding:0; }
+  .panel, #detail, #summary { background:#fff !important; color:#111 !important; border-color:#999; box-shadow:none; }
+  #detail .pack-title, #summary .pack-title, #detail .tour-stop-name, #summary .tour-stop-name { color:#111 !important; }
+  #detail .pack-sub, #summary .pack-sub, #detail ul.pack-list, #summary ul.pack-list,
+  #summary ol.pack-list, #challenge ol.pathway-stops { color:#222 !important; }
+  #summary .bar { background:#ddd; }
+  #viewport { height:auto; min-height:0; }
 }
