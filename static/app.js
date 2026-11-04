@@ -463,7 +463,16 @@ function applyZoom() {
 }
 $("zoom-in").onclick = () => { state.zoom = Math.min(4, state.zoom + .25); applyZoom(); };
 $("zoom-out").onclick = () => { state.zoom = Math.max(.5, state.zoom - .25); applyZoom(); };
-$("reset-view").onclick = () => { state.zoom = 1; applyZoom(); };
+$("reset-view").onclick = () => {
+  // A viewport reset: zoom, pan, and label visibility. Active quiz/learn
+  // highlights are owned by their challenges (the overlay skips labels
+  // while one is shown), so restoring the checkbox here is always safe.
+  state.zoom = 1; applyZoom();
+  const vp = $("viewport");
+  vp.scrollTo(0, 0);
+  $("toggle-labels").checked = true;
+  renderAll();
+};
 
 $("btn-import").onclick = async () => {
   const path = $("doc-path").value.trim();
