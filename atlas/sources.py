@@ -89,6 +89,7 @@ YOUTUBE_ID_PATTERNS = [
     r"youtu\.be/([\w-]{6,})",
     r"/shorts/([\w-]{6,})",
     r"/embed/([\w-]{6,})",
+    r"/live/([\w-]{6,})",
 ]
 
 
@@ -102,7 +103,8 @@ def youtube_video_id(url: str) -> str | None:
 
 def is_youtube_url(url: str) -> bool:
     host = urllib.parse.urlparse(url).netloc.lower()
-    return "youtube.com" in host or "youtu.be" in host
+    return ("youtube.com" in host or "youtu.be" in host
+            or "youtube-nocookie.com" in host)
 
 
 def youtube_transcript(url: str, timeout: int = FETCH_TIMEOUT_S) -> dict:
