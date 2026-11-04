@@ -36,11 +36,20 @@ def _atomic_write_json(path: str, obj) -> None:
                 pass
 
 
-def _read_json(path: str, default):
+def _read_json(path: str, default, tolerant: bool = False):
     if not os.path.isfile(path):
         return default
-    with open(path, encoding="utf-8") as fh:
-        return json.load(fh)
+    try:
+        with open(path, encoding="utf-8") as fh:
+            return json.load(fh)
+    except (OSError, ValueError):
+        # Tolerant reads are ONLY for recomputable state (cache): a torn
+        # file degrades to a miss + recompute instead of 500ing the app.
+        # Model truth (analyses) and user data (corrections) must fail
+        # loudly rather than silently substitute — never pass tolerant=True.
+        if tolerant:
+            return default
+        raise
 
 
 class AtlasStore:
@@ -89,10 +98,10 @@ class AtlasStore:
         return h.hexdigest()[:32]
 
     def cache_get(self, key: str):
-        return _read_json(self.cache_path(), {}).get(key)
+        return _read_json(self.cache_path(), {}, tolerant=True).get(key)
 
     def cache_put(self, key: str, value) -> None:
         path = self.cache_path()
-        data = _read_json(path, {})
+        data = _read_json(path, {}, tolerant=True)
         data[key] = value
         _atomic_write_json(path, data)
