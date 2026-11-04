@@ -21,8 +21,12 @@ your you we of on or not no nor so such than then too very can could should
 would may might must shall do does did done being been each other more most
 other some any all only own same if when while where which who whom whose
 what how why because until per via within without between through during
-also just over under about into out off up down again once et al fig figure
-using used use study paper results based between each
+also just over under about out off up down again once et al fig figure
+using used use study paper results based
+along away across toward towards upon onto above below beneath near far
+around among behind beyond against plus except whether either neither
+left right top bottom center middle side sides forward backward upward
+downward outward inward forth
 """.split())
 
 _TOKEN = re.compile(r"[A-Za-z][A-Za-z\-]{3,}")
