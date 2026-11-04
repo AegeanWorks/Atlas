@@ -524,8 +524,16 @@ def quality_report(analysis: dict, artifacts: dict) -> dict:
         script = artifacts["podcast"]
         if isinstance(script, str):
             import json as _json
-            script = _json.loads(script)
-        report["podcast"] = podcast_quality(script, analysis)
+            try:
+                script = _json.loads(script)
+            except (ValueError, TypeError):
+                script = None
+                report["podcast"] = _result(
+                    0, [_check("podcast-parseable", False,
+                               "podcast payload is not JSON")],
+                    ["podcast payload is not JSON and cannot be scored"])
+        if script is not None:
+            report["podcast"] = podcast_quality(script, analysis)
     if "diagram_svg" in artifacts:
         report["infographic"] = infographic_quality(artifacts["diagram_svg"], analysis)
     if "obj" in artifacts:

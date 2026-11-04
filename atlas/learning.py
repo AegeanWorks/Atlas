@@ -46,6 +46,8 @@ def pathway_tracing_challenge(analysis: dict, seed: int = 0) -> dict:
     """Order a connected chain of entities; user traces the pathway."""
     rels = _relationships(analysis)
     ents = {e["id"]: e for e in _entities(analysis)}
+    if not rels and not ents:
+        raise ValueError("analysis has no entities or relationships to trace")
     if len(rels) < 2:
         # Degenerate but valid: single-hop trace.
         chain = []

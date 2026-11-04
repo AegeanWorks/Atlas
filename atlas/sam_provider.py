@@ -60,7 +60,12 @@ class SamProvider:
                 with urllib.request.urlopen(req, timeout=self.config.timeout_s) as resp:  # noqa: S310
                     text = resp.read().decode("utf-8", "replace")
                 return {"raw": text}
-            except (urllib.error.URLError, TimeoutError) as exc:
+            except urllib.error.HTTPError as exc:
+                if 400 <= exc.code < 500:
+                    raise RuntimeError(f"SAM request refused: HTTP {exc.code}: {exc.reason}") from exc
+                last = exc
+                time.sleep(min(2.0 ** attempt, 8.0))
+            except (urllib.error.URLError, TimeoutError, OSError) as exc:
                 last = exc
                 time.sleep(min(2.0 ** attempt, 8.0))
         raise RuntimeError(f"SAM request failed after retries: {type(last).__name__}: {last}")

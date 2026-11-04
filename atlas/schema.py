@@ -80,9 +80,7 @@ class VisualEntity:
             raise ValueError("entity id and name are required")
         if self.category not in ENTITY_CATEGORIES:
             raise ValueError(f"unknown category {self.category!r}")
-        c = float(self.confidence)
-        if not 0.0 <= c <= 1.0:
-            raise ValueError(f"confidence must be in [0,1], got {c}")
+        c = _checked_confidence(self.confidence, f"entity {self.id!r}")
         object.__setattr__(self, "confidence", c)
 
     def to_dict(self) -> dict:
@@ -109,9 +107,8 @@ class VisualRelationship:
             raise ValueError("relationship endpoints are required")
         if self.source_id == self.target_id:
             raise ValueError("self-relationships are not allowed")
-        c = float(self.confidence)
-        if not 0.0 <= c <= 1.0:
-            raise ValueError(f"confidence must be in [0,1], got {c}")
+        c = _checked_confidence(self.confidence,
+                                f"relationship {self.source_id!r}->{self.target_id!r}")
         object.__setattr__(self, "confidence", c)
 
     def to_dict(self) -> dict:
@@ -124,6 +121,16 @@ def _req(mapping: dict, key: str, ctx: str):
         return mapping[key]
     except (KeyError, TypeError):
         raise ValueError(f"{ctx}: missing required key {key!r}")
+
+
+def _checked_confidence(value, ctx: str) -> float:
+    """Confidence must be a real number in [0,1] — bool/str rejected like bad boxes."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"{ctx}: confidence must be a number in [0,1], got {value!r}")
+    c = float(value)
+    if not 0.0 <= c <= 1.0:
+        raise ValueError(f"{ctx}: confidence must be in [0,1], got {c}")
+    return c
 
 
 @dataclass
@@ -175,7 +182,7 @@ class VisualAnalysis:
                 id=_req(e, "id", "entity"), name=_req(e, "name", ctx), category=e.get("category", "other"),
                 description=e.get("description", ""), bbox=bbox,
                 source_evidence=e.get("source_evidence", ""),
-                confidence=float(e.get("confidence", 0.0)),
+                confidence=_checked_confidence(e.get("confidence", 0.0), ctx),
                 uncertainty=e.get("uncertainty", ""),
                 mask_ref=e.get("mask_ref", ""),
                 model_inferred=bool(e.get("model_inferred", False)),
@@ -185,7 +192,8 @@ class VisualAnalysis:
             target_id=_req(r, "target_id", "relationship"),
             rel_type=_req(r, "rel_type", "relationship"), explanation=r.get("explanation", ""),
             supporting_evidence=r.get("supporting_evidence", ""),
-            confidence=float(r.get("confidence", 0.0)),
+            confidence=_checked_confidence(r.get("confidence", 0.0),
+                                             "relationship"),
             provenance=r.get("provenance", "model"),
             model_inferred=bool(r.get("model_inferred", True)),
         ) for r in raw.get("relationships", [])]
@@ -344,7 +352,7 @@ def coerce_muse_payload(payload: dict[str, Any], document_ref: str = "",
             category=str(e.get("category", "other")),
             description=str(e.get("description", "")),
             bbox=bbox, source_evidence=str(e.get("source_evidence", "")),
-            confidence=float(e.get("confidence", 0.0)),
+            confidence=_checked_confidence(e.get("confidence", 0.0), ctx),
             uncertainty=str(e.get("uncertainty", "")),
             model_inferred=True,
         ))
@@ -353,7 +361,8 @@ def coerce_muse_payload(payload: dict[str, Any], document_ref: str = "",
         target_id=str(_req(r, "target_id", "muse relationship")),
         rel_type=str(_req(r, "rel_type", "muse relationship")), explanation=str(r.get("explanation", "")),
         supporting_evidence=str(r.get("supporting_evidence", "")),
-        confidence=float(r.get("confidence", 0.0)),
+        confidence=_checked_confidence(r.get("confidence", 0.0),
+                                       "muse relationship"),
     ) for r in payload.get("relationships", [])]
     analysis = VisualAnalysis(document_ref=document_ref, source_page=source_page,
                               figure_id=figure_id, entities=entities, relationships=rels)

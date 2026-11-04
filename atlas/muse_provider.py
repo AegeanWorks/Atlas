@@ -87,7 +87,12 @@ class MuseProvider:
             try:
                 with urllib.request.urlopen(req, timeout=self.config.timeout_s) as resp:  # noqa: S310
                     return json.loads(resp.read().decode("utf-8", "replace"))
-            except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+            except urllib.error.HTTPError as exc:
+                if 400 <= exc.code < 500:
+                    raise RuntimeError(f"Muse request refused: HTTP {exc.code}: {exc.reason}") from exc
+                last = exc
+                time.sleep(min(2.0 ** attempt, 8.0))
+            except (urllib.error.URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
                 last = exc
                 time.sleep(min(2.0 ** attempt, 8.0))
         raise RuntimeError(f"Muse request failed after retries: {type(last).__name__}: {last}")
