@@ -90,9 +90,23 @@ def infographic_quality(svg: str, analysis: dict) -> dict:
                          "every entity on the poster" if not unlabeled else f"missing: {unlabeled[:3]}"))
     if unlabeled:
         issues.append(f"unlabeled: {', '.join(unlabeled[:5])}")
-    rects = [(float(r.get("x", 0)), float(r.get("y", 0)),
-              float(r.get("width", 0)), float(r.get("height", 0)))
-             for r in root.iter() if r.tag.endswith("rect")]
+    def _fnum(value, default=None):
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return default
+
+    rects, skipped = [], 0
+    for r in root.iter():
+        if not r.tag.endswith("rect"):
+            continue
+        geom = [_fnum(r.get(k, 0)) for k in ("x", "y", "width", "height")]
+        if any(v is None for v in geom):
+            skipped += 1
+            continue
+        rects.append(tuple(geom))
+    if skipped:
+        issues.append(f"{skipped} boxes have non-numeric geometry and were skipped")
     # A full-canvas backdrop is decoration, not a colliding box.
     canvas = max([w * h for _, _, w, h in rects] or [1])
     rects = [r for r in rects if r[2] * r[3] < 0.9 * canvas]
@@ -107,7 +121,8 @@ def infographic_quality(svg: str, analysis: dict) -> dict:
     if overlaps:
         issues.append(f"{overlaps} overlapping boxes hurt readability")
     small = [t for t in root.iter() if t.tag.endswith("text")
-             and float(t.get("font-size", "99") or 99) < 10]
+             and (sz := _fnum(t.get("font-size", "99") or 99)) is not None
+             and sz < 10]
     checks.append(_check("legible-type", not small,
                          "all type ≥10px" if not small else f"{len(small)} tiny labels"))
     if small:

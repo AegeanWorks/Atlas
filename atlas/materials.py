@@ -478,6 +478,12 @@ def video_slideshow(analysis: dict, outdir: str, fps: int = 30,
     if not entities:
         raise ValueError("no entities: nothing to film")
     os.makedirs(outdir, exist_ok=True)
+    import glob as _glob
+    for old in _glob.glob(os.path.join(outdir, "f_*.png")):
+        try:
+            os.remove(old)
+        except OSError:
+            pass
     title_font, _ = _font(30)
     body_font, _ = _font(16)
 
@@ -570,7 +576,7 @@ def question_bank(analysis: dict) -> dict:
                 "answer": names[e["id"]], "evidence": e.get("source_evidence", "")})
     for r in analysis.get("relationships", []):
         questions.append({
-            "id": f"q-rel-{r['source_id']}-{r['target_id']}", "kind": "relationship-recall",
+            "id": f"q-rel-{r['source_id']}-{r.get('rel_type', '?')}-{r['target_id']}", "kind": "relationship-recall",
             "question": (f"How are {names.get(r['source_id'], '?')} and "
                          f"{names.get(r['target_id'], '?')} connected?"),
             "answer": r["rel_type"], "evidence": r.get("supporting_evidence", "")})

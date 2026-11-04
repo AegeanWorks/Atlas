@@ -763,11 +763,16 @@ class Handler(BaseHTTPRequestHandler):
                 mode = body.get("mode", "spatial-recall")
                 analysis = VisualAnalysis.from_dict(body["analysis"]).to_dict()
                 seed = int(body.get("seed", 0))
-                fn = {"spatial-recall": learn.spatial_recall_challenge,
-                      "pathway-tracing": learn.pathway_tracing_challenge,
-                      "visual-identification": learn.visual_identification_challenge,
-                      "relationship-recall": learn.relationship_recall_challenge}[mode]
-                return _json(self, fn(analysis, seed))
+                modes = {"spatial-recall": learn.spatial_recall_challenge,
+                         "pathway-tracing": learn.pathway_tracing_challenge,
+                         "visual-identification": learn.visual_identification_challenge,
+                         "relationship-recall": learn.relationship_recall_challenge}
+                if mode not in modes:
+                    raise ValueError(
+                        f"unknown learn mode {mode!r}: use spatial-recall, "
+                        "pathway-tracing, visual-identification, "
+                        "relationship-recall")
+                return _json(self, modes[mode](analysis, seed))
             if route == "/api/learn/grade":
                 return _json(self, learn.grade(body["challenge"], body["answer"]))
             if route == "/api/flashcards":
