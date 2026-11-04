@@ -645,6 +645,7 @@ $("btn-pdf-figure").onclick = () => withBusy($("btn-pdf-figure"), "Building figu
 });
 
 let quiz = null; // active on-figure quiz {challenge, score:[got,total]}
+let learnScore = [0, 0]; // session-cumulative Learn score, mirrors quiz.score
 $("btn-quiz").onclick = async () => {
   if (!state.analysis) return alert("Analyze or load a model first.");
   // Text models (books, transcripts) have no canvas to point at: quiz on
@@ -862,7 +863,8 @@ $("btn-learn").onclick = async () => {
   }
   const p = document.createElement("div"); p.className = "challenge-q";
   const modeLabel = ($("learn-mode").selectedOptions[0] || {}).textContent || c.mode || "Challenge";
-  p.textContent = `${modeLabel} — ${c.prompt}`; box.appendChild(p);
+  const headText = () => `${modeLabel} — ${c.prompt} (score ${learnScore[0]}/${learnScore[1]})`;
+  p.textContent = headText(); box.appendChild(p);
   if (c.highlight_bbox) {
     state.learnHi = c.highlight_bbox;
     $("toggle-labels").checked = false;
@@ -870,6 +872,9 @@ $("btn-learn").onclick = async () => {
   }
   const answer = async (value) => {
     const g = await api("/api/learn/grade", { challenge: c, answer: value });
+    learnScore[1]++; if (g.correct) learnScore[0]++;
+    const head = box.querySelector(".challenge-q");
+    if (head) head.textContent = headText();
     const d = document.createElement("div"); d.className = "mono " + (g.correct ? "good" : "bad");
     d.textContent = g.correct ? "correct ✓" : `not quite — expected ${JSON.stringify(g.expected)}`;
     box.appendChild(d);
