@@ -482,7 +482,7 @@ def video_slideshow(analysis: dict, outdir: str, fps: int = 30,
     for old in _glob.glob(os.path.join(outdir, "f_*.png")):
         try:
             os.remove(old)
-        except OSError:
+        except OSError:  # hygiene: allow best-effort removal of stale frames
             pass
     title_font, _ = _font(30)
     body_font, _ = _font(16)
