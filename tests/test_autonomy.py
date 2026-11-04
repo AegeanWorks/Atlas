@@ -199,11 +199,13 @@ def test_video_without_boxes_warns_text_only(tmp_path, monkeypatch):
 class _RetryMuse:
     """Boxless first pass, grounded retry — like a hesitant live model."""
     _live_transport = True
-    calls = 0
+
+    def __init__(self):
+        self.calls = 0
 
     def analyze_figure(self, image_path, note="", **k):
         from atlas.schema import VisualAnalysis, VisualEntity, BoundingBox
-        type(self).calls += 1
+        self.calls += 1
         if "normalized 0-1000 box" in note:
             return VisualAnalysis(document_ref=k.get("document_ref", ""),
                                   figure_id=k.get("figure_id", "f"),

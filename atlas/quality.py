@@ -518,7 +518,7 @@ def quality_report(analysis: dict, artifacts: dict) -> dict:
     from . import materials as mat
     report: dict[str, dict] = {}
     if "deck" in artifacts or "flashcards" in artifacts:
-        deck = artifacts.get("deck") or fc.build_deck(analysis)
+        deck = artifacts.get("deck") or artifacts.get("flashcards") or fc.build_deck(analysis)
         report["flashcards"] = flashcard_quality(deck, analysis)
     if "podcast" in artifacts:
         script = artifacts["podcast"]

@@ -626,7 +626,12 @@ class Handler(BaseHTTPRequestHandler):
         raw = self.rfile.read(length) if length > 0 else b""
         try:
             body = json.loads(raw.decode("utf-8", "replace")) if raw else {}
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as exc:
+            ctype = self.headers.get("Content-Type", "")
+            if "json" in ctype:
+                return _json(self, {"error": f"ValueError: invalid JSON body: {exc}",
+                                    "cause": "the request body is not valid JSON",
+                                    "fix": "send a JSON object with Content-Type: application/json"}, 400)
             body = {}
         route = urllib.parse.urlparse(self.path).path
         store = self.get_store()

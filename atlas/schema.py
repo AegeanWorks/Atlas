@@ -118,6 +118,14 @@ class VisualRelationship:
         return asdict(self)
 
 
+def _req(mapping: dict, key: str, ctx: str):
+    """Required key with context — malformed payloads raise ValueError, never KeyError."""
+    try:
+        return mapping[key]
+    except (KeyError, TypeError):
+        raise ValueError(f"{ctx}: missing required key {key!r}")
+
+
 @dataclass
 class VisualAnalysis:
     """One analyzed figure crop. Entities + relationships share IDs by construction."""
@@ -155,13 +163,16 @@ class VisualAnalysis:
     def from_dict(cls, raw: dict) -> "VisualAnalysis":
         entities = []
         for e in raw.get("entities", []):
+            ctx = f"entity {e.get('id', '?') if isinstance(e, dict) else '?'}"
             bbox = None
             if e.get("bbox"):
                 b = e["bbox"]
-                bbox = BoundingBox(x_min=b["x_min"], y_min=b["y_min"],
-                                   x_max=b["x_max"], y_max=b["y_max"])
+                bbox = BoundingBox(x_min=_req(b, "x_min", f"{ctx} bbox"),
+                                    y_min=_req(b, "y_min", f"{ctx} bbox"),
+                                    x_max=_req(b, "x_max", f"{ctx} bbox"),
+                                    y_max=_req(b, "y_max", f"{ctx} bbox"))
             entities.append(VisualEntity(
-                id=e["id"], name=e["name"], category=e.get("category", "other"),
+                id=_req(e, "id", "entity"), name=_req(e, "name", ctx), category=e.get("category", "other"),
                 description=e.get("description", ""), bbox=bbox,
                 source_evidence=e.get("source_evidence", ""),
                 confidence=float(e.get("confidence", 0.0)),
@@ -170,17 +181,23 @@ class VisualAnalysis:
                 model_inferred=bool(e.get("model_inferred", False)),
             ))
         rels = [VisualRelationship(
-            source_id=r["source_id"], target_id=r["target_id"],
-            rel_type=r["rel_type"], explanation=r.get("explanation", ""),
+            source_id=_req(r, "source_id", "relationship"),
+            target_id=_req(r, "target_id", "relationship"),
+            rel_type=_req(r, "rel_type", "relationship"), explanation=r.get("explanation", ""),
             supporting_evidence=r.get("supporting_evidence", ""),
             confidence=float(r.get("confidence", 0.0)),
             provenance=r.get("provenance", "model"),
             model_inferred=bool(r.get("model_inferred", True)),
         ) for r in raw.get("relationships", [])]
+        try:
+            source_page = int(raw.get("source_page", 0))
+        except (TypeError, ValueError):
+            raise ValueError(
+                f"analysis: invalid source_page {raw.get('source_page')!r}")
         obj = cls(
             analysis_version=raw.get("analysis_version", SCHEMA_VERSION),
             document_ref=raw.get("document_ref", ""),
-            source_page=int(raw.get("source_page", 0)),
+            source_page=source_page,
             figure_id=raw.get("figure_id", ""),
             entities=entities, relationships=rels,
         )
@@ -320,8 +337,10 @@ def coerce_muse_payload(payload: dict[str, Any], document_ref: str = "",
         bbox = None
         if e.get("box"):
             bbox = BoundingBox.from_grid1000([float(v) for v in e["box"]])
+        ctx = f"muse entity {e.get('id', '?') if isinstance(e, dict) else '?'}"
         entities.append(VisualEntity(
-            id=str(e["id"]), name=str(e["name"]),
+            id=str(_req(e, "id", "muse entity")),
+            name=str(_req(e, "name", ctx)),
             category=str(e.get("category", "other")),
             description=str(e.get("description", "")),
             bbox=bbox, source_evidence=str(e.get("source_evidence", "")),
@@ -330,8 +349,9 @@ def coerce_muse_payload(payload: dict[str, Any], document_ref: str = "",
             model_inferred=True,
         ))
     rels = [VisualRelationship(
-        source_id=str(r["source_id"]), target_id=str(r["target_id"]),
-        rel_type=str(r["rel_type"]), explanation=str(r.get("explanation", "")),
+        source_id=str(_req(r, "source_id", "muse relationship")),
+        target_id=str(_req(r, "target_id", "muse relationship")),
+        rel_type=str(_req(r, "rel_type", "muse relationship")), explanation=str(r.get("explanation", "")),
         supporting_evidence=str(r.get("supporting_evidence", "")),
         confidence=float(r.get("confidence", 0.0)),
     ) for r in payload.get("relationships", [])]
