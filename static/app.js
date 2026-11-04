@@ -804,11 +804,7 @@ function renderPackAll(box, s, t, deck, q) {
   const stats = packEl("div", "pack-stats");
   if (t && t.stops) stats.appendChild(packEl("span", "chip", `3D tour: ${t.stops.length} stops`));
   if (deck) stats.appendChild(packEl("span", "chip", `Flashcards: ${deck.cards.length} cards`));
-  if (q) {
-    stats.appendChild(packEl("span", "chip strong", `Quality overall: ${q.overall}/100`));
-    if (q.weakest) stats.appendChild(packEl("span", "chip weak", `weakest: ${q.weakest}`));
-    if (q.floor === false) stats.appendChild(packEl("span", "chip fail", "FLOOR FAIL (<50)"));
-  }
+  // Overall/weakest/floor chips live in renderQualityInto — don't duplicate them here.
   if (stats.children.length) box.appendChild(stats);
   if (q) renderQualityInto(box, q);
   if (state.modelWarning) box.appendChild(packEl("div", "pack-note", `Note: ${state.modelWarning}`));
