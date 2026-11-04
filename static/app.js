@@ -142,6 +142,7 @@ function resetModelView() {
   $("layer-wrap").style.display = "none";
   quiz = null; $("quiz-box").innerHTML = "";
   $("toggle-labels").checked = true;
+  state.learnHi = null;
   deck = { cards: [], i: 0, know: 0, seen: 0 };
   showCard();
 }
@@ -164,6 +165,16 @@ function renderOverlay() {
     const img = $("figure");
     alignOverlay(svg, img);
     const p = toPct(quiz.challenge.highlight_bbox);
+    svg.appendChild(svgEl("rect", { x: p.x, y: p.y, width: p.w, height: p.h,
+      fill: "rgba(34,211,238,.28)", stroke: "#22d3ee", "stroke-width": .8 }));
+    return;
+  }
+  if (state.learnHi) {
+    // Learn-mode spatial recall: same single-highlight treatment as the quiz.
+    svg.setAttribute("viewBox", "0 0 100 100");
+    const img = $("figure");
+    alignOverlay(svg, img);
+    const p = toPct(state.learnHi);
     svg.appendChild(svgEl("rect", { x: p.x, y: p.y, width: p.w, height: p.h,
       fill: "rgba(34,211,238,.28)", stroke: "#22d3ee", "stroke-width": .8 }));
     return;
@@ -815,6 +826,10 @@ $("btn-study-all").onclick = () => withBusy($("btn-study-all"), "Building…", a
 $("btn-learn").onclick = async () => {
   if (!state.analysis) return alert("Analyze a figure first.");
   const box = $("challenge"); box.innerHTML = "";
+  // A spatial challenge with no visible highlight asks about nothing:
+  // mirror the quiz treatment (labels off, one glowing box) and restore
+  // both on the next challenge.
+  state.learnHi = null; $("toggle-labels").checked = true;
   // Boxless models honestly refuse spatial recall (and friends): surface the
   // refusal with a way forward instead of dying silently on a rejection.
   let c;
@@ -830,6 +845,11 @@ $("btn-learn").onclick = async () => {
   const p = document.createElement("div"); p.className = "challenge-q";
   const modeLabel = ($("learn-mode").selectedOptions[0] || {}).textContent || c.mode || "Challenge";
   p.textContent = `${modeLabel} — ${c.prompt}`; box.appendChild(p);
+  if (c.highlight_bbox) {
+    state.learnHi = c.highlight_bbox;
+    $("toggle-labels").checked = false;
+    renderOverlay();
+  }
   const answer = async (value) => {
     const g = await api("/api/learn/grade", { challenge: c, answer: value });
     const d = document.createElement("div"); d.className = "mono " + (g.correct ? "good" : "bad");
