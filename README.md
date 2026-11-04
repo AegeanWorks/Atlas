@@ -113,6 +113,7 @@ Atlas/
 ├── README.md
 ├── CHANGELOG.md
 ├── LICENSE
+├── LICENSES/
 ├── REUSE.toml
 ├── requirements.txt
 ├── pytest.ini
