@@ -446,10 +446,19 @@ $("btn-segment").onclick = () => withBusy($("btn-segment"), "Segmenting…", asy
   } catch (err) { say("bad", `Segmentation failed: ${honestMsg(err)}`); }
 });
 function applyZoom() {
+  // Percent widths alone cannot grow the figure: the stylesheet caps
+  // max-height at 96% (fitted view), which clamps replaced-element layout
+  // back down. Lifting max-height while zoomed lets width % take effect;
+  // the scrollable viewport then pans the enlarged figure. Overlay tracks
+  // via img.clientWidth in alignOverlay, so boxes stay glued on.
   const img = $("figure");
   img.style.width = `${state.zoom * 100}%`;
   img.style.maxWidth = state.zoom === 1 ? "" : "none";
   img.style.maxHeight = state.zoom === 1 ? "" : "none";
+  img.style.height = state.zoom === 1 ? "" : "auto";
+  // The viewport is a flex row: a bare width % gets flex-shrunk straight
+  // back to fit. Pin the item while zoomed so % widths take effect.
+  img.style.flex = state.zoom === 1 ? "" : "none";
   renderOverlay();
 }
 $("zoom-in").onclick = () => { state.zoom = Math.min(4, state.zoom + .25); applyZoom(); };
