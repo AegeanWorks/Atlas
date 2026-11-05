@@ -150,7 +150,8 @@ function resetModelView() {
 function toPct(b) { return { x: b.x_min * 100, y: b.y_min * 100, w: (b.x_max - b.x_min) * 100, h: (b.y_max - b.y_min) * 100 }; }
 
 // Overlay must sit exactly over the centered image, not the viewport
-// top-left: #viewport is flex-centered so the image has a real offset.
+// top-left: #viewport is flex-start with img margin:auto (centered when small,
+// scrollable when large), so the image still has a real offset.
 function alignOverlay(svg, img) {
   svg.style.width = img.clientWidth + "px"; svg.style.height = img.clientHeight + "px";
   svg.style.left = img.offsetLeft + "px"; svg.style.top = img.offsetTop + "px";

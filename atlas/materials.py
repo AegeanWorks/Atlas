@@ -110,6 +110,11 @@ def _layout(analysis: dict) -> dict:
             x = MARGIN if cols == 1 else MARGIN + c * (usable_w - box_w) / (cols - 1)
             y = _POSTER_TOP if rows == 1 else _POSTER_TOP + r * (avail_h - box_h) / (rows - 1)
             rects[e["id"]] = (x, y, box_w, box_h)
+    # Dense cap keys on grounded boxes, not total entities: a text-heavy model
+    # with 30 entities but 5 boxes still gets roomy boxes; a merged
+    # multi-frame model with 25 grounded boxes gets compact caps so labels fit.
+    n_grounded = sum(1 for e in entities if e.get("bbox"))
+    dense = n_grounded > 20
     for e in entities:
         bbox = e.get("bbox")
         if not bbox:
@@ -119,8 +124,8 @@ def _layout(analysis: dict) -> dict:
         # Poster boxes are approximate (footer says so): floor tiny slivers
         # so labels have a box to sit in, cap giants so one frame-filling
         # entity cannot swallow the poster on merged multi-frame models.
-        w = min(max((bbox["x_max"] - bbox["x_min"]) * (W - 2 * MARGIN), 90), 180 if len(entities) > 20 else 240)
-        h = min(max((bbox["y_max"] - bbox["y_min"]) * (H - 2 * MARGIN - 60), 44), 100 if len(entities) > 20 else 130)
+        w = min(max((bbox["x_max"] - bbox["x_min"]) * (W - 2 * MARGIN), 90), 180 if dense else 240)
+        h = min(max((bbox["y_max"] - bbox["y_min"]) * (H - 2 * MARGIN - 60), 44), 100 if dense else 130)
         rects[e["id"]] = (x, y, w, h)
     placed = _declutter(rects)
     return _fit_frame(placed)

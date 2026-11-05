@@ -142,7 +142,7 @@ def test_state_and_text_digest(tmp_path):
 
     AtlasStore(str(tmp_path)).save_analysis("st", {**_analysis(), "figure_id": "st"})
     atlas_app.Handler.store = None
-    atlas_app.Handler.config = AtlasConfig.from_env(data_dir=str(tmp_path))
+    atlas_app.Handler.config = AtlasConfig.from_env(data_dir=str(tmp_path), api_key="")
     server = HTTPServer(("127.0.0.1", 0), atlas_app.Handler)
     port = server.server_address[1]
     thread = threading.Thread(target=server.serve_forever, daemon=True)
@@ -170,7 +170,10 @@ def test_summary_endpoint_offline_and_keyless(tmp_path):
 
     AtlasStore(str(tmp_path)).save_analysis("s1", _analysis())
     atlas_app.Handler.store = None
-    atlas_app.Handler.config = AtlasConfig.from_env(data_dir=str(tmp_path))
+    # Force keyless: the host env may carry MODEL_API_KEY, which would turn
+    # /api/summary into a live Muse call with retries and exceed the test's
+    # 10s client timeout. This test pins the offline/keyless path.
+    atlas_app.Handler.config = AtlasConfig.from_env(data_dir=str(tmp_path), api_key="")
     server = HTTPServer(("127.0.0.1", 0), atlas_app.Handler)
     port = server.server_address[1]
     thread = threading.Thread(target=server.serve_forever, daemon=True)
