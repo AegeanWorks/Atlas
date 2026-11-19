@@ -22,3 +22,4 @@ demo/*.mp4
 # AIKit transient state
 .aikit/*.log
 .aikit/reforge.reviews/
+.venv/
