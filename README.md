@@ -119,6 +119,7 @@ Atlas/
 ├── pytest.ini
 ├── config.example.json
 ├── .gitignore
+├── .aikit/
 ├── install.ps1
 ├── install.sh
 ├── install.bat
