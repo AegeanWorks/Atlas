@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "name": "atlas",
+  "test_command": null,
+  "topics": [
+    "aikit"
+  ],
+  "gates": {},
+  "ui_required": false,
+  "map_coverage": "skip",
+  "review_required": false,
+  "mechanics_required": false,
+  "test_budget_ms": null,
+  "python_min": null,
+  "scratch_paths": [],
+  "gate_outputs": [],
+  "created": "2026-11-19",
+  "has_ui": true,
+  "ui_kind": "web",
+  "ui_evidence": [
+    "static/index.html"
+  ],
+  "ui_checked_at": "2026-11-19",
+  "ui_source": "detected",
+  "archived": true,
+  "archived_at": "2026-11-19",
+  "archive_reason": "Abandoned; used only as a testbed for AIKit. May contain bugs, be incomplete or non-functional, and is no longer maintained.",
+  "archive_repo": "AegeanWorks/Atlas",
+  "archive_description": "[ARCHIVED] An interactive visual knowledge platform for learning material \u2014 easy drag-and-drop.",
+  "archive_origin": "projects/Atlas"
+}

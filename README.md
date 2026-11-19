@@ -8,6 +8,8 @@
 
 **An interactive visual knowledge platform for learning material — easy drag-and-drop.**
 
+> **Archived**: Abandoned; used only as a testbed for AIKit. May contain bugs, be incomplete or non-functional, and is no longer maintained. (archived 2026-11-19). This project is read-only; its GitHub repository is archived.
+
 Drop any learning material — PDF, video, image, book (EPUB), text, or link.
 Let multimodal AI understand it. Select an individual structure. Explore its
 relationships directly on the original material. Learn by interacting with the
