@@ -510,9 +510,6 @@ def video_slideshow(analysis: dict, outdir: str, fps: int = 30,
         if highlight:
             # Underline the title itself, not the whole frame width.
             bar_w = max(60, min(draw.textlength(shown[0], font=title_font) + 16, W - 2 * MARGIN))
-        if highlight:
-            # Underline the title itself, not the whole frame width.
-            bar_w = max(60, min(draw.textlength(shown[0], font=title_font) + 16, W - 2 * MARGIN))
             draw.rectangle([MARGIN - 8, 108, MARGIN - 8 + bar_w, 108 + 8], fill=(34, 211, 238))
         if scene is not None:
             i, n = scene
