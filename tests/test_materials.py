@@ -125,6 +125,18 @@ def test_video_frames_carry_scene_counter_and_progress():
         assert teal > strip.width * 0.5  # final scene: progress bar (nearly) full
 
 
+def test_video_card_computes_underline_once():
+    # Reforge stage-13 finding: a wrap edit left two consecutive `if highlight:`
+    # blocks in the video card, the first computing bar_w without ever drawing.
+    # Guard the structure so a later edit cannot reintroduce the dead block.
+    import inspect
+
+    from atlas import materials as mat
+
+    source = inspect.getsource(mat.video_slideshow)
+    assert source.count("if highlight:") == 1
+
+
 def test_podcast_segments_carry_monotonic_timestamps():
     from atlas import materials as mat
     from atlas.schema import VisualAnalysis
