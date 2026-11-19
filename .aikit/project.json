@@ -21,5 +21,11 @@
     "static/index.html"
   ],
   "ui_checked_at": "2026-11-19",
-  "ui_source": "detected"
+  "ui_source": "detected",
+  "archived": true,
+  "archived_at": "2026-11-19",
+  "archive_reason": "Abandoned; used only as a testbed for AIKit. May contain bugs, be incomplete or non-functional, and is no longer maintained.",
+  "archive_repo": "AegeanWorks/Atlas",
+  "archive_description": "[ARCHIVED] An interactive visual knowledge platform for learning material \u2014 easy drag-and-drop.",
+  "archive_origin": "projects/Atlas"
 }
