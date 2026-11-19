@@ -121,7 +121,7 @@ def test_video_frames_carry_scene_counter_and_progress():
     last = sorted(__import__("glob").glob(info["mp4"].replace("study.mp4", "f_*.png")))[-1]
     with Image.open(last) as frame:  # hygiene: allow binary image open needs no text encoding
         strip = frame.convert("RGB").crop((70, mat.H - 26, mat.W - 70, mat.H - 20))
-        teal = sum(1 for px in strip.getdata() if px[0] < 80 and px[1] > 150 and px[2] > 150)
+        teal = sum(1 for px in strip.get_flattened_data() if px[0] < 80 and px[1] > 150 and px[2] > 150)
         assert teal > strip.width * 0.5  # final scene: progress bar (nearly) full
 
 
